@@ -2,6 +2,44 @@
     max-width: 100px;
 }
 
+
+.header .logo span {
+    font-size: 36px;
+}
+
+#header {
+    justify-content: space-between;
+}
+
+.header {
+    padding-right: 20px;
+}
+
+.header-logo {
+    width: 28px;
+}
+
+.profil-nav {
+    margin-left: 0px !important;
+}
+
+.header .search-form input {
+    padding: 7px 8px 7px 38px;
+}
+
+.header .search-form button {
+    margin-right: -30px;
+}
+
+.sidebar .sidebar-nav .nav-item .nav-link.collapsed i:last-child {
+    margin-right: auto !important;
+    margin-left: 10px !important;
+}
+
+.sidebar .sidebar-nav .nav-item a i {
+    margin-left: 10px !important;
+}
+
 h1, h4 {
     text-align: center;
     font-weight: bold;
@@ -30,6 +68,7 @@ h1, h4 {
 .form-check-input.is-valid:checked, .was-validated .form-check-input:valid:checked {
     background-color: #00749d;
 }
+
 .form-check-input.is-valid:focus, .was-validated .form-check-input:valid:focus {
     box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
 }
@@ -37,4 +76,27 @@ h1, h4 {
 .form-check-input:checked {
     background-color: #00749d;
     border-color: #158fbf;
+}
+
+.form-control.is-valid, .was-validated .form-control:valid {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2328a745'%3E%3Cpath d='M5.5 10.5l-3.5-3.5 1-1L5.5 8.086l6.793-6.793 1.414 1.414L5.5 10.5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left calc(0.375em + 0.1875rem) center;
+    padding-left: calc(1.5em + 0.75rem);
+    padding-right: 6px;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-control.is-invalid, .was-validated .form-control:invalid {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: left calc(0.375em + 0.1875rem) center;
+    padding-left: calc(1.5em + 0.75rem);
+    padding-right: 6px;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-check .form-check-input {
+    float:right;
+    margin-left: 8px;
 }

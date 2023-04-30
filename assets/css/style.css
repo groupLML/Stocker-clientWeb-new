@@ -366,7 +366,6 @@ h6 {
 
 .logo img {
     max-height: 26px;
-    margin-right: 6px;
 }
 
 .logo span {
@@ -615,7 +614,7 @@ h6 {
 
 @media (max-width: 1199px) {
     .sidebar {
-        left: -300px;
+        right: -300px;
     }
 }
 
@@ -639,7 +638,7 @@ h6 {
 
 @media (max-width: 1199px) {
     .toggle-sidebar .sidebar {
-        left: 0;
+        right: 0;
     }
 }
 
@@ -647,11 +646,11 @@ h6 {
 
     .toggle-sidebar #main,
     .toggle-sidebar #footer {
-        margin-left: 0;
+        margin-right: 0;
     }
 
     .toggle-sidebar .sidebar {
-        left: -300px;
+        right: -300px;
     }
 }
 
