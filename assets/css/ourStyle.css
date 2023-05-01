@@ -7,10 +7,6 @@
     font-size: 36px;
 }
 
-#header {
-    justify-content: space-between;
-}
-
 .header {
     padding-right: 20px;
 }
@@ -19,8 +15,15 @@
     width: 28px;
 }
 
+.header .logo span {
+    position: absolute;
+    right: 35px;
+}
+
 .profil-nav {
     margin-left: 0px !important;
+    position: absolute;
+    left: 0;
 }
 
 .header .search-form input {
@@ -97,6 +100,6 @@ h1, h4 {
 }
 
 .form-check .form-check-input {
-    float:right;
+    float: right;
     margin-left: 8px;
 }
