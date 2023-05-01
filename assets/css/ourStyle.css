@@ -25,6 +25,18 @@
     left: 0;
 }
 
+.header-nav > ul {
+    margin-left: 15px;
+}
+
+.nav-link nav-icon .bi bi-bell {
+    margin-left: 10px;
+}
+
+#logoutIcon {
+    margin-left: 10px;
+}
+
 .header .search-form input {
     padding: 7px 8px 7px 38px;
 }
