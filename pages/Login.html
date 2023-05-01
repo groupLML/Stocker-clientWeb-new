@@ -37,10 +37,7 @@
 
         $(document).ready(function () {
 
-            if (location.hostname === "localhost" || location.hostname === "127.0.0.1")
-                apiUser = "https://localhost:7102/api/User/Login";
-            else
-                apiUser = "https://proj.ruppin.ac.il/cgroup36/prod/api/User/Login";
+            apiUser = "https://proj.ruppin.ac.il/cgroup36/prod/api/User/Login";
 
             $("#LoginForm").submit(Login); //form validation
         })
@@ -67,11 +64,11 @@
                 sessionStorage.setItem("User", JSON.stringify(data)); //add to storage
 
                 if (data.jobType == 'A')
-                    window.location.href = `pages-admin.html`;
+                    window.location.href = `Admin-Deparments.html`;
                 else if (data.jobType == 'M')
-                    window.location.href = `ManagerPage.html`;
+                    window.location.href = `Manager.html`;
                 else
-                    window.location.href = `PharmacistPage.html`;
+                    window.location.href = `Pharm-PullOrder.html`;
             }
             else
                 alert("Username or password are incorrect");

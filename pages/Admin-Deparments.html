@@ -33,23 +33,78 @@
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 
+    <!-- datatable -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 
     <script>
 
-        $(document).ready(function () {
+    $(document).ready(function () {
 
-            //if (location.hostname === "localhost" || location.hostname === "127.0.0.1")
-            //    apiUser = "https://localhost:7102/api/User/Login";
-            //else
-            //    apiUser = "https://proj.ruppin.ac.il/cgroup36/prod/api/User/Login";
+            api = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
 
-            //$("#LoginForm").submit(Login); //form validation
-        })
+            user= JSON.parse(sessionStorage.getItem("User")); //get user from storage
+            console.log(user);
+            renderUser(user);
+         
+            deps = [];
+            GetDepartments();
+    })
 
 
-        function clearStorage() {
+    function GetDepartments() {
+            ajaxCall("GET", api, "", successGetDepsCBF, errorGetDepsCBF);
+}
+
+    function successGetDepsCBF(data) {
+            console.log(data);
+
+            for (var i = 0; i < data.length; i++) {
+                if (data[i]['depId'] != 0)
+                    deps.push(data[i]);
+            }
+
+            try {
+                tbl = $('#depsTable').DataTable({
+                    "language": { "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json" },
+                    data: deps,
+                    pageLength: 10,
+                    columns: [
+                        { data: "depId" },
+                        { data: "depName" },
+                        { data: "depPhone" },
+                        { data: "depType" }
+                        //{
+                        //    data: "isActive",
+                        //    render: function (data, type, row, meta) {
+                        //        if (data == true)
+                        //            return `<input type="checkbox" checked onchange="updateUser('${row.email}')"/>`;
+                        //        else
+                        //            return `<input type="checkbox" onchange="updateUser('${row.email}')"/>`;
+                        //    }
+                        //}
+                    ]
+                });
+            }
+            catch (err) {
+                alert(err);
+            }
+    }
+
+    function errorGetDepsCBF(err) {
+            console.log(err);
+}
+
+    function renderUser(user) { //render user into text box
+            str = `<h6> ${user.FirstName} ${user.LastName}</h6>`;
+            str += `<span> ${user.Position}</span>`;
+            document.getElementById("user_ph").innerHTML = str;
+    }
+
+
+    function clearStorage() {
             sessionStorage.clear();
-        }
+}
 
     </script>
 
@@ -97,15 +152,15 @@
                     </a><!-- End Profile Iamge Icon -->
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu profile">
-                        <li class="dropdown-header">
-                            <h6>ארז קלנסקי</h6>
+                        <li class="dropdown-header" id-="user_ph">
+                            <h6>ארז קריסי</h6>
                             <span>מנהל מחלקת מערכות מידע</span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" onclick="clearStorage()" href="pages-login.html">
+                            <a class="dropdown-item d-flex align-items-center" onclick="clearStorage()" href="Login.html">
                                 <i id="logoutIcon" class="bi bi-box-arrow-right"></i>
                                 <span>התנתק</span>
                             </a>
@@ -116,46 +171,60 @@
             </ul>
         </nav><!-- End Icons Navigation -->
     </header><!-- End Header -->
+
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
             <li class="nav-item">
-                <a class="nav-link collapsed" href="index.html">
-                    <span>הזמנות משיכה</span>
+                <a class="nav-link collapsed" href="Admin-Departments.html">
+                    <span>מחלקות</span>
                 </a>
-            </li><!-- End PullOrders Nav -->
+            </li><!-- End Departments Nav -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="index.html">
-                    <span>הזמנות דחיפה</span>
+                <a class="nav-link collapsed" href="Admin-Users.html">
+                    <span>משתמשים</span>
                 </a>
-            </li><!-- End PushOrders Nav -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="index.html">
-                    <span>מחסן המחלקות</span>
-                </a>
-            </li><!-- End DepsStock Nav -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="index.html">
-                    <span>תקן המחלקות</span>
-                </a>
-            </li><!-- End DepsNorm Nav -->
+            </li><!-- End Users Nav -->
+        </ul><!-- End DepsNorm Nav -->
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>כותרת</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">כותרת</li>
-                    <li class="breadcrumb-item active"><a href="index.html">בית</a></li>
-                </ol>
-            </nav>
+            <h1>מחלקות</h1>
         </div><!-- End Page Title -->
+
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <br />
+                            <!-- Table with stripped rows -->
+                            <table class="table table-striped" id="depsTable" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>מספר מחלקה</th>
+                                        <th>שם מחלקה</th>
+                                        <th>טלפון</th>
+                                        <th>סוג מחלקה</th>
+                                        <!--<th scope="col"></th>-->
+                                    </tr>
+                                </thead>
+                            </table>
+                            <!-- End Table with stripped rows -->
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
     </main><!-- End #main -->
+
     <!-- ======= Footer ======= -->
-    <footer id="footer" class="footer">
-        <div class="copyright"><p>copyrights here</p></div>
-    </footer><!-- End Footer -->
+    <footer id="footer" class="footer"> </footer> <!--End Footer--> 
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
@@ -165,12 +234,13 @@
     <script src="../assets/vendor/chart.js/chart.umd.js"></script>
     <script src="../assets/vendor/echarts/echarts.min.js"></script>
     <script src="../assets/vendor/quill/quill.min.js"></script>
-    <script src="../assets/vendor/simple-datatables/simple-datatables.js"></script>
+    <!--<script src="../assets/vendor/simple-datatables/simple-datatables.js"></script>-->
     <script src="../assets/vendor/tinymce/tinymce.min.js"></script>
     <script src="../assets/vendor/php-email-form/validate.js"></script>
 
     <!-- Template Main JS File -->
     <script src="../assets/js/main.js"></script>
+
 
 </body>
 
