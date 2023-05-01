@@ -1,4 +1,6 @@
-﻿#main .pagetitle {
+﻿
+
+#main .pagetitle {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -82,6 +84,10 @@ img {
     margin-left: 10px !important;
 }
 
+.card .card-body {
+    padding-top: 20px;
+}
+
 #LoginTitle{
     text-align: center;
     color: #012970;
@@ -142,3 +148,11 @@ img {
     float: right;
     margin-left: 8px;
 }
+
+table#OrdersTable.dataTable tbody tr:hover {
+    background-color: #EBEBEB;
+}
+
+    table#OrdersTable.dataTable tbody tr:hover > .sorting_1 {
+        background-color: #EBEBEB;
+    }

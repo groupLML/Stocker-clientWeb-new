@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Stocker - pageNameHere</title>
+    <title>Stocker - pull orders</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -33,21 +33,75 @@
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 
+    <!-- datatables -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/dataTables.bulma.min.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/dataTables.bulma.min.js"></script>
+
+
 
     <script>
-
         $(document).ready(function () {
+            apiPullOrders = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder";
 
-            //if (location.hostname === "localhost" || location.hostname === "127.0.0.1")
-            //    apiUser = "https://localhost:7102/api/User/Login";
-            //else
-            //    apiUser = "https://proj.ruppin.ac.il/cgroup36/prod/api/User/Login";
-
-            //$("#LoginForm").submit(Login); //form validation
+            GetPullOrders();
+            PullOrdersList = [];
         })
 
-    </script>
+        function GetPullOrders() {
+            ajaxCall("GET", apiPullOrders, "", getPOSCB, getPOECB);
+        }
 
+        function getPOSCB(data) {
+            console.log(data);
+            PullOrdersList = data;
+            DataTableRender(data);
+        }
+
+        function getPOECB(err) {
+            console.log(err);
+        }
+
+        function DataTableRender(ordersData) {
+
+            let ordersArray = [];
+            for (var i = 0; i < ordersData.length; i++) {
+                ordersArray.push(ordersData[i]);
+            }
+            try {
+                tbl = $('#OrdersTable').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
+                    },
+                    data: ordersArray,
+                    pageLength: 5,
+                    columns: [
+                        { data: "orderId" },
+                        { data: "orderDate" },
+                        { data: "depId" },
+                        { data: "nUser" },
+                        { data: "status" }
+                        //{
+                        //    data: "isActive",
+                        //    render: function (data, type, row, meta) {
+                        //        if (data == true)
+                        //            return `<input onchange="updateUser('${row.email}')"  type="checkbox" checked/>`;
+                        //        else
+                        //            return `<input onchange="updateUser('${row.email}')" type="checkbox"/>`;
+                        //    }
+                        //}
+                    ],
+                });
+            }
+
+            catch (err) {
+                alert(err);
+            }
+        }
+
+    </script>
 </head>
 
 <body>
@@ -134,6 +188,7 @@
                     <span>תקן המחלקות</span>
                 </a>
             </li><!-- End DepsNorm Nav -->
+        </ul>
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
@@ -143,32 +198,23 @@
         <div class="card">
             <div class="card-body">
                 <!-- Table with stripped rows -->
-                <div class="datatable-wrapper datatable-loading no-footer sortable searchable fixed-columns">
-                    <div class="datatable-top">
-                        <div class="datatable-dropdown">
-                            <label>
-                                <select class="datatable-selector"><option value="5">5</option><option value="10" selected="">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option></select> entries per page
-                            </label>
-                        </div>
-                        <div class="datatable-search">
-                            <input class="datatable-input" placeholder="Search..." type="search" title="Search within table">
-                        </div>
-                    </div>
-                    <div class="datatable-container"><table class="table datatable datatable-table"><thead><tr><th data-sortable="true" style="width: 5.671296296296297%;"><a href="#" class="datatable-sorter">#</a></th><th data-sortable="true" style="width: 28.009259259259263%;"><a href="#" class="datatable-sorter">Name</a></th><th data-sortable="true" style="width: 37.73148148148148%;"><a href="#" class="datatable-sorter">Position</a></th><th data-sortable="true" style="width: 9.25925925925926%;"><a href="#" class="datatable-sorter">Age</a></th><th data-sortable="true" style="width: 19.328703703703702%;"><a href="#" class="datatable-sorter">Start Date</a></th></tr></thead><tbody><tr data-index="0"><td>1</td><td>Brandon Jacob</td><td>Designer</td><td>28</td><td>2016-05-25</td></tr><tr data-index="1"><td>2</td><td>Bridie Kessler</td><td>Developer</td><td>35</td><td>2014-12-05</td></tr><tr data-index="2"><td>3</td><td>Ashleigh Langosh</td><td>Finance</td><td>45</td><td>2011-08-12</td></tr><tr data-index="3"><td>4</td><td>Angus Grady</td><td>HR</td><td>34</td><td>2012-06-11</td></tr><tr data-index="4"><td>5</td><td>Raheem Lehner</td><td>Dynamic Division Officer</td><td>47</td><td>2011-04-19</td></tr></tbody></table></div>
-                    <div class="datatable-bottom">
-                        <div class="datatable-info">Showing 1 to 5 of 5 entries</div>
-                        <nav class="datatable-pagination"><ul class="datatable-pagination-list"></ul></nav>
-                    </div>
-                </div>
+                <table id="OrdersTable" class="table is-striped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Order Date</th>
+                            <th>Department ID</th>
+                            <th>Number of Users</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                </table>
                 <!-- End Table with stripped rows -->
-
             </div>
         </div>
     </main><!-- End #main -->
-
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
-        <div class="copyright"><p>copyrights here</p></div>
     </footer><!-- End Footer -->
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
@@ -179,7 +225,7 @@
     <script src="../assets/vendor/chart.js/chart.umd.js"></script>
     <script src="../assets/vendor/echarts/echarts.min.js"></script>
     <script src="../assets/vendor/quill/quill.min.js"></script>
-    <script src="../assets/vendor/simple-datatables/simple-datatables.js"></script>
+    <!--<script src="../assets/vendor/simple-datatables/simple-datatables.js"></script>-->
     <script src="../assets/vendor/tinymce/tinymce.min.js"></script>
     <script src="../assets/vendor/php-email-form/validate.js"></script>
 
