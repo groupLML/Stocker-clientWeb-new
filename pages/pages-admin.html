@@ -1,11 +1,11 @@
 ﻿<!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="he" dir="rtl">
 
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Stocker - Admin</title>
+    <title>Stocker - pageNameHere</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -46,11 +46,13 @@
             //$("#LoginForm").submit(Login); //form validation
         })
 
+
         function clearStorage() {
             sessionStorage.clear();
         }
 
     </script>
+
 </head>
 
 <body>
@@ -90,12 +92,13 @@
 
                 <li class="nav-item dropdown pe-3">
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                        <span class="d-none d-md-block dropdown-toggle ps-2">שלום, ארז</span>
+                        <span class="d-none d-md-block dropdown-toggle ps-2"></span>
+                        <span>שלום, ארז</span>
                     </a><!-- End Profile Iamge Icon -->
 
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu profile">
                         <li class="dropdown-header">
-                            <h6>ארז</h6>
+                            <h6>ארז קלנסקי</h6>
                             <span>מנהל מחלקת מערכות מידע</span>
                         </li>
                         <li>
@@ -103,7 +106,7 @@
                         </li>
                         <li>
                             <a class="dropdown-item d-flex align-items-center" onclick="clearStorage()" href="pages-login.html">
-                                <i class="bi bi-box-arrow-right"></i>
+                                <i id="logoutIcon" class="bi bi-box-arrow-right"></i>
                                 <span>התנתק</span>
                             </a>
                         </li>
@@ -113,7 +116,6 @@
             </ul>
         </nav><!-- End Icons Navigation -->
     </header><!-- End Header -->
-
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
@@ -140,23 +142,19 @@
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
-
         <div class="pagetitle">
-            <h1>pagetitle</h1>
+            <h1>כותרת</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item">last pagetitle</li>
-                    <li class="breadcrumb-item active">pagetitle</li>
+                    <li class="breadcrumb-item">כותרת</li>
+                    <li class="breadcrumb-item active"><a href="index.html">בית</a></li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
-
     </main><!-- End #main -->
-
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
-    
+        <div class="copyright"><p>copyrights here</p></div>
     </footer><!-- End Footer -->
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
