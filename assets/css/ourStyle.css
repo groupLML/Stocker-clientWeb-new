@@ -1,4 +1,36 @@
-﻿img {
+﻿#main .pagetitle {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+    #main .pagetitle h1 {
+        margin: 0;
+    }
+
+    #main .pagetitle nav {
+        align-self: flex-start;
+    }
+
+.breadcrumb-item + .breadcrumb-item::after {
+    content: " /";
+    margin: 0 5px;
+}
+
+.breadcrumb {
+    flex-direction: row-reverse;
+}
+
+.breadcrumb-item {
+    text-align: left;
+}
+
+#main .pagetitle nav ol.breadcrumb li + li::before {
+  content: "";
+}
+
+
+img {
     max-width: 100px;
 }
 
@@ -23,6 +55,14 @@
     margin-left: 0px !important;
     position: absolute;
     left: 0;
+}
+
+.header-nav > ul {
+    margin-left: 15px;
+}
+
+#logoutIcon {
+    margin-left: 10px;
 }
 
 .header .search-form input {
