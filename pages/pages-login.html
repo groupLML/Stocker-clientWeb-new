@@ -29,13 +29,60 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/ourStyle.css" rel="stylesheet" />
 
-    <!-- =======================================================
-    * Template Name: NiceAdmin
-    * Updated: Mar 09 2023 with Bootstrap v5.2.3
-    * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-    * Author: BootstrapMade.com
-    * License: https://bootstrapmade.com/license/
-    ======================================================== -->
+    <!-- ajaxCalls and JQuery -->
+    <script src="../assets/js/ajaxCalls.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            if (location.hostname === "localhost" || location.hostname === "127.0.0.1")
+                apiUser = "https://localhost:7102/api/User/Login";
+            else
+                apiUser = "https://proj.ruppin.ac.il/cgroup36/prod/api/User/Login";
+
+            $("#LoginForm").submit(Login); //form validation
+        })
+
+        function Login() {
+            const username = $("#usernameTB").val();
+            const password = $("#passwordTB").val();
+
+            const user = {
+                Username: username,
+                Password: password
+            };
+
+            ajaxCall("POST", apiUser, JSON.stringify(user), successLoginCBF, errorLoginCBF);
+
+            return false;
+        }
+
+        function successLoginCBF(data) {
+
+            console.log(data);
+            if (data.username != null) {
+
+                sessionStorage.setItem("User", JSON.stringify(data)); //add to storage
+
+                if (data.jobType == 'A')
+                    window.location.href = `pages-admin.html`;
+                else if (data.jobType == 'M')
+                    window.location.href = `ManagerPage.html`;
+                else
+                    window.location.href = `PharmacistPage.html`;
+            }
+            else
+                alert("Username or password are incorrect");
+        }
+
+        function errorLoginCBF(err) {
+            console.log(err);
+        }
+
+    </script>
+
 </head>
 
 <body>
@@ -47,49 +94,45 @@
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+                           
                             <img src="../assets/img/logo.png" />
                             <h1>Stocker</h1>
                             <!--End Logo-->
 
                             <div class="card mb-3">
                                 <div class="card-body">
+                                        <div class="pt-4 pb-2"></div>
 
-                                    <div class="pt-4 pb-2">
-                                        <!--<h4 class="card-title text-center pb-0 fs-4">כניסה</h4>-->
-                                        <!--<p class="text-center small">Enter your username & password to login</p>-->
-                                    </div>
+                                        <form class="row g-3 needs-validation" id="LoginForm" novalidate>
 
-                                    <form class="row g-3 needs-validation" novalidate>
-
-                                        <div class="col-12">
-                                            <label for="yourUsername" class="form-label">שם משתמש</label>
-                                            <div class="input-group has-validation">
-                                                <input type="text" name="username" class="form-control" id="yourUsername" required>
-                                                <div class="invalid-feedback">הכנס שם משתמש</div>
+                                            <div class="col-12">
+                                                <label for="yourUsername" class="form-label">שם משתמש</label>
+                                                <div class="input-group has-validation">
+                                                    <input type="text" name="username" class="form-control" id="usernameTB" maxlength="30" required>
+                                                    <div class="invalid-feedback">הכנס שם משתמש</div>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="col-12">
-                                            <label for="yourPassword" class="form-label">סיסמה</label>
-                                            <input type="password" name="password" class="form-control" id="yourPassword" required>
-                                            <div class="invalid-feedback">הכנס סיסמה בעלת 5 תווים</div>
-                                        </div>
-
-                                        <div class="col-12">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
-                                                <label class="form-check-label" for="rememberMe">זכור אותי</label>
+                                            <div class="col-12">
+                                                <label for="yourPassword" class="form-label">סיסמה</label>
+                                                <input type="password" name="password" class="form-control" id="passwordTB" maxlength="3" required>
+                                                <div class="invalid-feedback">הכנס סיסמה בעלת 5 תווים</div>
                                             </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <button class="btn btn-primary w-100" type="submit">כניסה</button>
-                                        </div>
-                                        <div class="col-12">
-                                            <p class="small mb-0">יש לך חשבון? <a href="pages-register.html">יצירת חשבון</a></p>
-                                            <!--צריך להחליט מה לעשות עם היצירת חשבון והזכור אותי-->
-                                        </div>
-                                    </form>
 
+                                            <div class="col-12">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
+                                                    <label class="form-check-label" for="rememberMe">זכור אותי</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <button class="btn btn-primary w-100" type="submit">כניסה</button>
+                                            </div>
+                                            <div class="col-12">
+                                                <p class="small mb-0">יש לך חשבון? <a href="pages-register.html">יצירת חשבון</a></p>
+                                                <!--צריך להחליט מה לעשות עם היצירת חשבון והזכור אותי-->
+                                            </div>
+                                        </form>
                                 </div>
                             </div>
                         </div>
