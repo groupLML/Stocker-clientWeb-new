@@ -21,12 +21,12 @@
     flex-direction: row-reverse;
 }
 
-.breadcrumb-item {
-    text-align: left;
+.breadcrumb-item + .breadcrumb-item {
+    padding: 0px;
 }
 
 #main .pagetitle nav ol.breadcrumb li + li::before {
-  content: "";
+    content: "";
 }
 
 
@@ -82,12 +82,12 @@ img {
     margin-left: 10px !important;
 }
 
-h1, h4 {
+#LoginTitle{
     text-align: center;
-    font-weight: bold;
-    font-family: "Nunito", sans-serif;
     color: #012970;
     margin: 0px 0px 30px;
+    font-family: "Nunito", sans-serif;
+    font-weight: bold;
 }
 
 .btn-primary {
