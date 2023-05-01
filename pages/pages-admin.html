@@ -46,6 +46,10 @@
             //$("#LoginForm").submit(Login); //form validation
         })
 
+        function clearStorage() {
+            sessionStorage.clear();
+        }
+
     </script>
 </head>
 
@@ -91,14 +95,14 @@
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
-                            <h6>שם משתמש</h6>
-                            <span>תפקיד</span>
+                            <h6>ארז</h6>
+                            <span>מנהל מחלקת מערכות מידע</span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#">
+                            <a class="dropdown-item d-flex align-items-center" onclick="clearStorage()" href="pages-login.html">
                                 <i class="bi bi-box-arrow-right"></i>
                                 <span>התנתק</span>
                             </a>
@@ -109,6 +113,7 @@
             </ul>
         </nav><!-- End Icons Navigation -->
     </header><!-- End Header -->
+
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
@@ -148,9 +153,10 @@
         </div><!-- End Page Title -->
 
     </main><!-- End #main -->
+
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
-        <div class="copyright"><p>copyrights here</p></div>
+    
     </footer><!-- End Footer -->
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
