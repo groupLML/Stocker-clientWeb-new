@@ -1,4 +1,36 @@
-﻿img {
+﻿#main .pagetitle {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+    #main .pagetitle h1 {
+        margin: 0;
+    }
+
+    #main .pagetitle nav {
+        align-self: flex-start;
+    }
+
+.breadcrumb-item + .breadcrumb-item::after {
+    content: " /";
+    margin: 0 5px;
+}
+
+.breadcrumb {
+    flex-direction: row-reverse;
+}
+
+.breadcrumb-item {
+    text-align: left;
+}
+
+#main .pagetitle nav ol.breadcrumb li + li::before {
+  content: "";
+}
+
+
+img {
     max-width: 100px;
 }
 
@@ -27,10 +59,6 @@
 
 .header-nav > ul {
     margin-left: 15px;
-}
-
-.nav-link nav-icon .bi bi-bell {
-    margin-left: 10px;
 }
 
 #logoutIcon {
