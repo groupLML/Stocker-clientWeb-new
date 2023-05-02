@@ -1,5 +1,6 @@
 ﻿
 
+/*page frame style*/
 #main .pagetitle {
     display: flex;
     flex-direction: column;
@@ -88,7 +89,8 @@ img {
     padding-top: 20px;
 }
 
-#LoginTitle{
+/*login page style*/
+#LoginTitle {
     text-align: center;
     color: #012970;
     margin: 0px 0px 30px;
@@ -149,10 +151,26 @@ img {
     margin-left: 8px;
 }
 
-table#OrdersTable.dataTable tbody tr:hover {
+
+/*table hover color*/
+.table .dataTable tbody tr:hover,
+.table .dataTable tbody tr.striped:hover {
     background-color: #EBEBEB;
 }
 
-    table#OrdersTable.dataTable tbody tr:hover > .sorting_1 {
-        background-color: #EBEBEB;
-    }
+/*table style*/
+tbody, td, tfoot, th, thead, tr {
+    border-style: none;
+}
+
+.dataTables_wrapper > table.dataTable {
+    --bs-table-striped-bg: #f9f9f9;
+}
+
+.dataTables_wrapper > table.dataTable.no-footer {
+    border-bottom: 1px solid #e9e9e9e9;
+}
+
+.dataTables_wrapper > table.dataTable thead th {
+    border-bottom: 1px solid #e9e9e9e9;
+}

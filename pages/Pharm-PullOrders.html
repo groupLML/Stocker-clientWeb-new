@@ -42,7 +42,7 @@
 
     <script>
         $(document).ready(function () {
-            apiPullOrders = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder";
+            apiPullOrders = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetPullOrdersPharm";
 
             GetPullOrders();
             PullOrdersList = [];
@@ -77,9 +77,10 @@
                     pageLength: 5,
                     columns: [
                         { data: "orderId" },
+                        { data: "orderTime" },
                         { data: "orderDate" },
-                        { data: "depId" },
-                        { data: "nUser" },
+                        { data: "depName" },
+                        { data: "nurseName" },
                         { data: "status" }
                         //{
                         //    data: "isActive",
@@ -109,16 +110,16 @@
 
         <div class="d-flex align-items-center justify-content-between">
             <a href="index.html" class="logo d-flex align-items-center">
-                <span class="d-none d-lg-block">St<img class="header-logo" src="../assets/img/logo.png" alt="">cker</span>
+                <span class="d-none d-xl-block">St<img class="header-logo" src="../assets/img/logo.png" alt="">cker</span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
-        </div><!-- End Logo -->
-
+        </div>
+        <!-- End Logo -->
         <div class="search-bar">
-            <form class="search-form d-flex align-items-center" method="POST" action="#">
-                <input type="text" name="query" placeholder="חיפוש" title="Enter search keyword">
-                <button type="submit" title="Search"><i class="bi bi-search"></i></button>
-            </form>
+                <form class="search-form d-flex align-items-center" method="POST" action="#">
+                    <input type="text" name="query" placeholder="חיפוש" title="Enter search keyword">
+                    <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+                </form>
         </div><!-- End Search Bar -->
 
         <nav class="profil-nav header-nav ms-auto">
@@ -196,17 +197,18 @@
         <div class="card">
             <div class="card-body">
                 <!-- Table with stripped rows -->
-                <table id="OrdersTable" class="table is-striped" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>מספר הזמנה</th>
-                            <th>תאריך</th>
-                            <th>שם מחלקה</th>
-                            <th>יוצר ההזמנה</th>
-                            <th>סטטוס</th>
-                        </tr>
-                    </thead>
-                </table>
+                    <table id="OrdersTable" class="table is-striped is-fullwidth is-responsive">
+                        <thead>
+                            <tr>
+                                <th>מספר הזמנה</th>
+                                <th>שעה</th>
+                                <th>תאריך</th>
+                                <th>שם מחלקה</th>
+                                <th>יוצר ההזמנה</th>
+                                <th>סטטוס</th>
+                            </tr>
+                        </thead>
+                    </table>
                 <!-- End Table with stripped rows -->
             </div>
         </div>

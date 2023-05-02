@@ -64,7 +64,7 @@
             }
 
             try {
-                tbl = $('#depsTable').DataTable({
+                tbl = $('#Table').DataTable({
                     "language": { "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json" },
                     data: deps,
                     pageLength: 10,
@@ -116,10 +116,10 @@
 
         <div class="d-flex align-items-center justify-content-between">
             <a href="index.html" class="logo d-flex align-items-center">
-                <span class="d-none d-lg-block">St<img class="header-logo" src="../assets/img/logo.png" alt="">cker</span>
+                <span class="d-none d-xl-block">St<img class="header-logo" src="../assets/img/logo.png" alt="">cker</span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
-        </div><!-- End Logo -->
+        </div>
 
         <div class="search-bar">
             <form class="search-form d-flex align-items-center" method="POST" action="#">
@@ -151,7 +151,7 @@
                     </a><!-- End Profile Iamge Icon -->
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu profile">
-                        <li class="dropdown-header" >
+                        <li class="dropdown-header">
                             <div id="user_ph">
                                 <h6>ארז קריסי</h6>
                                 <span>מנהל מחלקת מערכות מידע</span>
@@ -172,7 +172,6 @@
             </ul>
         </nav><!-- End Icons Navigation -->
     </header><!-- End Header -->
-
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
@@ -202,7 +201,7 @@
                         <div class="card-body">
                             <br />
                             <!-- Table with stripped rows -->
-                            <table class="table table-striped" id="depsTable" style="width:100%">
+                            <table class="table table-striped" id="Table" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>מספר מחלקה</th>
@@ -223,9 +222,8 @@
         </section>
 
     </main><!-- End #main -->
-
     <!-- ======= Footer ======= -->
-    <footer id="footer" class="footer"> </footer> <!--End Footer--> 
+    <footer id="footer" class="footer"> </footer> <!--End Footer-->
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
