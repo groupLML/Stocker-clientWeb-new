@@ -44,7 +44,7 @@
             api = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
 
             user= JSON.parse(sessionStorage.getItem("User")); //get user from storage
-            console.log(user);
+           /* console.log(user.firstName);*/
             renderUser(user);
          
             deps = [];
@@ -93,13 +93,24 @@
 
     function errorGetDepsCBF(err) {
             console.log(err);
-}
+    }
+
+    //function renderUser(userName) { //render user into text box
+    //       console.log(userName);
+        
+    //        str = `<h6> ${userName} ${userName}</h6>`;
+    //        str += `<span> ${userName}</span>`;
+    //        document.getElementById("user_ph").innerHTML = str;
+    //}
 
     function renderUser(user) { //render user into text box
-            str = `<h6> ${user.FirstName} ${user.LastName}</h6>`;
-            str += `<span> ${user.Position}</span>`;
-            document.getElementById("user_ph").innerHTML = str;
-    }
+         
+            console.log(user.firstName);
+            let str = `<p>Hello ${user.firstName}</p>`;
+            str += `<input type="button" class="btn login" value="Update Details" onclick="updateDetalies()" style="width:auto;">`;
+            document.getElementById("user_ph").innerHTML += str;
+     }
+
 
 
     function clearStorage() {
@@ -152,9 +163,11 @@
                     </a><!-- End Profile Iamge Icon -->
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu profile">
-                        <li class="dropdown-header" id-="user_ph">
-                            <h6>ארז קריסי</h6>
-                            <span>מנהל מחלקת מערכות מידע</span>
+                        <li class="dropdown-header" >
+                            <div id-="user_ph">
+                                <h6>ארז קריסי</h6>
+                                <span>מנהל מחלקת מערכות מידע</span>
+                            </div>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
