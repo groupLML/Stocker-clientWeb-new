@@ -44,8 +44,7 @@
             user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
             renderUser(user);
 
-            GetPullOrders();
-            PullOrdersList = [];
+            /*GetPullOrders();*/
         })
 
         function renderUser(user) { //render active user
@@ -56,78 +55,19 @@
             document.getElementById("user_ph2").innerHTML += str;
         }
 
-        function GetPullOrders() {
-            ajaxCall("GET", apiPullOrders, "", getPOSCB, getPOECB);
-        }
+        //function GetPullOrders() {
+        //    ajaxCall("GET", apiPullOrders, "", getPOSCB, getPOECB);
+        //}
 
-        function getPOSCB(data) {
-            console.log(data);
-            PullOrdersList = data;
-            DataTableRender(data);
-        }
+        //function getPOSCB(data) {
+        //    console.log(data);
+        //    PullOrdersList = data;
+        //    DataTableRender(data);
+        //}
 
-        function getPOECB(err) {
-            console.log(err);
-        }
-
-        function DataTableRender(ordersData) {
-
-            let ordersArray = [];
-            for (var i = 0; i < ordersData.length; i++) {
-                //******format dd/mm/yyyy --> need to fix the sort
-                //var date = new Date(ordersData[i].orderDate);
-                //var formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-                //ordersData[i].orderDate = formattedDate;
-
-                //******format dd.mm.yyyy --> need to fix the sort
-                //var date = new Date(ordersData[i].orderDate);
-                //ordersData[i].orderDate = date.toLocaleDateString();
-
-                var date = new Date(ordersData[i].orderDate); // המרה לתאריך
-                ordersData[i].orderDate = date.toISOString().slice(0, 10); //yyyy-mm-dd פורמט מבוקש
-
-                ordersData[i].orderTime = ordersData[i].orderTime.slice(0, 5); //hh:mm פורמט מבוקש
-
-                ordersArray.push(ordersData[i]);
-            }
-            try {
-                tbl = $('#Table').DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
-                    },
-                    data: ordersArray,
-                    pageLength: 5,
-                    columns: [
-                        { data: "orderId" },
-                        { data: "orderDate" },
-                        { data: "orderTime" },
-                        { data: "depName" },
-                        { data: "nurseName" },
-                        { data: "status" }
-                        //{
-                        //    data: "isActive",
-                        //    render: function (data, type, row, meta) {
-                        //        if (data == true)
-                        //            return `<input onchange="updateUser('${row.email}')"  type="checkbox" checked/>`;
-                        //        else
-                        //            return `<input onchange="updateUser('${row.email}')" type="checkbox"/>`;
-                        //    }
-                        //}
-                    ],
-                });
-            }
-
-            catch (err) {
-                alert(err);
-            }
-        }
-
-        $('#Table').on('click', 'tbody tr', function () {
-            // This function will be called when a row is clicked
-            // `this` will refer to the row that was clicked
-            console.log('Row clicked:', this);
-        });
-
+        //function getPOECB(err) {
+        //    console.log(err);
+        //}
     </script>
 </head>
 
@@ -221,20 +161,7 @@
         </div><!-- End Page Title -->
         <div class="card">
             <div class="card-body">
-                <!-- Table with stripped rows table-striped-->
-                <table class="table hover table-striped-custom " id="Table" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>תאריך</th>
-                            <th>שעה</th>
-                            <th>שם מחלקה</th>
-                            <th>יוצר ההזמנה</th>
-                            <th>סטטוס</th>
-                        </tr>
-                    </thead>
-                </table>
-                <!-- End Table with stripped rows -->
+               
             </div>
         </div>
     </main><!-- End #main -->

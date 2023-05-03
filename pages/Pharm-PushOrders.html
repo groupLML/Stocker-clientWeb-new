@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Stocker - pull orders</title>
+    <title>Stocker - push orders</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -39,13 +39,13 @@
 
     <script>
         $(document).ready(function () {
-            apiPullOrders = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetPullOrdersPharm";
+            apiPushOrders = "https://proj.ruppin.ac.il/cgroup36/prod/api/PushOrder/GetPushOrdersPharm";
 
             user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
             renderUser(user);
 
-            GetPullOrders();
-            PullOrdersList = [];
+            GetPushOrders();
+            PushOrdersList = [];
         })
 
         function renderUser(user) { //render active user
@@ -56,13 +56,13 @@
             document.getElementById("user_ph2").innerHTML += str;
         }
 
-        function GetPullOrders() {
-            ajaxCall("GET", apiPullOrders, "", getPOSCB, getPOECB);
+        function GetPushOrders() {
+            ajaxCall("GET", apiPushOrders, "", getPOSCB, getPOECB);
         }
 
         function getPOSCB(data) {
             console.log(data);
-            PullOrdersList = data;
+            PushOrdersList = data;
             DataTableRender(data);
         }
 
@@ -102,7 +102,7 @@
                         { data: "orderDate" },
                         { data: "orderTime" },
                         { data: "depName" },
-                        { data: "nurseName" },
+                        { data: "pharmName" },
                         { data: "status" }
                         //{
                         //    data: "isActive",
@@ -121,12 +121,6 @@
                 alert(err);
             }
         }
-
-        $('#Table').on('click', 'tbody tr', function () {
-            // This function will be called when a row is clicked
-            // `this` will refer to the row that was clicked
-            console.log('Row clicked:', this);
-        });
 
     </script>
 </head>
@@ -217,7 +211,7 @@
 
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>הזמנות משיכה</h1>
+            <h1>הזמנות דחיפה</h1>
         </div><!-- End Page Title -->
         <div class="card">
             <div class="card-body">
