@@ -64,7 +64,7 @@
             }
 
             try {
-                tbl = $('#Table').DataTable({
+                tbl = $('#DepsTable').DataTable({
                     "language": { "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json" },
                     data: deps,
                     pageLength: 7,
@@ -197,9 +197,9 @@
 
                     <div class="card">
                         <div class="card-body">
-                            <br/>
-                            <!-- Table with stripped rows -->
-                            <table class="table table-striped" id="Table" style="width:100%">
+                            <br />
+                            <!-- Table with stripped rows table-striped-->
+                            <table class="table hover table-striped-custom " id="DepsTable" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>#</th>

@@ -153,9 +153,9 @@ img {
 
 
 /*table hover color*/
-.table .dataTable tbody tr:hover,
-.table .dataTable tbody tr.striped:hover {
-    background-color: #EBEBEB;
+table#Table.dataTable tbody tr:hover,
+table#Table.dataTable tbody tr:hover > .sorting_1 {
+    background-color: #EBEBEB !important;
 }
 
 /*table style*/
@@ -177,5 +177,15 @@ tbody, td, tfoot, th, thead, tr {
 }
 
 .table {
-    font-size: 15px;
+    font-size: 15px;}
+.table-striped-custom tbody tr:nth-child(odd) {
+    background-color: #F4F8FE; /* define the background color for odd rows */
+}
+
+.table-striped-custom tbody tr:nth-child(even) {
+    background-color: #FFF; /* define the background color for even rows */
+}
+
+.dataTables_wrapper > table.dataTable {
+    --bs-table-hover-bg:blue;
 }
