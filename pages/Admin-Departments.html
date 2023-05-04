@@ -39,23 +39,30 @@
 
     <script>
 
-    $(document).ready(function () {
+        $(document).ready(function () {
 
             api = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
 
-            user= JSON.parse(sessionStorage.getItem("User")); //get user from storage
+            user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
             renderUser(user);
-         
+
             deps = [];
             GetDepartments();
-    })
+
+            $('#Table').on('click', 'tbody tr', function () {// This function will be called when a row is clicked
+                var depStr = $(this).find('td:first').text();
+                var depId = parseInt(depStr);
+                sessionStorage.setItem('Department', depId);
+                window.location.href = 'Admin-DepForm.html';
+            });
+        })
 
 
-    function GetDepartments() {
+        function GetDepartments() {
             ajaxCall("GET", api, "", successGetDepsCBF, errorGetDepsCBF);
-}
+        }
 
-    function successGetDepsCBF(data) {
+        function successGetDepsCBF(data) {
             console.log(data);
 
             for (var i = 0; i < data.length; i++) {
@@ -65,7 +72,7 @@
 
             try {
                 tbl = $('#Table').DataTable({
-                    "language": { "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json" },
+                    "language": { "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json" },
                     data: deps,
                     pageLength: 5,
                     columns: [
@@ -79,24 +86,24 @@
             catch (err) {
                 alert(err);
             }
-    }
+        }
 
-    function errorGetDepsCBF(err) {
+        function errorGetDepsCBF(err) {
             console.log(err);
-    }
+        }
 
-    function renderUser(user) { //render active user
+        function renderUser(user) { //render active user
             let str = `<h6> ${user.firstName} ${user.lastName}</h6>`;
             str += `<span> ${user.position}</span>`;
             document.getElementById("user_ph1").innerHTML += str;
             str = `<span>שלום, ${user.firstName}</span>`;
             document.getElementById("user_ph2").innerHTML += str;
-     }
+        }
 
 
-    function clearStorage() {
+        function clearStorage() {
             sessionStorage.clear();
-    }
+        }
 
     </script>
 
@@ -108,7 +115,7 @@
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="index.html" class="logo d-flex align-items-center">
+            <a href="Admin-Departments.html" class="logo d-flex align-items-center">
                 <span class="d-none d-xl-block">St<img class="header-logo" src="../assets/img/logo.png" alt="">cker</span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -133,7 +140,7 @@
                 <li class="nav-item dropdown pe-3">
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown" id="user_ph2">
                         <span class="d-none d-md-block dropdown-toggle ps-2"></span>
-                       
+
                     </a><!-- End Profile Iamge Icon -->
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu profile">
@@ -153,7 +160,6 @@
             </ul>
         </nav><!-- End Icons Navigation -->
     </header><!-- End Header -->
-
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
@@ -219,7 +225,6 @@
         </section>
 
     </main><!-- End #main -->
-
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
         <div class="copyright">

@@ -47,10 +47,33 @@
             renderUser(user);
 
             depTypes = [];
+            depId = JSON.parse(sessionStorage.getItem("Department")); //get DepID from storage
             GetDepartments();
 
-            $("#DepForm").submit(postDepToServer); //validation
+             $("#DepForm").submit(postDepToServer); //validation
+            //$("#DepForm").submit(function () {
+            //    if (sessionStorage.getItem('Department') !== null)
+            //        updateDepInServer();
+            //     else 
+            //        postDepToServer();
+            //});
+
+
+            $(window).on('unload', function () {
+                var item = sessionStorage.getItem('Department');
+                if (item !== null) {
+                    sessionStorage.removeItem('Department');
+                }
+            });
         })
+
+        function renderUser(user) { //render active user
+            let str = `<h6> ${user.firstName} ${user.lastName}</h6>`;
+            str += `<span> ${user.position}</span>`;
+            document.getElementById("user_ph1").innerHTML += str;
+            str = `<span>שלום, ${user.firstName}</span>`;
+            document.getElementById("user_ph2").innerHTML += str;
+        }
 
         function GetDepartments() {
             ajaxCall("GET", api, "", successGetDepsCBF, errorGetDepsCBF);
@@ -60,8 +83,10 @@
             console.log(data);
 
             for (var i = 0; i < data.length; i++) {
-                if (!depTypes.includes(data[i]['depType']) && data[i]['depType'] != 'מערכות מידע' && data[i]['depType'] != 'בית מרקחת')
+                if (!depTypes.includes(data[i]['depType']))
                     depTypes.push(data[i]['depType']);
+                if (depId != null && depId == data[i]['depId'])
+                    renderDepDetails(data[i]);
             }
             renderDepTypes(depTypes);
         }
@@ -76,6 +101,12 @@
                 str += `<option value="${typesArr[i]}">`;
             }
             document.getElementById("depTypes").innerHTML = str;
+        }
+
+        function renderDepDetails(dep) { 
+            $("#depNameTB").val(dep.depName);
+            $("#depPhoneTB").val(dep.depPhone);
+            $("#depTypeTB").val(dep.depType);
         }
 
 
@@ -99,8 +130,10 @@
         function successPostDCBF(data) {
             console.log(data);
 
-            if (data == true) 
+            if (data == true) {
                 alert("In Success");
+                window.location.href = 'Admin-Departments.html';
+            }
             else
                 alert("Error");
         }
@@ -109,13 +142,36 @@
             console.log(err);
         }
 
+        function updateDepInServer() { 
+            const depName = $("#depNameTB").val();
+            const depPhone = $("#depPhoneTB").val().replace(/[^\d]/g, '');
+            const depType = $("#depTypeTB").val();
 
-        function renderUser(user) { //render active user
-            let str = `<h6> ${user.firstName} ${user.lastName}</h6>`;
-            str += `<span> ${user.position}</span>`;
-            document.getElementById("user_ph1").innerHTML += str;
-            str = `<span>שלום, ${user.firstName}</span>`;
-            document.getElementById("user_ph2").innerHTML += str;
+            const dep = {
+                DepId: depId,
+                DepName: depName,
+                DepPhone: depPhone,
+                DepType: depType
+            };
+
+            ajaxCall("PUT", api +"/"+ depId, JSON.stringify(dep), successPutDCBF, errorPutDCBF);
+
+            return false;
+        }
+
+        function successPutDCBF(data) {
+            console.log(data);
+
+            if (data == true) {
+                alert("In Success");
+                window.location.href = 'Admin-Departments.html';
+            }
+            else
+                alert("Error");
+        }
+
+        function errorPutDCBF(err) {
+            console.log(err);
         }
 
 
@@ -133,7 +189,7 @@
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="index.html" class="logo d-flex align-items-center">
+            <a href="Admin-Departments.html" class="logo d-flex align-items-center">
                 <span class="d-none d-xl-block">St<img class="header-logo" src="../assets/img/logo.png" alt="">cker</span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -185,7 +241,8 @@
 
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="Admin-Departments.html">
-                    <span>מחלקות</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <span>מחלקות</span>
+                    <i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>

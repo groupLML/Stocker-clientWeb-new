@@ -53,18 +53,18 @@
 
             ajaxCall("POST", apiUser, JSON.stringify(user), successLoginCBF, errorLoginCBF);
 
+
             return false;
         }
 
         function successLoginCBF(data) {
-
             console.log(data);
-            if (data.username != null) {
 
+            if (data.username != null) {
                 sessionStorage.setItem("User", JSON.stringify(data)); //add to storage
 
                 if (data.jobType == 'A')
-                    window.location.href = `Admin-Deparments.html`;
+                    window.location.href = `Admin-Departments.html`;
                 else if (data.jobType == 'M')
                     window.location.href = `Manager.html`;
                 else
