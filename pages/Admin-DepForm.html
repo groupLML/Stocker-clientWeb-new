@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Stocker - pageNameHere</title>
+    <title>Stocker - Form</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -46,13 +46,43 @@
             user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
             renderUser(user);
 
+            depTypes = [];
+            GetDepartments();
+
             $("#DepForm").submit(postDepToServer); //validation
         })
 
+        function GetDepartments() {
+            ajaxCall("GET", api, "", successGetDepsCBF, errorGetDepsCBF);
+        }
+
+        function successGetDepsCBF(data) {
+            console.log(data);
+
+            for (var i = 0; i < data.length; i++) {
+                if (!depTypes.includes(data[i]['depType']) && data[i]['depType'] != 'מערכות מידע' && data[i]['depType'] != 'בית מרקחת')
+                    depTypes.push(data[i]['depType']);
+            }
+            renderDepTypes(depTypes);
+        }
+
+        function errorGetDepsCBF(err) {
+            console.log(err);
+        }
+
+        function renderDepTypes(typesArr) { 
+            let str = `<option value="">`;
+            for (var i = 0; i < typesArr.length; i++) {
+                str += `<option value="${typesArr[i]}">`;
+            }
+            document.getElementById("depTypes").innerHTML = str;
+        }
+
+
         function postDepToServer() { //post to server
-            const depName = $("#depNameTBF").val();
-            const depPhone = $("#depPhoneTBF").val();
-            const depType = $("#depTypeTBF").val();
+            const depName = $("#depNameTB").val();
+            const depPhone = $("#depPhoneTB").val().replace(/[^\d]/g, '');
+            const depType = $("#depTypeTB").val();
 
             const dep = {
                 DepId: 0,
@@ -78,6 +108,7 @@
         function errorPostDCBF(err) {
             console.log(err);
         }
+
 
         function renderUser(user) { //render active user
             let str = `<h6> ${user.firstName} ${user.lastName}</h6>`;
@@ -151,17 +182,34 @@
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
+
             <li class="nav-item">
-                <a class="nav-link collapsed" href="Admin-Departments.html">
-                    <span>מחלקות</span>
+                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="Admin-Departments.html">
+                    <span>מחלקות</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
+                <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-circle"></i><span>טופס מחלקה</span>
+                        </a>
+                    </li>
+                </ul>
             </li><!-- End Departments Nav -->
+
             <li class="nav-item">
-                <a class="nav-link collapsed" href="Admin-Users.html">
-                    <span>משתמשים</span>
+                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="Admin-Users.html">
+                    <span>משתמשים</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End Users Nav -->
-        </ul><!-- End DepsNorm Nav -->
+                <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="Admin-UserForm.html">
+                            <i class="bi bi-circle"></i><span>טופס משתמש</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Departments Nav -->
+
+        </ul><!-- End Nav -->
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
@@ -175,61 +223,33 @@
 
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Horizontal Form</h5>
+                            <h5 class="card-title">טופס מחלקה</h5>
 
-                            <!-- Horizontal Form -->
-                            <form>
-                                <div class="row mb-3">
-                                    <label for="inputEmail3" class="col-sm-2 col-form-label">Your Name</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="inputText">
+                            <!-- Form -->
+                            <form id="DepForm">
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">שם המחלקה</label>
+                                    <div class="col-sm-10 input-group has-validation">
+                                        <input type="text" class="form-control" id="depNameTB" maxlength="30" required>
+                                        <div class="invalid-feedback">מספר הטלפון צריך להיות בעל 9 ספרות</div>
                                     </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
-                                    <div class="col-sm-10">
-                                        <input type="email" class="form-control" id="inputEmail">
+                                <div class="row mb-4">
+                                    <label for="Phone" class="col-sm-3 col-form-label">טלפון המחלקה</label>
+                                    <div class="col-sm-10 input-group has-validation">
+                                        <input name="phone" type="text" class="form-control" id="depPhoneTB" pattern="^0\d[ ,.-]?\d{7}$" required>
+                                        <div class="invalid-feedback">מספר הטלפון צריך להיות בעל 9 ספרות</div>
                                     </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">סוג המחלקה</label>
                                     <div class="col-sm-10">
-                                        <input type="password" class="form-control" id="inputPassword">
+                                        <input list="depTypes" id="depTypeTB" name="depTypes" class="form-select" aria-label="Default select example" required>
+                                        <datalist id="depTypes">
+                                        </datalist>
                                     </div>
                                 </div>
-                                <fieldset class="row mb-3">
-                                    <legend class="col-form-label col-sm-2 pt-0">Radios</legend>
-                                    <div class="col-sm-10">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="option1" checked>
-                                            <label class="form-check-label" for="gridRadios1">
-                                                First radio
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
-                                            <label class="form-check-label" for="gridRadios2">
-                                                Second radio
-                                            </label>
-                                        </div>
-                                        <div class="form-check disabled">
-                                            <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios3" value="option3" disabled>
-                                            <label class="form-check-label" for="gridRadios3">
-                                                Third disabled radio
-                                            </label>
-                                        </div>
-                                    </div>
-                                </fieldset>
-                                <div class="row mb-3">
-                                    <div class="col-sm-10 offset-sm-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="gridCheck1">
-                                            <label class="form-check-label" for="gridCheck1">
-                                                Example checkbox
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
+                               <br/>
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                     <button type="reset" class="btn btn-secondary">Reset</button>
@@ -238,7 +258,6 @@
 
                         </div>
                     </div>
-
                 </div>
             </div>
         </section>

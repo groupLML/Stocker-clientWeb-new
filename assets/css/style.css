@@ -237,7 +237,7 @@ h6 {
     font-size: 18px;
     font-weight: 500;
     color: #012970;
-    font-family: "Poppins", sans-serif;
+    font-family: "Open Sans", sans-serif;
 }
 
     .card-title span {
@@ -732,7 +732,7 @@ h6 {
         .sidebar-nav .nav-content a {
             display: flex;
             align-items: center;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
             color: #012970;
             transition: 0.3;
