@@ -46,6 +46,23 @@
 
             GetPushOrders();
             PushOrdersList = [];
+
+            $('#Table').on('click', 'tbody tr', function () {// This function will be called when a row is clicked
+                // Create an array for the column names of the table
+                var columnNames = ["orderId", "orderDate", "orderTime", "depName", "nurseName", "status"];
+
+                var orderData = {};// Create an empty object to store the row dat
+
+                $(this).find('td').each(function (index, cell) {// Loop through each cell in the clicked row
+                    orderData[columnNames[index]] = $(cell).text();// Get the cell value and add it to the orderData object
+                });
+
+                var orderDataJson = JSON.stringify(orderData);// Convert the orderData object to a JSON string
+
+                sessionStorage.setItem('Order', orderDataJson);// Add the rowDataJson to the session storage
+
+                window.location.href = 'Pharm-PushOrder.html';// Navigate to PullOrder page
+            });
         })
 
         function renderUser(user) { //render active user
@@ -104,15 +121,6 @@
                         { data: "depName" },
                         { data: "pharmName" },
                         { data: "status" }
-                        //{
-                        //    data: "isActive",
-                        //    render: function (data, type, row, meta) {
-                        //        if (data == true)
-                        //            return `<input onchange="updateUser('${row.email}')"  type="checkbox" checked/>`;
-                        //        else
-                        //            return `<input onchange="updateUser('${row.email}')" type="checkbox"/>`;
-                        //    }
-                        //}
                     ],
                 });
             }
