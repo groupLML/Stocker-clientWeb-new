@@ -39,15 +39,26 @@
 
     <script>
         $(document).ready(function () {
-            /*apiPullOrders = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetPullOrdersPharm";*/
+            apiPullOrderDetails = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetOrderDetails/orderId/";
 
             user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
             renderUser(user);
 
             order = JSON.parse(sessionStorage.getItem("Order")); //get order from storage
             titleRender();
+            orderDataRender();
 
-            /*GetPullOrders();*/
+            GetPullOrderDetails();
+            MedsList = [];
+
+            const statusSpan = document.querySelector(".badge");
+            if (order.status === "בהמתנה") {
+                statusSpan.classList.add("bg-danger");
+            } else if (order.status === "בטיפול") {
+                statusSpan.classList.add("bg-warning");
+            } else {
+                statusSpan.classList.add("bg-success");
+            }
         })
 
         function renderUser(user) { //render active user
@@ -59,7 +70,8 @@
         }
 
         function titleRender() {
-            let str = `<h1>הזמנה מספר ${order.orderId}</h1>`
+            let str = `<div class="row"><h1>הזמנה מספר ${order.orderId}</h1>`
+            str += `<p class="orderDate">${order.orderDate} ${order.orderTime}</p></div>`
             str += `<nav>`
             str += `<ol class="breadcrumb">`
             str += `<li class="breadcrumb-item">הזמנה מספר ${order.orderId}</li>`
@@ -69,19 +81,58 @@
             document.getElementById("title_ph").innerHTML = str;
         }
 
-        //function GetPullOrders() {
-        //    ajaxCall("GET", apiPullOrders, "", getPOSCB, getPOECB);
-        //}
+        function orderDataRender() {
+            let str = `<p>שם מחלקה: ${order.depName}</p>`
+            str += `<p>יוצר ההזמנה: ${order.nurseName}</p>`
+            str += `<span class="badge">סטטוס: ${order.status}</span>`
+            str += `<p>פירוט הזמנה: </p>`
 
-        //function getPOSCB(data) {
-        //    console.log(data);
-        //    PullOrdersList = data;
-        //    DataTableRender(data);
-        //}
+            document.getElementById("orderData_ph").innerHTML = str;
+        }
 
-        //function getPOECB(err) {
-        //    console.log(err);
-        //}
+        function GetPullOrderDetails() {
+            const orderId = order.orderId;
+            ajaxCall("GET", apiPullOrderDetails + orderId, "", getOrderDetailsSCB, getOrderDetailsECB);
+        }
+
+        function getOrderDetailsSCB(data) {
+            console.log(data);
+            MedsList = data;
+            DataTableRender(data);
+        }
+
+        function getOrderDetailsECB(err) {
+            console.log(err);
+        }
+
+        function DataTableRender(medsData) {
+
+            let medsArray = [];
+            for (var i = 0; i < medsData.length; i++) {
+
+                medsArray.push(medsData[i]);
+            }
+            try {
+                tbl = $('#Table').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
+                    },
+                    data: medsArray,
+                    pageLength: 5,
+                    columns: [
+                        { data: "medId" },
+                        { data: "medName" },
+                        { data: "poQty" },
+                        { data: "supQty" }
+                    ],
+                });
+            }
+
+            catch (err) {
+                alert(err);
+            }
+        }
+
     </script>
 </head>
 
@@ -172,15 +223,21 @@
     <main id="main" class="main">
         <div id="title_ph" class="pagetitle">
         </div><!-- End Page Title -->
-        <!--<nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">כותרת</li>
-                <li class="breadcrumb-item active"><a href="index.html">בית</a></li>
-            </ol>
-        </nav>--><!-- End breadcrumb -->
         <div class="card">
             <div class="card-body">
-
+                <div id="orderData_ph" class="orderData"></div>
+                <!-- Table with stripped rows table-striped-->
+                <table class="table hover table-striped-custom " id="Table" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>שם תרופה</th>
+                            <th>כמות נדרשת</th>
+                            <th>כמות שהונפקה</th>
+                        </tr>
+                    </thead>
+                </table>
+                <!-- End Table with stripped rows -->
             </div>
         </div>
     </main><!-- End #main -->
