@@ -46,7 +46,24 @@
 
             GetPullOrders();
             PullOrdersList = [];
-        })
+
+            $('#Table').on('click', 'tbody tr', function () {// This function will be called when a row is clicked
+                // Create an array for the column names of the table
+                var columnNames = ["orderId", "orderDate", "orderTime", "depName", "nurseName", "status"];
+
+                var orderData = {};// Create an empty object to store the row dat
+
+                $(this).find('td').each(function (index, cell) {// Loop through each cell in the clicked row
+                    orderData[columnNames[index]] = $(cell).text();// Get the cell value and add it to the orderData object
+                });
+
+                var orderDataJson = JSON.stringify(orderData);// Convert the orderData object to a JSON string
+
+                sessionStorage.setItem('Order', orderDataJson);// Add the rowDataJson to the session storage
+
+                window.location.href = 'Pharm-PullOrder.html';// Navigate to PullOrder page
+            });
+        });
 
         function renderUser(user) { //render active user
             let str = `<h6> ${user.firstName} ${user.lastName}</h6>`;
@@ -121,12 +138,6 @@
                 alert(err);
             }
         }
-
-        $('#Table').on('click', 'tbody tr', function () {
-            // This function will be called when a row is clicked
-            // `this` will refer to the row that was clicked
-            console.log('Row clicked:', this);
-        });
 
     </script>
 </head>

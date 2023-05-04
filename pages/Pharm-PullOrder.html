@@ -39,10 +39,13 @@
 
     <script>
         $(document).ready(function () {
-            apiPullOrders = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetPullOrdersPharm";
+            /*apiPullOrders = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetPullOrdersPharm";*/
 
             user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
             renderUser(user);
+
+            order = JSON.parse(sessionStorage.getItem("Order")); //get order from storage
+            titleRender();
 
             /*GetPullOrders();*/
         })
@@ -53,6 +56,17 @@
             document.getElementById("user_ph1").innerHTML += str;
             str = `<span>שלום, ${user.firstName}</span>`;
             document.getElementById("user_ph2").innerHTML += str;
+        }
+
+        function titleRender() {
+            let str = `<h1>הזמנה מספר ${order.orderId}</h1>`
+            str += `<nav>`
+            str += `<ol class="breadcrumb">`
+            str += `<li class="breadcrumb-item">הזמנה מספר ${order.orderId}</li>`
+            str += `<li class="breadcrumb-item active"><a href="Pharm-PullOrders.html">הזמנות משיכה</a></li>`
+            str += `</ol>`
+            str += `</nav>`
+            document.getElementById("title_ph").innerHTML = str;
         }
 
         //function GetPullOrders() {
@@ -156,12 +170,17 @@
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
-        <div class="pagetitle">
-            <h1>הזמנות משיכה</h1>
+        <div id="title_ph" class="pagetitle">
         </div><!-- End Page Title -->
+        <!--<nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">כותרת</li>
+                <li class="breadcrumb-item active"><a href="index.html">בית</a></li>
+            </ol>
+        </nav>--><!-- End breadcrumb -->
         <div class="card">
             <div class="card-body">
-               
+
             </div>
         </div>
     </main><!-- End #main -->
