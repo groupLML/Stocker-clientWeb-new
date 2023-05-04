@@ -157,6 +157,7 @@ img {
 /*table style*/
 tbody, td, tfoot, th, thead, tr {
     border-style: none;
+    cursor: pointer;
 }
 
 .dataTables_wrapper > table.dataTable {
@@ -215,3 +216,8 @@ tbody, td, tfoot, th, thead, tr {
     box-shadow: none;
     cursor: not-allowed;
 }
+
+.form-select.is-valid:not([multiple]):not([size]), .form-select.is-valid:not([multiple])[size="1"], .was-validated .form-select:valid:not([multiple]):not([size]), .was-validated .form-select:valid:not([multiple])[size="1"] {
+    background-position: right 0.75rem center,center left 0.75rem;
+}
+
