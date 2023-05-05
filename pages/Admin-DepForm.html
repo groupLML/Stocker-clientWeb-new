@@ -50,11 +50,11 @@
             depId = JSON.parse(sessionStorage.getItem("Department")); //get DepID from storage
             GetDepartments();
 
-             $("#DepForm").submit(postDepToServer); //validation
+            $("#DepForm").submit(postDepToServer); //validation
             //$("#DepForm").submit(function () {
             //    if (sessionStorage.getItem('Department') !== null)
             //        updateDepInServer();
-            //     else 
+            //     else
             //        postDepToServer();
             //});
 
@@ -95,7 +95,7 @@
             console.log(err);
         }
 
-        function renderDepTypes(typesArr) { 
+        function renderDepTypes(typesArr) {
             let str = `<option value="">`;
             for (var i = 0; i < typesArr.length; i++) {
                 str += `<option value="${typesArr[i]}">`;
@@ -103,7 +103,7 @@
             document.getElementById("depTypes").innerHTML = str;
         }
 
-        function renderDepDetails(dep) { 
+        function renderDepDetails(dep) {
             $("#depNameTB").val(dep.depName);
             $("#depPhoneTB").val(dep.depPhone);
             $("#depTypeTB").val(dep.depType);
@@ -142,7 +142,7 @@
             console.log(err);
         }
 
-        function updateDepInServer() { 
+        function updateDepInServer() {
             const depName = $("#depNameTB").val();
             const depPhone = $("#depPhoneTB").val().replace(/[^\d]/g, '');
             const depType = $("#depTypeTB").val();
@@ -154,7 +154,7 @@
                 DepType: depType
             };
 
-            ajaxCall("PUT", api +"/"+ depId, JSON.stringify(dep), successPutDCBF, errorPutDCBF);
+            ajaxCall("PUT", api + "/" + depId, JSON.stringify(dep), successPutDCBF, errorPutDCBF);
 
             return false;
         }
@@ -234,7 +234,6 @@
             </ul>
         </nav><!-- End Icons Navigation -->
     </header><!-- End Header -->
-
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
@@ -276,12 +275,10 @@
 
         <section class="section">
             <div class="row">
-                <div class="col-lg-6">
-
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">טופס מחלקה</h5>
-
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">טופס מחלקה</h5>
+                        <div class="col-lg-6">
                             <!-- Form -->
                             <form id="DepForm" class="needs-validation" novalidate>
                                 <div class="row mb-4">
@@ -298,15 +295,43 @@
                                         <div class="invalid-feedback">מספר הטלפון צריך להיות בעל 9 ספרות</div>
                                     </div>
                                 </div>
-                
+
                                 <div class="row mb-4">
-                                    <label class="col-sm-3 col-form-label">סוג המחלקה</label>
+                                    <!--<label class="col-sm-3 col-form-label">סוג המחלקה</label>
                                     <div class="col-sm-10">
                                         <input list="depTypes" id="depTypeTB" name="depTypes" class="form-select" aria-label="Default select example" required>
                                         <datalist id="depTypes" style="overflow: auto">
                                         </datalist>
                                         <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
-                                    </div>
+                                    </div>-->
+                                    <!--<label for="depTypeTB" class="col-sm-3 col-form-label">סוג המחלקה</label>
+                                    <div class="col-sm-10">
+                                        <div class="select-wrapper">
+                                            <input list="depTypes" id="depTypeTB" name="depTypes" class="form-select" aria-label="Default select example" required="">
+                                            <datalist id="depTypes">
+                                                <option value=""></option>
+                                                <option value="מערכות מידע"></option>
+                                                <option value="בית מרקחת"></option>
+                                                <option value="כירורגיה"></option>
+                                                <option value="אורתופדיה"></option>
+                                                <option value="פנימית"></option>
+                                            </datalist>
+                                        </div>
+                                        <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
+                                    </div>-->
+                                    <label for="browser">browser:</label>
+                                    <input list="browserdata" id="browser" name="browser" size="50" autocomplete="off" />
+                                    <datalist id="browserdata">
+                                        <option>Brave</option>
+                                        <option>Chrome</option>
+                                        <option>Edge</option>
+                                        <option>Firefox</option>
+                                        <option>Internet Explorer</option>
+                                        <option>Opera</option>
+                                        <option>Safari</option>
+                                        <option>Vivaldi</option>
+                                        <option>other</option>
+                                    </datalist>
                                 </div>
                                 <br />
                                 <div class="text-center">
@@ -314,7 +339,6 @@
                                     <button type="reset" class="btn btn-secondary">נקה</button>
                                 </div>
                             </form><!-- End Form -->
-
                         </div>
                     </div>
                 </div>
@@ -322,7 +346,6 @@
         </section>
 
     </main><!-- End #main -->
-
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
         <div class="copyright">

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Stocker - pull order</title>
+    <title>Stocker - push order</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -39,7 +39,7 @@
 
     <script>
         $(document).ready(function () {
-            apiPullOrderDetails = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetOrderDetails/orderId/";
+            apiPushOrderDetails = "https://proj.ruppin.ac.il/cgroup36/prod/api/PushOrder/GetOrderDetails/orderId/";
 
             user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
             renderUser(user);
@@ -48,15 +48,12 @@
             headerRender();
             orderDataRender();
 
-            GetPullOrderDetails();
+            GetPushOrderDetails();
             MedsList = [];
 
             const statusSpan = document.querySelector(".badge");
-            if (order.status === "בהמתנה") {
+            if (order.status === "שוריין") {
                 statusSpan.classList.add("bg-danger");
-            }
-            else if (order.status === "בטיפול") {
-                statusSpan.classList.add("bg-warning");
             }
             else {
                 statusSpan.classList.add("bg-success");
@@ -76,7 +73,7 @@
             titleStr += `<nav>`
             titleStr += `<ol class="breadcrumb">`
             titleStr += `<li class="breadcrumb-item">הזמנה מספר ${order.orderId}</li>`
-            titleStr += `<li class="breadcrumb-item active"><a href="Pharm-PullOrders.html">הזמנות משיכה</a></li>`
+            titleStr += `<li class="breadcrumb-item active"><a href="Pharm-PushOrders.html">הזמנות דחיפה</a></li>`
             titleStr += `</ol>`
             titleStr += `</nav>`
             document.getElementById("title_ph").innerHTML = titleStr;
@@ -95,9 +92,9 @@
             document.getElementById("orderData_ph").innerHTML = str;
         }
 
-        function GetPullOrderDetails() {
+        function GetPushOrderDetails() {
             const orderId = order.orderId;
-            ajaxCall("GET", apiPullOrderDetails + orderId, "", getOrderDetailsSCB, getOrderDetailsECB);
+            ajaxCall("GET", apiPushOrderDetails + orderId, "", getOrderDetailsSCB, getOrderDetailsECB);
         }
 
         function getOrderDetailsSCB(data) {
@@ -141,10 +138,6 @@
         function clearStorage() {
             sessionStorage.clear();
         }
-
-        window.addEventListener('beforeunload', function () {
-            sessionStorage.removeItem('Order');
-        });
 
     </script>
 </head>
