@@ -46,15 +46,18 @@
             const username = $("#usernameTB").val();
             const password = $("#passwordTB").val();
 
-            const user = {
-                Username: username,
-                Password: password
-            };
+            if (username == "" || password == "")
+                return;
+            else {
+                const user = {
+                    Username: username,
+                    Password: password
+                };
 
-            ajaxCall("POST", apiUser, JSON.stringify(user), successLoginCBF, errorLoginCBF);
+                ajaxCall("POST", apiUser, JSON.stringify(user), successLoginCBF, errorLoginCBF);
 
-
-            return false;
+                return false;
+            }
         }
 
         function successLoginCBF(data) {
@@ -96,38 +99,39 @@
 
                             <div class="card mb-3">
                                 <div class="card-body">
-                                        <div class="pt-4 pb-2"></div>
+                                    <div class="pt-4 pb-2"></div>
 
-                                        <form class="row g-3 needs-validation" id="LoginForm" novalidate>
+                                    <form class="row g-3 needs-validation" id="LoginForm" novalidate>
 
-                                            <div class="col-12">
-                                                <label for="yourUsername" class="form-label">שם משתמש</label>
-                                                <div class="input-group has-validation">
-                                                    <input type="text" name="username" class="form-control" id="usernameTB" maxlength="30" required>
-                                                    <div class="invalid-feedback">הכנס שם משתמש</div>
-                                                </div>
+                                        <div class="col-12">
+                                            <label for="yourUsername" class="form-label">שם משתמש</label>
+                                            <div class="input-group has-validation">
+                                                <input type="text" name="username" class="form-control" id="usernameTB" maxlength="30" required>
+                                                <div class="invalid-feedback">הכנס שם משתמש</div>
                                             </div>
+                                        </div>
 
-                                            <div class="col-12">
-                                                <label for="yourPassword" class="form-label">סיסמה</label>
-                                                <input type="password" name="password" class="form-control" id="passwordTB" maxlength="3" required>
-                                                <div class="invalid-feedback">הכנס סיסמה בעלת 5 תווים</div>
-                                            </div>
+                                        <div class="col-12">
+                                            <label for="yourPassword" class="form-label">סיסמה</label>
+                                            <input type="password" name="password" class="form-control" id="passwordTB" maxlength="3" required>
+                                            <div class="invalid-feedback">הכנס סיסמה בעלת 5 תווים</div>
+                                        </div>
 
-                                            <div class="col-12">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
-                                                    <label class="form-check-label" for="rememberMe">זכור אותי</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <button class="btn btn-primary w-100" type="submit">כניסה</button>
-                                            </div>
-                                            <div class="col-12">
-                                                <p class="small mb-0">יש לך חשבון? <a href="pages-register.html">יצירת חשבון</a></p>
-                                                <!--צריך להחליט מה לעשות עם היצירת חשבון והזכור אותי-->
-                                            </div>
-                                        </form>
+                                        <div class="col-12">
+                                            <!--<div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
+                                                <label class="form-check-label" for="rememberMe">זכור אותי</label>
+                                            </div>-->
+                                        </div>
+
+                                        <div class="col-12">
+                                            <button class="btn btn-primary w-100" type="submit">כניסה</button>
+                                        </div>
+                                        <div class="col-12">
+                                            <p class="small mb-0">יש לך חשבון? <a href="pages-register.html">יצירת חשבון</a></p>
+                                            <!--צריך להחליט מה לעשות עם היצירת חשבון והזכור אותי-->
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
