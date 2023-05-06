@@ -72,6 +72,8 @@
         }
 
         function headerRender() {
+            var time = order.lastUpdate.slice(11, 16); 
+            var date = order.lastUpdate.slice(0, 10);
             let titleStr = `<h1>הזמנה מספר ${order.orderId}</h1>`
             titleStr += `<nav>`
             titleStr += `<ol class="breadcrumb">`
@@ -81,7 +83,7 @@
             titleStr += `</nav>`
             document.getElementById("title_ph").innerHTML = titleStr;
 
-            let orderHeaderStr = `<p class="orderDate">${order.lastUpdate}</p>`
+            let orderHeaderStr = `<p class="orderDate"> ${date} ${time}</p>`
             orderHeaderStr += `<span class="badge orderStatus">סטטוס: ${order.status}</span>`
             document.getElementById("orderHeader").innerHTML = orderHeaderStr;
         }
