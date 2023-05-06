@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Stocker - pull order</title>
+    <title>Stocker - Pharm-DepsInventory</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -33,34 +33,21 @@
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 
-    <!-- datatables -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 
     <script>
+
         $(document).ready(function () {
-            apiPullOrderDetails = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetOrderDetails/orderId/";
+
+            //if (location.hostname === "localhost" || location.hostname === "127.0.0.1")
+            //    apiUser = "https://localhost:7102/api/User/Login";
+            //else
+            //    apiUser = "https://proj.ruppin.ac.il/cgroup36/prod/api/User/Login";
+
+            //$("#LoginForm").submit(Login); //form validation
 
             user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
             renderUser(user);
 
-            order = JSON.parse(sessionStorage.getItem("Order")); //get order from storage
-            headerRender();
-            orderDataRender();
-
-            GetPullOrderDetails();
-            MedsList = [];
-
-            const statusSpan = document.querySelector(".badge");
-            if (order.status === "בהמתנה") {
-                statusSpan.classList.add("bg-danger");
-            }
-            else if (order.status === "בטיפול") {
-                statusSpan.classList.add("bg-warning");
-            }
-            else {
-                statusSpan.classList.add("bg-success");
-            }
         })
 
         function renderUser(user) { //render active user
@@ -71,82 +58,13 @@
             document.getElementById("user_ph2").innerHTML += str;
         }
 
-        function headerRender() {
-            let titleStr = `<h1>הזמנה מספר ${order.orderId}</h1>`
-            titleStr += `<nav>`
-            titleStr += `<ol class="breadcrumb">`
-            titleStr += `<li class="breadcrumb-item">הזמנה מספר ${order.orderId}</li>`
-            titleStr += `<li class="breadcrumb-item active"><a href="Pharm-PullOrders.html">הזמנות משיכה</a></li>`
-            titleStr += `</ol>`
-            titleStr += `</nav>`
-            document.getElementById("title_ph").innerHTML = titleStr;
-
-            let orderHeaderStr = `<p class="orderDate">${order.orderDate} ${order.orderTime}</p>`
-            orderHeaderStr += `<span class="badge orderStatus">סטטוס: ${order.status}</span>`
-            document.getElementById("orderHeader").innerHTML = orderHeaderStr;
-        }
-
-        function orderDataRender() {
-            let str = `<p>שם מחלקה: ${order.depName}</p>`
-            str += `<p>יוצר ההזמנה: ${order.nurseName}</p>`
-
-            str += `<p>פירוט הזמנה: </p>`
-
-            document.getElementById("orderData_ph").innerHTML = str;
-        }
-
-        function GetPullOrderDetails() {
-            const orderId = order.orderId;
-            ajaxCall("GET", apiPullOrderDetails + orderId, "", getOrderDetailsSCB, getOrderDetailsECB);
-        }
-
-        function getOrderDetailsSCB(data) {
-            console.log(data);
-            MedsList = data;
-            DataTableRender(data);
-        }
-
-        function getOrderDetailsECB(err) {
-            console.log(err);
-        }
-
-        function DataTableRender(medsData) {
-
-            let medsArray = [];
-            for (var i = 0; i < medsData.length; i++) {
-
-                medsArray.push(medsData[i]);
-            }
-            try {
-                tbl = $('#Table').DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
-                    },
-                    data: medsArray,
-                    pageLength: 5,
-                    columns: [
-                        { data: "medId" },
-                        { data: "medName" },
-                        { data: "poQty" },
-                        { data: "supQty" }
-                    ],
-                });
-            }
-
-            catch (err) {
-                alert(err);
-            }
-        }
 
         function clearStorage() {
             sessionStorage.clear();
         }
 
-        window.addEventListener('beforeunload', function () {
-            sessionStorage.removeItem('Order');
-        });
-
     </script>
+
 </head>
 
 <body>
@@ -155,12 +73,12 @@
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="Pharm-PullOrders.html" class="logo d-flex align-items-center">
+            <a href="index.html" class="logo d-flex align-items-center">
                 <span class="d-none d-xl-block">St<img class="header-logo" src="../assets/img/logo.png" alt="">cker</span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div>
-        <!-- End Logo -->
+
         <div class="search-bar">
             <form class="search-form d-flex align-items-center" method="POST" action="#">
                 <input type="text" name="query" placeholder="חיפוש" title="Enter search keyword">
@@ -178,8 +96,7 @@
                 </li><!-- End Search Icon-->
 
                 <li class="nav-item dropdown">
-
-                    <a class="nav-link nav-icon" href="Pharm-Messages.html">
+                    <a class="nav-link nav-icon" href="Pharm-messages.html" data-bs-toggle="dropdown">
                         <i class="bi bi-bell"></i>
                     </a><!-- End Notification Icon -->
                 </li><!-- End Notification Nav -->
@@ -234,32 +151,18 @@
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
-        <div id="orderHeader"></div>
-        <div id="title_ph" class="pagetitle">
+        <div class="pagetitle">
+            <h1>מחסן המחלקות</h1>
         </div><!-- End Page Title -->
         <div class="card">
             <div class="card-body">
-                <div id="orderData_ph" class="orderData"></div>
-                <!-- Table with stripped rows table-striped-->
-                <table class="table hover table-striped-custom " id="Table" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>שם תרופה</th>
-                            <th>כמות נדרשת</th>
-                            <th>כמות שהונפקה</th>
-                        </tr>
-                    </thead>
-                </table>
-                <!-- End Table with stripped rows -->
+
             </div>
         </div>
     </main><!-- End #main -->
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
-        <div class="copyright">
-            &copy; Copyright <strong><span>LML</span></strong>. All Rights Reserved
-        </div>
+        <div class="copyright"><p>copyrights here</p></div>
     </footer><!-- End Footer -->
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
@@ -270,7 +173,7 @@
     <script src="../assets/vendor/chart.js/chart.umd.js"></script>
     <script src="../assets/vendor/echarts/echarts.min.js"></script>
     <script src="../assets/vendor/quill/quill.min.js"></script>
-    <!--<script src="../assets/vendor/simple-datatables/simple-datatables.js"></script>-->
+    <script src="../assets/vendor/simple-datatables/simple-datatables.js"></script>
     <script src="../assets/vendor/tinymce/tinymce.min.js"></script>
     <script src="../assets/vendor/php-email-form/validate.js"></script>
 
