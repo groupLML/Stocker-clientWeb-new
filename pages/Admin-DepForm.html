@@ -67,53 +67,9 @@
                 }
             });
 
-            createDropDownInput(depTypes)
-
-            //var input = $("#input");
-            //var dropdownOptions = $("#dropdown-options");
-
-            //input.focus(function () {
-            //    dropdownOptions.show();
-            //});
-
-            //dropdownOptions.on("click", "li", function () {
-            //    var selectedValue = $(this).data("value");
-            //    input.val(selectedValue);
-            //    dropdownOptions.hide();
-            //});
-
-            //input.on("input", function () {
-            //    var text = input.val().toUpperCase();
-            //    if (text === "") {
-            //        renderDepTypes(depTypes);
-            //        input[0].setCustomValidity(""); // Reset custom validity message
-            //    } else {
-            //        var filteredOptions = depTypes.filter(function (option) {
-            //            return option.toUpperCase().indexOf(text) > -1;
-            //        });
-            //        renderDepTypes(filteredOptions);
-            //        if (filteredOptions.length === 0) {
-            //            input[0].setCustomValidity("אנא בחר את סוג המחלקה מתוך הרשימה");
-            //        } else {
-            //            input[0].setCustomValidity(""); // Reset custom validity message
-            //        }
-            //    }
-            //});
-
-            //$(document).on("click", function (e) {
-            //    if (!$(e.target).closest(".custom-dropdown").length) {
-            //        dropdownOptions.hide();
-            //    }
-            //});
+            TitleRender();
+            createDropDownInput(depTypes);
         });
-
-        //function renderDepTypes(typesArr) {
-        //    let str = "";
-        //    for (var i = 0; i < typesArr.length; i++) {
-        //        str += `<li data-value="${typesArr[i]}">${typesArr[i]}</li>`;
-        //    }
-        //    $("#dropdown-options").empty().append(str);
-        //}
 
         function renderUser(user) { //render active user
             let str = `<h6> ${user.firstName} ${user.lastName}</h6>`;
@@ -121,6 +77,17 @@
             document.getElementById("user_ph1").innerHTML += str;
             str = `<span>שלום, ${user.firstName}</span>`;
             document.getElementById("user_ph2").innerHTML += str;
+        }
+
+        function TitleRender() {
+            let titleStr = `<h1>טופס מחלקה</h1>`
+            titleStr += `<nav>`
+            titleStr += `<ol class="breadcrumb">`
+            titleStr += `<li class="breadcrumb-item">מחלקה</li>`
+            titleStr += `<li class="breadcrumb-item active"><a href="Admin-Departments.html">מחלקות</a></li>`
+            titleStr += `</ol>`
+            titleStr += `</nav>`
+            document.getElementById("title_ph").innerHTML = titleStr;
         }
 
         function GetDepartments() {
@@ -214,7 +181,6 @@
         function errorPutDCBF(err) {
             console.log(err);
         }
-
 
         function clearStorage() {
             sessionStorage.clear();
@@ -310,10 +276,8 @@
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
-        <div class="pagetitle">
-            <h1>מחלקות</h1>
-        </div><!-- End Page Title -->
-
+        <div id="title_ph" class="pagetitle"></div>
+        <!-- End Page Title -->
         <section class="section">
             <div class="row">
                 <div class="card">
@@ -323,23 +287,22 @@
                             <!-- Form -->
                             <form id="DepForm" class="needs-validation" novalidate>
                                 <div class="row mb-4">
-                                    <label class="col-sm-3 col-form-label">שם המחלקה</label>
-                                    <div class="col-sm-10 input-group has-validation">
+                                    <label class="col-form-label">שם המחלקה</label>
+                                    <div class="col input-group has-validation">
                                         <input type="text" class="form-control" id="depNameTB" maxlength="30" required>
                                         <div class="invalid-feedback">שם המחלקה יכול להכיל עד 30 תווים</div>
                                     </div>
                                 </div>
                                 <div class="row mb-4">
-                                    <label for="Phone" class="col-sm-3 col-form-label">טלפון המחלקה</label>
-                                    <div class="col-sm-10 input-group has-validation">
+                                    <label for="Phone" class="col-form-label">טלפון המחלקה</label>
+                                    <div class="col input-group has-validation">
                                         <input name="phone" type="text" class="form-control" id="depPhoneTB" pattern="^0\d[ -]?\d{7}$" required>
                                         <div class="invalid-feedback">מספר הטלפון צריך להיות בעל 9 ספרות</div>
                                     </div>
                                 </div>
-
                                 <div class="row mb-4">
-                                    <label class="col-sm-3 col-form-label">סוג המחלקה</label>
-                                    <div class="custom-dropdown col-sm-10 input-group has-validation">
+                                    <label class="col-form-label">סוג המחלקה</label>
+                                    <div class="custom-dropdown input-group has-validation">
                                         <input type="text" id="input" class="form-control" placeholder="בחר סוג מחלקה" required>
                                         <ul class="dropdown-options" id="dropdown-options"></ul>
                                         <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
