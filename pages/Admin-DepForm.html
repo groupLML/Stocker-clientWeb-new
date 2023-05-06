@@ -32,6 +32,7 @@
     <!-- ajaxCalls and JQuery -->
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="../assets/js/custom-dropdown-input.js"></script>
 
     <!-- datatable -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -65,7 +66,54 @@
                     sessionStorage.removeItem('Department');
                 }
             });
-        })
+
+            createDropDownInput(depTypes)
+
+            //var input = $("#input");
+            //var dropdownOptions = $("#dropdown-options");
+
+            //input.focus(function () {
+            //    dropdownOptions.show();
+            //});
+
+            //dropdownOptions.on("click", "li", function () {
+            //    var selectedValue = $(this).data("value");
+            //    input.val(selectedValue);
+            //    dropdownOptions.hide();
+            //});
+
+            //input.on("input", function () {
+            //    var text = input.val().toUpperCase();
+            //    if (text === "") {
+            //        renderDepTypes(depTypes);
+            //        input[0].setCustomValidity(""); // Reset custom validity message
+            //    } else {
+            //        var filteredOptions = depTypes.filter(function (option) {
+            //            return option.toUpperCase().indexOf(text) > -1;
+            //        });
+            //        renderDepTypes(filteredOptions);
+            //        if (filteredOptions.length === 0) {
+            //            input[0].setCustomValidity("אנא בחר את סוג המחלקה מתוך הרשימה");
+            //        } else {
+            //            input[0].setCustomValidity(""); // Reset custom validity message
+            //        }
+            //    }
+            //});
+
+            //$(document).on("click", function (e) {
+            //    if (!$(e.target).closest(".custom-dropdown").length) {
+            //        dropdownOptions.hide();
+            //    }
+            //});
+        });
+
+        //function renderDepTypes(typesArr) {
+        //    let str = "";
+        //    for (var i = 0; i < typesArr.length; i++) {
+        //        str += `<li data-value="${typesArr[i]}">${typesArr[i]}</li>`;
+        //    }
+        //    $("#dropdown-options").empty().append(str);
+        //}
 
         function renderUser(user) { //render active user
             let str = `<h6> ${user.firstName} ${user.lastName}</h6>`;
@@ -95,13 +143,6 @@
             console.log(err);
         }
 
-        function renderDepTypes(typesArr) {
-            let str = `<option value="">`;
-            for (var i = 0; i < typesArr.length; i++) {
-                str += `<option value="${typesArr[i]}">`;
-            }
-            document.getElementById("depTypes").innerHTML = str;
-        }
 
         function renderDepDetails(dep) {
             $("#depNameTB").val(dep.depName);
@@ -297,41 +338,13 @@
                                 </div>
 
                                 <div class="row mb-4">
-                                    <!--<label class="col-sm-3 col-form-label">סוג המחלקה</label>
-                                    <div class="col-sm-10">
-                                        <input list="depTypes" id="depTypeTB" name="depTypes" class="form-select" aria-label="Default select example" required>
-                                        <datalist id="depTypes" style="overflow: auto">
-                                        </datalist>
+                                    <label class="col-sm-3 col-form-label">סוג המחלקה</label>
+                                    <div class="custom-dropdown col-sm-10 input-group has-validation">
+                                        <input type="text" id="input" class="form-control" placeholder="בחר סוג מחלקה" required>
+                                        <ul class="dropdown-options" id="dropdown-options"></ul>
                                         <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
-                                    </div>-->
-                                    <!--<label for="depTypeTB" class="col-sm-3 col-form-label">סוג המחלקה</label>
-                                    <div class="col-sm-10">
-                                        <div class="select-wrapper">
-                                            <input list="depTypes" id="depTypeTB" name="depTypes" class="form-select" aria-label="Default select example" required="">
-                                            <datalist id="depTypes">
-                                                <option value=""></option>
-                                                <option value="מערכות מידע"></option>
-                                                <option value="בית מרקחת"></option>
-                                                <option value="כירורגיה"></option>
-                                                <option value="אורתופדיה"></option>
-                                                <option value="פנימית"></option>
-                                            </datalist>
-                                        </div>
-                                        <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
-                                    </div>-->
-                                    <label for="browser">browser:</label>
-                                    <input list="browserdata" id="browser" name="browser" size="50" autocomplete="off" />
-                                    <datalist id="browserdata">
-                                        <option>Brave</option>
-                                        <option>Chrome</option>
-                                        <option>Edge</option>
-                                        <option>Firefox</option>
-                                        <option>Internet Explorer</option>
-                                        <option>Opera</option>
-                                        <option>Safari</option>
-                                        <option>Vivaldi</option>
-                                        <option>other</option>
-                                    </datalist>
+                                    </div>
+
                                 </div>
                                 <br />
                                 <div class="text-center">
