@@ -57,6 +57,14 @@
                     orderData[columnNames[index]] = $(cell).text();// Get the cell value and add it to the orderData object
                 });
 
+                // Find the order in the PullOrdersList based on the orderId
+                var order = PushOrdersList.find(function (order) {
+                    return order.orderId === parseInt(orderData.orderId);// Convert the orderId to an integer
+                });
+
+                // Add the last update to the orderData object
+                orderData.lastUpdate = order.lastUpdate;
+
                 var orderDataJson = JSON.stringify(orderData);// Convert the orderData object to a JSON string
 
                 sessionStorage.setItem('Order', orderDataJson);// Add the rowDataJson to the session storage
