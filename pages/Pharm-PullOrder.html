@@ -81,7 +81,7 @@
             titleStr += `</nav>`
             document.getElementById("title_ph").innerHTML = titleStr;
 
-            let orderHeaderStr = `<p class="orderDate">${order.orderDate} ${order.orderTime}</p>`
+            let orderHeaderStr = `<p class="orderDate">${order.lastUpdate}</p>`
             orderHeaderStr += `<span class="badge orderStatus">סטטוס: ${order.status}</span>`
             document.getElementById("orderHeader").innerHTML = orderHeaderStr;
         }

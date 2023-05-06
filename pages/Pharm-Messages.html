@@ -77,12 +77,13 @@
         }
 
         function MessagesRender(Messages) {
-            let str = "<div>";
+            let str = "";
             for (var i = 0; i < Messages.length; i++) {
+                str += "<div>";
                 str += `<h6> ${Messages[i].msg}</h6>`
                 str += `<p>נוצר על ידי: ${Messages[i].pharmacistName}</p>`;
                 str += `<p>תאריך: ${Messages[i].msgDate}</p>`;
-                str += `</div>`;
+                str += `</div><hr/>`;
             }
             document.getElementById("messages_ph").innerHTML = str;
         }

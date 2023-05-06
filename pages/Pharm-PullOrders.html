@@ -51,11 +51,19 @@
                 // Create an array for the column names of the table
                 var columnNames = ["orderId", "orderDate", "orderTime", "depName", "nurseName", "status"];
 
-                var orderData = {};// Create an empty object to store the row dat
+                var orderData = {};// Create an empty object to store the row data
 
                 $(this).find('td').each(function (index, cell) {// Loop through each cell in the clicked row
                     orderData[columnNames[index]] = $(cell).text();// Get the cell value and add it to the orderData object
                 });
+
+                // Find the order in the PullOrdersList based on the orderId
+                var order = PullOrdersList.find(function (order) {
+                    return order.orderId === parseInt(orderData.orderId);// Convert the orderId to an integer
+                });
+
+                // Add the last update to the orderData object
+                orderData.lastUpdate = order.lastUpdate;
 
                 var orderDataJson = JSON.stringify(orderData);// Convert the orderData object to a JSON string
 
