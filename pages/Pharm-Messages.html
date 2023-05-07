@@ -37,9 +37,10 @@
 
         $(document).ready(function () {
 
-            apiMessages = "https://proj.ruppin.ac.il/cgroup36/prod/api/Message";
+            apiGetMessages = "https://proj.ruppin.ac.il/cgroup36/prod/api/Message";
+            apiPostMessage = "https://proj.ruppin.ac.il/cgroup36/prod/api/Message";
 
-            const textarea = document.getElementById("feedbackTextarea");
+            const textarea = document.getElementById("textarea");
             const charCount = document.getElementById("charCount");
 
             textarea.addEventListener("input", function () {
@@ -55,11 +56,23 @@
                 }
             });
 
+            // Reset the value of the textarea whan modal is closed
+            $('#verticalycentered').on('hidden.bs.modal', function () {
+                $('#textarea').val('');
+                const charCount = document.getElementById('charCount');
+                charCount.textContent = '0/100'; // Reset the character count
+                charCount.classList.remove('text-danger'); // Remove the text-danger class if applied
+                $('#textarea').removeClass('is-valid is-invalid'); // Remove the is-valid and is-invalid classes from the textarea
+                $('#msgForm').removeClass('was-validated'); // Remove the was-validated class from the form
+            });
+
             user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
             renderUser(user);
 
             GetMessages();
             MessagesList = [];
+
+            $("#msgForm").submit(PostMsg); //form validation
         })
 
         function renderUser(user) { //render active user
@@ -71,7 +84,7 @@
         }
 
         function GetMessages() {
-            ajaxCall("GET", apiMessages, "", getMessagesSCB, getMessagesECB);
+            ajaxCall("GET", apiGetMessages, "", getMessagesSCB, getMessagesECB);
         }
 
         function getMessagesSCB(data) {
@@ -94,6 +107,40 @@
                 str += `</div><hr/>`;
             }
             document.getElementById("messages_ph").innerHTML = str;
+        }
+
+        function PostMsg() {
+
+            const msgId = 0;
+            const msgTxt = $("#textarea").val();
+            const userId = user.userId;
+            const msgDate = new Date();
+
+            if (msgTxt =="") {
+                return;
+            }
+            else {
+                const msg = {
+                    MsgId: msgId,
+                    Msg: msgTxt,
+                    UserId: userId,
+                    MsgDate: msgDate
+                };
+
+                ajaxCall("POST", apiPostMessage, JSON.stringify(msg), PostMsgSCB, PostMsgECB);
+
+                return false;
+            }
+        }
+
+        function PostMsgSCB(data) {
+            console.log(data);
+            GetMessages();
+            $('#verticalycentered').modal('hide');
+        }
+
+        function PostMsgECB(err) {
+            console.log(err);
         }
 
         function clearStorage() {
@@ -206,12 +253,12 @@
                             <div class="modal-body">
                                 <form id="msgForm" class="needs-validation" novalidate>
                                     <div class="input-group has-validation">
-                                        <textarea id="feedbackTextarea" class="form-control" style="height: 100px" maxlength="100" required></textarea>
+                                        <textarea id="textarea" class="form-control" style="height: 100px" maxlength="100" required></textarea>
                                     </div>
                                     <div id="charCount" class="form-text"></div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">סגור</button>
-                                        <button type="button" class="btn btn-primary">שלח</button>
+                                        <button type="submit" class="btn btn-primary">שלח</button>
                                     </div>
                                 </form>
                             </div>
