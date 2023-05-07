@@ -32,18 +32,16 @@
     <!-- ajaxCalls and JQuery -->
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
-
+    <script src="../assets/js/custom-dropdown-input.js"></script>
 
     <script>
 
         $(document).ready(function () {
 
-            //if (location.hostname === "localhost" || location.hostname === "127.0.0.1")
-            //    apiUser = "https://localhost:7102/api/User/Login";
-            //else
-            //    apiUser = "https://proj.ruppin.ac.il/cgroup36/prod/api/User/Login";
-
-            //$("#LoginForm").submit(Login); //form validation
+            GetDepsApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
+            depNames = [];
+            GetDepartments();
+            createDropDownInput(depNames);
 
             user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
             renderUser(user);
@@ -58,6 +56,25 @@
             document.getElementById("user_ph2").innerHTML += str;
         }
 
+
+        function GetDepartments() {
+
+            ajaxCall("GET", GetDepsApi, "", GetDepsSCB, GetDepsECB);
+        }
+
+        function GetDepsSCB(data) {
+            console.log(data);
+
+            for (var i = 0; i < data.length; i++) {
+                if (!depNames.includes(data[i]['depName']))
+                    depNames.push(data[i]['depName']);
+            }
+            renderOptions(depNames);
+        }
+
+        function GetDepsECB(err) {
+            console.log(err);
+        }
 
         function clearStorage() {
             sessionStorage.clear();
@@ -156,7 +173,17 @@
         </div><!-- End Page Title -->
         <div class="card">
             <div class="card-body">
+                <form>
+                    <div class="row mb-4">
+                        <label class="col-form-label">בחר מחלקה<i class="bi bi-asterisk"></i></label>
+                        <div class="custom-dropdown input-group has-validation">
+                            <input type="text" id="input" class="form-control" required>
+                            <ul class="dropdown-options" id="dropdown-options"></ul>
+                            <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
+                        </div>
 
+                    </div>
+                </form>
             </div>
         </div>
     </main><!-- End #main -->

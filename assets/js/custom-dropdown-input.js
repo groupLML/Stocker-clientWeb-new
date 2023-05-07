@@ -15,13 +15,13 @@
     input.on("input", function () {
         var text = input.val().toUpperCase();
         if (text === "") {
-            renderDepTypes(depTypes);
+            renderOptions(optionsList);
             input[0].setCustomValidity(""); // Reset custom validity message
         } else {
-            var filteredOptions = depTypes.filter(function (option) {
+            var filteredOptions = optionsList.filter(function (option) {
                 return option.toUpperCase().indexOf(text) > -1;
             });
-            renderDepTypes(filteredOptions);
+            renderOptions(filteredOptions);
             if (filteredOptions.length === 0) {
                 input[0].setCustomValidity("אנא בחר את סוג המחלקה מתוך הרשימה");
             } else {
@@ -37,10 +37,10 @@
     });
 }
 
-function renderDepTypes(typesArr) {
+function renderOptions(Arr) {
     let str = "";
-    for (var i = 0; i < typesArr.length; i++) {
-        str += `<li data-value="${typesArr[i]}">${typesArr[i]}</li>`;
+    for (var i = 0; i < Arr.length; i++) {
+        str += `<li data-value="${Arr[i]}">${Arr[i]}</li>`;
     }
     $("#dropdown-options").empty().append(str);
 }

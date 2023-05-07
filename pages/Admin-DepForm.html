@@ -117,7 +117,7 @@
                 if (depId != null && depId == data[i]['depId'])
                     renderDepDetails(data[i]);
             }
-            renderDepTypes(depTypes);
+            renderOptions(depTypes);
         }
 
         function errorGetDepsCBF(err) {
@@ -334,7 +334,6 @@
                                         <ul class="dropdown-options" id="dropdown-options"></ul>
                                         <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
                                     </div>
-
                                 </div>
                                 <br />
                                 <div class="text-center">
