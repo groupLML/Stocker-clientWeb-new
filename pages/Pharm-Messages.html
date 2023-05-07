@@ -33,14 +33,27 @@
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 
-
     <script>
 
         $(document).ready(function () {
 
             apiMessages = "https://proj.ruppin.ac.il/cgroup36/prod/api/Message";
 
-            //$("#LoginForm").submit(Login); //form validation
+            const textarea = document.getElementById("feedbackTextarea");
+            const charCount = document.getElementById("charCount");
+
+            textarea.addEventListener("input", function () {
+                const maxLength = parseInt(textarea.getAttribute("maxlength"));
+                const currentLength = textarea.value.length;
+
+                charCount.textContent = `${currentLength}/${maxLength}`;
+
+                if (currentLength >= maxLength) {
+                    charCount.classList.add("text-danger");
+                } else {
+                    charCount.classList.remove("text-danger");
+                }
+            });
 
             user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
             renderUser(user);
@@ -74,10 +87,10 @@
         function MessagesRender(Messages) {
             let str = "";
             for (var i = 0; i < Messages.length; i++) {
-                str += "<div>";
-                str += `<h6> ${Messages[i].msg}</h6>`
-                str += `<p>נוצר על ידי: ${Messages[i].pharmacistName}</p>`;
-                str += `<p>תאריך: ${Messages[i].msgDate.slice(0, 10)}   שעה: ${Messages[i].msgDate.slice(11, 16)}</p>`;
+                str += `<div class="row msg">`;
+                str += `<div class="row msgHeader"><h6 class="col-9 msgTitle"> ${Messages[i].msg}</h6>`
+                str += `<p class="col-3 date">${Messages[i].msgDate.slice(0, 10)} ${Messages[i].msgDate.slice(11, 16)}</p></div>`;
+                str += `<div class="row"><p class="col">נוצר על ידי: ${Messages[i].pharmacistName}</p></div>`;
                 str += `</div><hr/>`;
             }
             document.getElementById("messages_ph").innerHTML = str;
@@ -177,10 +190,34 @@
     <main id="main" class="main">
         <div class="pagetitle">
             <h1>הודעות</h1>
+            <button id="addMsgBtn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#verticalycentered">שליחת הודעה</button>
         </div><!-- End Page Title -->
         <div class="card">
             <div class="card-body">
                 <div id="messages_ph"></div>
+                <!-- Vertically centered Modal -->
+                <div class="modal fade" id="verticalycentered" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">שליחת הודעה</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="msgForm" class="needs-validation" novalidate>
+                                    <div class="input-group has-validation">
+                                        <textarea id="feedbackTextarea" class="form-control" style="height: 100px" maxlength="100" required></textarea>
+                                    </div>
+                                    <div id="charCount" class="form-text"></div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">סגור</button>
+                                        <button type="button" class="btn btn-primary">שלח</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End Vertically centered Modal-->
             </div>
         </div>
     </main><!-- End #main -->

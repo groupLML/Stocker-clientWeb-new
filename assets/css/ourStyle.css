@@ -179,7 +179,6 @@ img {
 .orderData {
     color: #012970;
     font-size: 15px;
-    font-weight: 400;
 }
 
 .orderDate {
@@ -261,6 +260,7 @@ tbody, td, tfoot, th, thead, tr {
     cursor: not-allowed;
 }
 
+/**********כותרת************/
 .form-select.is-valid:not([multiple]):not([size]), .form-select.is-valid:not([multiple])[size="1"], .was-validated .form-select:valid:not([multiple]):not([size]), .was-validated .form-select:valid:not([multiple])[size="1"] {
     background-position: right 0.75rem center,center left 0.75rem;
 }
@@ -288,3 +288,32 @@ tbody, td, tfoot, th, thead, tr {
     --bs-btn-disabled-border-color: #00749d;
 }
 */
+
+/*msg*/
+.msg {
+    color: #012970;
+    font-size: 15px;
+}
+
+.msg .msgTitle{
+    font-weight:bold;
+}
+
+    .msg .msgHeader .date {
+        color: #7a7a7a;
+        font-size: 14px;
+    }
+
+/*modal*/
+.modal {
+    --bs-modal-header-border-width: 0px;
+    --bs-modal-footer-border-width: 0px;
+}
+
+.modal-header .btn-close {
+    margin-left: 0px;
+}
+
+.modal-header .modal-title {
+    color: #012970;
+}
