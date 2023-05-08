@@ -45,21 +45,20 @@
             apiDep = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
             apiUser = "https://proj.ruppin.ac.il/cgroup36/prod/api/User";
 
-            user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
+            user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
-            depNames = [];
             userId = JSON.parse(sessionStorage.getItem("UserId")); //get UserID from storage
-
-            if (userId != null)
-                GetUsers();
-
-
             TitleRender();
 
-            GetDepartments();  /////k,eiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiIIIIIIIIiiiiiiiiiiiiiiii
+            if (userId != null)
+                GetUser();
 
+            deps = [];
+            depNames = [];
+            GetDepartments();  
             createDropDownInput(depNames);
+
 
             $("#UserForm").submit(function () {
                 var item = sessionStorage.getItem('UserId');
@@ -71,9 +70,9 @@
 
 
             //$(window).on('unload', function () {
-            //    var item = sessionStorage.getItem('Department');
+            //    var item = sessionStorage.getItem('DepId');
             //    if (item !== null) {
-            //        sessionStorage.removeItem('Department');
+            //        sessionStorage.removeItem('DepId');
             //    }
             //});
 
@@ -102,15 +101,20 @@
             document.getElementById("title_ph").innerHTML = titleStr;
         }
 
-        function GetUsers() {
-            ajaxCall("GET", apiUser + "/" + userId, "", successGetUserCBF, errorGetUserCBF);
+
+        function GetUser() {
+            ajaxCall("GET", apiUser + "/GetUsers", "", successGetUserCBF, errorGetUserCBF);
         }
 
         function successGetUserCBF(data) {
             console.log(data);
 
-            if (data !=null)
-                renderUserDetails(data);
+            if (data != null) {
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i]['userId'] == userId)
+                        renderUserDetails(data[i]);
+                }
+            }
             else
                 alert("Error");
         }
@@ -119,7 +123,7 @@
             console.log(err);
         }
 
-        function renderUserDetails(user) { /////k,eiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+        function renderUserDetails(user) { 
             $("#usernameTB").val(user.username);
             $("#firstNameTB").val(user.firstName);
             $("#lastNameTB").val(user.lastName);
@@ -127,8 +131,8 @@
             $("#passwordTB").val(user.password);
             $("#phoneTB").val(user.phone);
             $("#positionTB").val(user.position);
-            $("#jobTypeTB").val(user.jobType);  ////////
-            $("#input").val(user.depId);
+            $("#jobTypeTB").val(user.jobType); 
+            $("#input").val(user.depName);
             $("#isActiveCB").prop('checked', user.isActive);
         }
 
@@ -141,8 +145,10 @@
             console.log(data);
 
             for (var i = 0; i < data.length; i++) {
-                if (data[i]['depName'] !="")
+                if (data[i]['depName'] != "") {
                     depNames.push(data[i]['depName']);
+                    deps.push(data[i]);
+                }
             }
             renderOptions(depNames);
         }
@@ -160,13 +166,21 @@
             const password = $("#passwordTB").val();
             const phone = $("#phoneTB").val().replace(/[^\d]/g, '');
             const position = $("#positionTB").val();
-            const jobType = $("#jobTypeTB").val(); ////בעיה
-            const depName = $("#input").val();
-            const isActive = $("#isActiveCB").val(); ///kcsue
+            const jobType = $("#jobTypeTB").val(); 
+            var depName = $("#input").val();
+            const isActive = $("#isActiveCB").is(":checked");
+
 
             if (username == "" || firstName == "" || lastName == "" || username == "" || email == "" || password == "" || phone == "" || jobType == "" || depName == "")
                 return;
             else {
+
+                const depId = 0;
+                for (var i = 0; i < deps.length; i++) {
+                    if (deps[i]['depName'] == depName)
+                        depId= data[i]['depId'];
+                }
+
                 const user = {
                     UserId: 0,
                     Username: username,
@@ -177,7 +191,7 @@
                     Phone: phone,
                     Position: position,
                     JobType: jobType,
-                    DepName: depName,
+                    DepId: depId,
                     IsActive: isActive
                 };
 
@@ -205,18 +219,40 @@
 
 
         function updateUserInServer() {
-            const depName = $("#depNameTB").val();
-            const depPhone = $("#depPhoneTB").val().replace(/[^\d]/g, '');
-            const depType = $("#input").val();
+            const username = $("#usernameTB").val();
+            const firstName = $("#firstNameTB").val();
+            const lastName = $("#lastNameTB").val();
+            const email = $("#emailTB").val();
+            const password = $("#passwordTB").val();
+            const phone = $("#phoneTB").val().replace(/[^\d]/g, '');
+            const position = $("#positionTB").val();
+            const jobType = $("#jobTypeTB").val();
+            var depName = $("#input").val();
+            const isActive = $("#isActiveCB").is(":checked");
 
-            if (depName == "" || depPhone == "" || depType == "")
+
+            if (username == "" || firstName == "" || lastName == "" || username == "" || email == "" || password == "" || phone == "" || jobType == "" || depName == "")
                 return;
             else {
+
+                var depId = 0;
+                for (var i = 0; i < deps.length; i++) {
+                    if (deps[i]['depName'] == depName)
+                        depId = deps[i]['depId'];
+                }
+
                 const user = {
                     UserId: userId,
-                    DepName: depName,
-                    DepPhone: depPhone,
-                    DepType: depType
+                    Username: username,
+                    FirstName: firstName,
+                    LastName: lastName,
+                    Email: email,
+                    Password: password,
+                    Phone: phone,
+                    Position: position,
+                    JobType: jobType,
+                    DepId: depId,
+                    IsActive: isActive
                 };
 
                 ajaxCall("PUT", apiUser + "/" + userId, JSON.stringify(user), successPutUCBF, errorPutUCBF);
@@ -231,7 +267,7 @@
             if (data == true) {
                 alert("In Success");
                 sessionStorage.removeItem('UserId');
-                window.location.href = 'Admin-Users.html';
+                window.location.href = 'Admin-UserForm.html';
             }
             else
                 alert("Error");
@@ -414,7 +450,7 @@
                             <div class="col-md-4">
                                 <label for="phoneTB" class="form-label">נייד <i class="bi bi-asterisk"></i></label>
                                 <div class="col input-group has-validation">
-                                    <input name="phone" type="text" class="form-control" id="phoneTB" pattern="^0\d[ -]?\d{7}$" required> <!--לבדוק ולשנות-->
+                                    <input name="phone" type="text" class="form-control" id="phoneTB" pattern="^05\d([-]{0,1})\d{7}$" required> 
                                     <div class="invalid-feedback">מספר נייד צריך להיות בעל 10 ספרות</div>
                                 </div>
                             </div>
