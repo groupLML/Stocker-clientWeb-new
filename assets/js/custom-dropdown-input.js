@@ -17,6 +17,7 @@
         if (text === "") {
             renderOptions(optionsList);
             input[0].setCustomValidity(""); // Reset custom validity message
+            dropdownOptions.show(); // Show dropdown options when input is empty
         } else {
             var filteredOptions = optionsList.filter(function (option) {
                 return option.toUpperCase().indexOf(text) > -1;
@@ -27,6 +28,7 @@
             } else {
                 input[0].setCustomValidity(""); // Reset custom validity message
             }
+            dropdownOptions.show(); // Show dropdown options when input has text
         }
     });
 
