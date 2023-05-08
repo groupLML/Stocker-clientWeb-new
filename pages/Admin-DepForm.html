@@ -44,11 +44,11 @@
 
             api = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
 
-            user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
+            user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
             depTypes = [];
-            depId = JSON.parse(sessionStorage.getItem("Department")); //get DepID from storage
+            depId = JSON.parse(sessionStorage.getItem("DepId")); //get DepID from storage
 
             TitleRender();
 
@@ -57,7 +57,7 @@
             createDropDownInput(depTypes);
 
             $("#DepForm").submit(function () {
-                var item = sessionStorage.getItem('Department');
+                var item = sessionStorage.getItem('DepId');
                 if (item !== null)
                     updateDepInServer();
                 else
@@ -66,9 +66,9 @@
 
 
             //$(window).on('unload', function () {
-            //    var item = sessionStorage.getItem('Department');
+            //    var item = sessionStorage.getItem('DepId');
             //    if (item !== null) {
-            //        sessionStorage.removeItem('Department');
+            //        sessionStorage.removeItem('DepId');
             //    }
             //});
 
@@ -151,7 +151,7 @@
 
             if (data == true) {
                 alert("In Success");
-                sessionStorage.removeItem('Department');
+                sessionStorage.removeItem('DepId');
                 window.location.href = 'Admin-Departments.html';
             }
             else
@@ -189,7 +189,7 @@
 
             if (data == true) {
                 alert("In Success");
-                sessionStorage.removeItem('Department');
+                sessionStorage.removeItem('DepId');
                 window.location.href = 'Admin-Departments.html';
             }
             else
@@ -206,9 +206,9 @@
         }
 
         function reload() {
-            var item = sessionStorage.getItem('Department');
+            var item = sessionStorage.getItem('DepId');
             if (item !== null) {
-                sessionStorage.removeItem('Department');
+                sessionStorage.removeItem('DepId');
                 location.reload();
             }
         }

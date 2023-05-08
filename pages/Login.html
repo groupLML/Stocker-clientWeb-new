@@ -64,7 +64,7 @@
             console.log(data);
 
             if (data.username != null) {
-                sessionStorage.setItem("User", JSON.stringify(data)); //add to storage
+                sessionStorage.setItem("LoginUser", JSON.stringify(data)); //add to storage
 
                 if (data.jobType == 'A')
                     window.location.href = `Admin-Departments.html`;

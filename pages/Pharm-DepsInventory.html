@@ -52,7 +52,7 @@
             GetDepartments();
             createDropDownInput(depNames);
 
-            user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
+            user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
             $("#DepSearch").submit(GetDepStock); //form validation

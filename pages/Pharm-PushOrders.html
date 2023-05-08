@@ -41,7 +41,7 @@
         $(document).ready(function () {
             apiPushOrders = "https://proj.ruppin.ac.il/cgroup36/prod/api/PushOrder/GetPushOrdersPharm";
 
-            user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
+            user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
             GetPushOrders();

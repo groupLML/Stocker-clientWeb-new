@@ -43,7 +43,7 @@
 
             api = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
 
-            user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
+            user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
             deps = [];
@@ -52,7 +52,7 @@
             $('#Table').on('click', 'tbody tr', function () {// This function will be called when a row is clicked
                 var depStr = $(this).find('td:first').text();
                 var depId = parseInt(depStr);
-                sessionStorage.setItem('Department', depId);
+                sessionStorage.setItem('DepId', depId);
                 window.location.href = 'Admin-DepForm.html';
             });
         })

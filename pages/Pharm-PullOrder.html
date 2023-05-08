@@ -41,7 +41,7 @@
         $(document).ready(function () {
             apiPullOrderDetails = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetOrderDetails/orderId/";
 
-            user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
+            user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
             order = JSON.parse(sessionStorage.getItem("Order")); //get order from storage
