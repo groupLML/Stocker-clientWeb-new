@@ -105,7 +105,7 @@ img {
 }
 
 .form-check-input.is-valid:checked, .was-validated .form-check-input:valid:checked {
-    background-color: #00749d;
+    background-color: #0d6efd;
 }
 
 .form-check-input.is-valid:focus, .was-validated .form-check-input:valid:focus {
@@ -148,7 +148,7 @@ img {
 
 #input {
     width: 100%;
-    padding: 5px;
+    padding: 6px 12px;
     border-radius: 5px;
 }
 
@@ -334,4 +334,9 @@ tbody, td, tfoot, th, thead, tr {
     padding-left: calc(1.5em + 0.75rem);
     padding-right: 12px;
     background-position: top calc(0.375em + 0.1875rem) left calc(0.375em + 0.1875rem);
+}
+
+.form-control {
+    direction: rtl;
+    text-align: right;
 }

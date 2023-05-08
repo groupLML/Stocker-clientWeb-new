@@ -127,18 +127,32 @@
 
 
         function postUserToServer() { //post to server
-            const depName = $("#depNameTB").val();
-            const depPhone = $("#depPhoneTB").val().replace(/[^\d]/g, '');
-            const depType = $("#input").val();
+            const username = $("#usernameTB").val();
+            const firstName = $("#firstNameTB").val();
+            const lastName = $("#lastNameTB").val();
+            const email = $("#emailTB").val();
+            const password = $("#passwordTB").val();
+            const phone = $("#phoneTB").val().replace(/[^\d]/g, '');
+            const position = $("#positionTB").val();
+            const jobType = $("#input").val(); ////בעיה
+            const depName = $("#input").val();
+            const isActive = $("#isActiveCB").val(); ///kcsue
 
-            if (depName == "" || depPhone == "" || depType == "")
+            if (depName == "" || lastName == "" || email == "")
                 return;
             else {
                 const user = {
                     UserId: 0,
+                    Username: username,
+                    FirstName: firstName,
+                    LastName: lastName,
+                    Email: email,
+                    Password: password,
+                    Phone: phone,
+                    Position: position,
+                    JobType: jobType,
                     DepName: depName,
-                    DepPhone: depPhone,
-                    DepType: depType
+                    IsActive: isActive
                 };
 
                 ajaxCall("POST", apiUser, JSON.stringify(user), successPostUCBF, errorPostUCBF);
@@ -270,7 +284,6 @@
             </ul>
         </nav><!-- End Icons Navigation -->
     </header><!-- End Header -->
-
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
@@ -293,7 +306,7 @@
                 <a class="nav-link active" data-bs-target="#users-nav" data-bs-toggle="collapse" href="Admin-Users.html">
                     <span>משתמשים</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="users-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <ul id="users-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="Admin-UserForm.html" class="active">
                             <i class="bi bi-circle"></i><span>טופס משתמש</span>
@@ -312,39 +325,93 @@
             <div class="row">
                 <div class="card">
                     <div class="card-body">
-                        <div class="col-lg-6">
-                            <!-- Form -->
-                            <form id="DepForm" class="needs-validation" novalidate>
-                                <div class="row mb-4">
-                                    <label class="col-form-label"> שם המחלקה <i class="bi bi-asterisk"></i> </label>
-                                    <div class="col input-group has-validation">
-                                        <input type="text" class="form-control" id="depNameTB" maxlength="30" required>
-                                        <div class="invalid-feedback">שם המחלקה יכול להכיל עד 30 תווים</div>
-                                    </div>
-                                </div>
-                                <div class="row mb-4">
-                                    <label for="Phone" class="col-form-label"> טלפון המחלקה <i class="bi bi-asterisk"></i></label>
-                                    <div class="col input-group has-validation">
-                                        <input name="phone" type="text" class="form-control" id="depPhoneTB" pattern="^0\d[ -]?\d{7}$" required>
-                                        <div class="invalid-feedback">מספר הטלפון צריך להיות בעל 9 ספרות</div>
-                                    </div>
-                                </div>
-                                <div class="row mb-4">
-                                    <label class="col-form-label">סוג המחלקה <i class="bi bi-asterisk"></i></label>
-                                    <div class="custom-dropdown input-group has-validation">
-                                        <input type="text" id="input" class="form-control" required>
-                                        <ul class="dropdown-options" id="dropdown-options"></ul>
-                                        <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
-                                    </div>
+                        <br/>
+                        <!-- Form -->
+                        <form id="UserForm" class="row g-3 needs-validation" novalidate>
 
+                            <div class="col-md-5">
+                                <label for="validationCustom01" class="form-label">שם פרטי <i class="bi bi-asterisk"></i></label>
+                                <div class="col input-group has-validation">
+                                    <input type="text" class="form-control" id="validationCustom01" maxlength="20" required>
+                                    <div class="invalid-feedback">הכנס שם פרטי המכיל עד 20 תווים</div>
                                 </div>
-                                <br />
-                                <div class="text-center">
-                                    <button type="submit" class="btn btn-primary">שלח</button>
-                                    <button type="reset" class="btn btn-secondary" onclick="reload()">נקה</button>
+                            </div>
+                            <div class="col-md-5">
+                                <label for="validationCustom02" class="form-label">שם משפחה <i class="bi bi-asterisk"></i></label>
+                                <div class="col input-group has-validation">
+                                    <input type="text" class="form-control" id="validationCustom02" maxlength="20" required>
+                                    <div class="invalid-feedback">הכנס שם משפחה המכיל עד 20 תווים</div>
                                 </div>
-                            </form><!-- End Form -->
-                        </div>
+                            </div>
+                            <div class="col-md-5">
+                                <label for="validationCustomUsername" class="form-label">שם משתמש <i class="bi bi-asterisk"></i></label>
+                                <div class="input-group has-validation">
+                                    <input type="text" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" maxlength="30" required>
+                                    <div class="invalid-feedback">הכנס שם משתמש המכיל עד 30 תווים</div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <label for="validationCustom03" class="form-label">סיסמה <i class="bi bi-asterisk"></i></label>
+                                <div class="col input-group has-validation">
+                                    <input type="password" class="form-control" id="validationCustom03" length="3" required>
+                                    <div class="invalid-feedback">הכנס סיסמה בעלת 5 תווים</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="validationCustom04" class="form-label">שם המחלקה <i class="bi bi-asterisk"></i></label>
+                                <div class="custom-dropdown input-group has-validation">
+                                    <input type="text" id="input" class="form-control" required>
+                                    <ul class="dropdown-options" id="dropdown-options"></ul>
+                                    <div class="invalid-feedback">אנא בחר את שם המחלקה מתוך הרשימה</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="inputState" class="form-label">סוג משתמש <i class="bi bi-asterisk"></i></label>
+                                <div class="col input-group has-validation">
+                                    <select id="inputState" class="form-select form-control" autocomplete="on" required>
+                                        <option value=""></option>
+                                        <option value="A">אדמין</option>
+                                        <option value="N">אחות</option>
+                                        <option value="P">רוקח</option>
+                                        <option value="M">מנהל בית מרקחת</option>
+                                    </select>
+                                    <div class="valid-feedback"> אנא בחר את סוג המשתמש מתוך הרשימה</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inputEmail3" class="form-label">דוא"ל <i class="bi bi-asterisk"></i></label>
+                                <div class="col input-group has-validation">
+                                    <input type="email" class="form-control" id="validationCustom03" style="direction: ltr" placeholder="@hymc.gov.il" required> <!--לבדוק ולשנות-->
+                                    <div class="invalid-feedback">הכנס דואר אלקטרוני בפורמט המתאים</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="phone" class="form-label">נייד <i class="bi bi-asterisk"></i></label>
+                                <div class="col input-group has-validation">
+                                    <input name="phone" type="text" class="form-control" id="depPhoneTB" pattern="^0\d[ -]?\d{7}$" required> <!--לבדוק ולשנות-->
+                                    <div class="invalid-feedback">מספר נייד צריך להיות בעל 10 ספרות</div>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <label for="validationCustom01" class="form-label">תפקיד</label>
+                                <div class="col input-group">
+                                    <input type="text" class="form-control" id="validationCustom01">
+                                </div>
+                            </div>
+                            <br />
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="invalidCheck" checked>
+                                    <label class="form-check-label" for="gridCheck">משתמש פעיל</label>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">שלח</button>
+                                <button type="reset" class="btn btn-secondary" onclick="reload()">נקה</button>
+                            </div>
+                            <br />
+                        </form><!-- End Custom Styled Validation -->
                     </div>
                 </div>
             </div>
