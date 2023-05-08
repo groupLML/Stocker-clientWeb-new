@@ -61,6 +61,14 @@
             else {
                 statusSpan.classList.add("bg-success");
             }
+
+            if (order.status === "בהמתנה") {
+                // Show the button
+                $("#takeOrderBTN").show();
+            } else {
+                // Hide the button
+                $("#takeOrderBTN").hide();
+            }
         })
 
         function renderUser(user) { //render active user
@@ -72,7 +80,7 @@
         }
 
         function headerRender() {
-            var time = order.lastUpdate.slice(11, 16); 
+            var time = order.lastUpdate.slice(11, 16);
             var date = order.lastUpdate.slice(0, 10);
             let titleStr = `<h1>הזמנה מספר ${order.orderId}</h1>`
             titleStr += `<nav>`
@@ -139,6 +147,13 @@
                 alert(err);
             }
         }
+
+
+        function StatusUpdate() {
+            console.log("StatusUpdate button clicked");
+        }
+
+
 
         function clearStorage() {
             sessionStorage.clear();
@@ -254,8 +269,29 @@
                     </thead>
                 </table>
                 <!-- End Table with stripped rows -->
+                <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-success" id="takeOrderBTN" data-bs-toggle="modal" data-bs-target="#verticalycentered">טיפול בהזמנה</button>
+                    <button type="button" class="btn btn-primary" onclick="location.href='Pharm-PullOrders.html'">חזרה</button>
+                </div>
+                <!-- Vertically centered Modal -->
+                <div class="modal fade" id="verticalycentered" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">טיפול בהזמנה</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div><h6>האם אתה אחראי להנפקת ההזמנה?</h6></div>
+                                <div class="d-flex justify-content-center">
+                                    <button type="button" class="btn btn-success" id="takeOrderBTN" onclick="StatusUpdate()">טיפול בהזמנה</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">סגור</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End Vertically centered Modal-->
             </div>
-        </div>
     </main><!-- End #main -->
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
