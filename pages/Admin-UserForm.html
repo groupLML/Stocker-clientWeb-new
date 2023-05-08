@@ -51,11 +51,15 @@
             depNames = [];
             userId = JSON.parse(sessionStorage.getItem("UserId")); //get UserID from storage
 
+            if (userId != null)
+                GetUsers();
+
+
             TitleRender();
 
-            createDropDownInput(depNames);
-
             GetDepartments();  /////k,eiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiIIIIIIIIiiiiiiiiiiiiiiii
+
+            createDropDownInput(depNames);
 
             $("#UserForm").submit(function () {
                 var item = sessionStorage.getItem('UserId');
@@ -98,10 +102,34 @@
             document.getElementById("title_ph").innerHTML = titleStr;
         }
 
+        function GetUsers() {
+            ajaxCall("GET", apiUser + "/" + userId, "", successGetUserCBF, errorGetUserCBF);
+        }
+
+        function successGetUserCBF(data) {
+            console.log(data);
+
+            if (data !=null)
+                renderUserDetails(data);
+            else
+                alert("Error");
+        }
+
+        function errorGetUserCBF(err) {
+            console.log(err);
+        }
+
         function renderUserDetails(user) { /////k,eiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
-            $("#depNameTB").val(dep.depName);
-            $("#depPhoneTB").val(dep.depPhone);
-            $("#input").val(dep.depType);
+            $("#usernameTB").val(user.username);
+            $("#firstNameTB").val(user.firstName);
+            $("#lastNameTB").val(user.lastName);
+            $("#emailTB").val(user.email);
+            $("#passwordTB").val(user.password);
+            $("#phoneTB").val(user.phone);
+            $("#positionTB").val(user.position);
+            $("#jobTypeTB").val(user.jobType);  ////////
+            $("#input").val(user.depId);
+            $("#isActiveCB").prop('checked', user.isActive);
         }
 
 
@@ -113,12 +141,10 @@
             console.log(data);
 
             for (var i = 0; i < data.length; i++) {
-                if (!depTypes.includes(data[i]['depType']))
-                    depTypes.push(data[i]['depType']);
-                if (depId != null && depId == data[i]['depId'])
-                    renderDepDetails(data[i]);
+                if (data[i]['depName'] !="")
+                    depNames.push(data[i]['depName']);
             }
-            renderDepTypes(depTypes);
+            renderOptions(depNames);
         }
 
         function errorGetDepsCBF(err) {
@@ -134,11 +160,11 @@
             const password = $("#passwordTB").val();
             const phone = $("#phoneTB").val().replace(/[^\d]/g, '');
             const position = $("#positionTB").val();
-            const jobType = $("#input").val(); ////בעיה
+            const jobType = $("#jobTypeTB").val(); ////בעיה
             const depName = $("#input").val();
             const isActive = $("#isActiveCB").val(); ///kcsue
 
-            if (depName == "" || lastName == "" || email == "")
+            if (username == "" || firstName == "" || lastName == "" || username == "" || email == "" || password == "" || phone == "" || jobType == "" || depName == "")
                 return;
             else {
                 const user = {
@@ -228,9 +254,7 @@
             }
         }
 
-
     </script>
-
 </head>
 
 <body>
@@ -284,6 +308,7 @@
             </ul>
         </nav><!-- End Icons Navigation -->
     </header><!-- End Header -->
+   
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
@@ -317,6 +342,7 @@
 
         </ul><!-- End Nav -->
     </aside><!-- End Sidebar-->
+
     <!-- ======= Main ======= -->
     <main id="main" class="main">
         <div id="title_ph" class="pagetitle"></div>
@@ -330,35 +356,35 @@
                         <form id="UserForm" class="row g-3 needs-validation" novalidate>
 
                             <div class="col-md-5">
-                                <label for="validationCustom01" class="form-label">שם פרטי <i class="bi bi-asterisk"></i></label>
+                                <label for="firstNameTB" class="form-label">שם פרטי <i class="bi bi-asterisk"></i></label>
                                 <div class="col input-group has-validation">
-                                    <input type="text" class="form-control" id="validationCustom01" maxlength="20" required>
+                                    <input type="text" class="form-control" id="firstNameTB" maxlength="20" required>
                                     <div class="invalid-feedback">הכנס שם פרטי המכיל עד 20 תווים</div>
                                 </div>
                             </div>
                             <div class="col-md-5">
-                                <label for="validationCustom02" class="form-label">שם משפחה <i class="bi bi-asterisk"></i></label>
+                                <label for="lastNameTB" class="form-label">שם משפחה <i class="bi bi-asterisk"></i></label>
                                 <div class="col input-group has-validation">
-                                    <input type="text" class="form-control" id="validationCustom02" maxlength="20" required>
+                                    <input type="text" class="form-control" id="lastNameTB" maxlength="20" required>
                                     <div class="invalid-feedback">הכנס שם משפחה המכיל עד 20 תווים</div>
                                 </div>
                             </div>
                             <div class="col-md-5">
-                                <label for="validationCustomUsername" class="form-label">שם משתמש <i class="bi bi-asterisk"></i></label>
+                                <label for="usernameTB" class="form-label">שם משתמש <i class="bi bi-asterisk"></i></label>
                                 <div class="input-group has-validation">
-                                    <input type="text" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" maxlength="30" required>
+                                    <input type="text" class="form-control" id="usernameTB" aria-describedby="inputGroupPrepend" maxlength="30" required>
                                     <div class="invalid-feedback">הכנס שם משתמש המכיל עד 30 תווים</div>
                                 </div>
                             </div>
                             <div class="col-md-5">
-                                <label for="validationCustom03" class="form-label">סיסמה <i class="bi bi-asterisk"></i></label>
+                                <label for="passwordTB" class="form-label">סיסמה <i class="bi bi-asterisk"></i></label>
                                 <div class="col input-group has-validation">
-                                    <input type="password" class="form-control" id="validationCustom03" length="3" required>
+                                    <input type="text" class="form-control" id="passwordTB" length="3" required>
                                     <div class="invalid-feedback">הכנס סיסמה בעלת 5 תווים</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label for="validationCustom04" class="form-label">שם המחלקה <i class="bi bi-asterisk"></i></label>
+                                <label for="input" class="form-label">שם המחלקה <i class="bi bi-asterisk"></i></label>
                                 <div class="custom-dropdown input-group has-validation">
                                     <input type="text" id="input" class="form-control" required>
                                     <ul class="dropdown-options" id="dropdown-options"></ul>
@@ -366,9 +392,9 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <label for="inputState" class="form-label">סוג משתמש <i class="bi bi-asterisk"></i></label>
+                                <label for="jobTypeTB" class="form-label">סוג משתמש <i class="bi bi-asterisk"></i></label>
                                 <div class="col input-group has-validation">
-                                    <select id="inputState" class="form-select form-control" autocomplete="on" required>
+                                    <select id="jobTypeTB" class="form-select form-control" autocomplete="on" required>
                                         <option value=""></option>
                                         <option value="A">אדמין</option>
                                         <option value="N">אחות</option>
@@ -379,29 +405,29 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label for="inputEmail3" class="form-label">דוא"ל <i class="bi bi-asterisk"></i></label>
+                                <label for="emailTB" class="form-label">דוא"ל <i class="bi bi-asterisk"></i></label>
                                 <div class="col input-group has-validation">
-                                    <input type="email" class="form-control" id="validationCustom03" style="direction: ltr" placeholder="@hymc.gov.il" required> <!--לבדוק ולשנות-->
+                                    <input type="email" class="form-control" id="emailTB" style="direction: ltr" placeholder="@hymc.gov.il" required> <!--לבדוק ולשנות-->
                                     <div class="invalid-feedback">הכנס דואר אלקטרוני בפורמט המתאים</div>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <label for="phone" class="form-label">נייד <i class="bi bi-asterisk"></i></label>
+                                <label for="phoneTB" class="form-label">נייד <i class="bi bi-asterisk"></i></label>
                                 <div class="col input-group has-validation">
-                                    <input name="phone" type="text" class="form-control" id="depPhoneTB" pattern="^0\d[ -]?\d{7}$" required> <!--לבדוק ולשנות-->
+                                    <input name="phone" type="text" class="form-control" id="phoneTB" pattern="^0\d[ -]?\d{7}$" required> <!--לבדוק ולשנות-->
                                     <div class="invalid-feedback">מספר נייד צריך להיות בעל 10 ספרות</div>
                                 </div>
                             </div>
                             <div class="col-md-10">
-                                <label for="validationCustom01" class="form-label">תפקיד</label>
+                                <label for="positionTB" class="form-label">תפקיד</label>
                                 <div class="col input-group">
-                                    <input type="text" class="form-control" id="validationCustom01">
+                                    <input type="text" class="form-control" id="positionTB">
                                 </div>
                             </div>
                             <br />
                             <div class="col-12">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="invalidCheck" checked>
+                                    <input class="form-check-input" type="checkbox" id="isActiveCB" checked>
                                     <label class="form-check-label" for="gridCheck">משתמש פעיל</label>
                                 </div>
                             </div>
