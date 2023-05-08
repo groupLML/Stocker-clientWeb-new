@@ -34,17 +34,28 @@
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script src="../assets/js/custom-dropdown-input.js"></script>
 
+    <!-- datatables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
     <script>
+
+        let dataTable;
 
         $(document).ready(function () {
 
             GetDepsApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
+            GetDepStockApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Stock/";
+
+            deps = []; // Array to save departments data
             depNames = [];
             GetDepartments();
             createDropDownInput(depNames);
 
             user = JSON.parse(sessionStorage.getItem("User")); //get user from storage
             renderUser(user);
+
+            $("#DepSearch").submit(GetDepStock); //form validation
 
         })
 
@@ -56,16 +67,16 @@
             document.getElementById("user_ph2").innerHTML += str;
         }
 
-
         function GetDepartments() {
-
             ajaxCall("GET", GetDepsApi, "", GetDepsSCB, GetDepsECB);
+            return false;
         }
 
         function GetDepsSCB(data) {
             console.log(data);
 
             for (var i = 0; i < data.length; i++) {
+                deps.push({ depId: data[i]['depId'], depName: data[i]['depName'] }); // Save department ID and name in the array
                 if (!depNames.includes(data[i]['depName']))
                     depNames.push(data[i]['depName']);
             }
@@ -76,11 +87,68 @@
             console.log(err);
         }
 
+        function GetDepStock() {
+            DepName = $("#input").val();
+
+            Dep = deps.find(function (dep) {
+                return dep.depName === DepName;
+            });
+
+            ajaxCall("GET", GetDepStockApi + Dep.depId, "", GetStockSCB, GetStockECB);
+            return false;
+        }
+
+        function GetStockSCB(data) {
+            console.log(data);
+            DataTableRender(data);
+        }
+
+        function GetStockECB(err) {
+            console.log(err);
+        }
+
+        function DataTableRender(stockData) {
+            let stockArray = [];
+            for (var i = 0; i < stockData.length; i++) {
+                stockArray.push(stockData[i]);
+            }
+            try {
+                if (dataTable) {
+                    // Clear the existing data from the table
+                    dataTable.clear().draw();
+                    // Add new data to the table
+                    dataTable.rows.add(stockArray).draw();
+                } else {
+                    dataTable = $('#Table').DataTable({
+                        "language": {
+                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
+                        },
+                        data: stockArray,
+                        pageLength: 5,
+                        columns: [
+                            { data: "medId" },
+                            { data: "medName" },
+                            { data: "stcQty" }
+                        ],
+                    });
+                }
+            } catch (err) {
+                alert(err);
+            }
+        }
+
         function clearStorage() {
             sessionStorage.clear();
         }
 
     </script>
+
+    <style>
+        /* Hide the table headers */
+        #Table thead {
+            display: none;
+        }
+    </style>
 
 </head>
 
@@ -173,7 +241,7 @@
         </div><!-- End Page Title -->
         <div class="card">
             <div class="card-body">
-                <form>
+                <form id="DepSearch">
                     <div class="row mb-4">
                         <label class="col-form-label">בחר מחלקה<i class="bi bi-asterisk"></i></label>
                         <div class="custom-dropdown input-group has-validation">
@@ -181,15 +249,30 @@
                             <ul class="dropdown-options" id="dropdown-options"></ul>
                             <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
                         </div>
-
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">הצג</button>
+                        </div>
                     </div>
                 </form>
+                <!-- Table with stripped rows table-striped-->
+                <table class="table hover table-striped-custom " id="Table" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>שם התרופה</th>
+                            <th>כמות במלאי</th>
+                        </tr>
+                    </thead>
+                </table>
+                <!-- End Table with stripped rows -->
             </div>
         </div>
     </main><!-- End #main -->
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
-        <div class="copyright"><p>copyrights here</p></div>
+        <div class="copyright">
+            &copy; Copyright <strong><span>LML</span></strong>. All Rights Reserved
+        </div>
     </footer><!-- End Footer -->
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
