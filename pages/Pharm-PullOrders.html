@@ -67,6 +67,8 @@
                 orderData.lastUpdate = order.lastUpdate;
                 // Add the pUser to the orderData object
                 orderData.pUser = order.pharmId;
+                // Add the pharmName to the orderData object
+                orderData.pharmName = order.pharmName;
 
                 var orderDataJson = JSON.stringify(orderData);// Convert the orderData object to a JSON string
 
