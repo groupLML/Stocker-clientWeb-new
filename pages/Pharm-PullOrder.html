@@ -58,7 +58,8 @@
             MedsList = [];
 
             renderButtons();
-            //renderModal();
+            renderModal();
+
             const statusSpan = document.querySelector(".badge");
             if (order.status === "בהמתנה") {
                 statusSpan.classList.add("bg-danger");
@@ -86,6 +87,31 @@
                 str += `<button type="button" class="btn btn-primary" onclick="location.href='Pharm-PullOrders.html'">חזרה</button>`;
             }
             document.getElementById("buttons_ph").innerHTML = str;
+        }
+
+        function renderModal() {
+            let str = ``;
+            if (order.status === "בהמתנה") {
+                str += `<div class="modal-header">`;
+                str += `<h5 class="modal-title">טיפול בהזמנה</h5>`;
+                str += `<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div >`;
+                str += `<div class="modal-body">`;
+                str += `<div><h6>האם אתה אחראי להנפקת ההזמנה?</h6></div>`;
+                str += `<div class="d-flex justify-content-center">`;
+                str += `<button type="button" class="btn btn-success" id="takeOrderBTN" onclick="StatusUpdate()">טיפול בהזמנה</button>`;
+                str += `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">סגור</button></div></div>`;
+            }
+            else if (order.status === "בטיפול") {
+                str += `<div class="modal-header">`;
+                str += `<h5 class="modal-title">הנפקת הזמנה</h5>`;
+                str += `<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div >`;
+                str += `<div class="modal-body">`;
+                str += `<div><h6>האם ההזמנה הונפקה?</h6></div>`;
+                str += `<div class="d-flex justify-content-center">`;
+                str += `<button type="button" class="btn btn-success" id="takeOrderBTN" onclick="StatusUpdate()">אישור הנפקה</button>`;
+                str += `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">סגור</button></div></div>`;
+            }
+            document.getElementById("modal_ph").innerHTML = str;
         }
 
         function renderUser(user) { //render active user
@@ -308,7 +334,7 @@
                 <div class="modal fade" id="verticalycentered" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content" id="modal_ph">
-                            <div class="modal-header">
+                            <!--<div class="modal-header">
                                 <h5 class="modal-title">טיפול בהזמנה</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
@@ -318,7 +344,7 @@
                                     <button type="button" class="btn btn-success" id="takeOrderBTN" onclick="StatusUpdate()">טיפול בהזמנה</button>
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">סגור</button>
                                 </div>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                 </div><!-- End Vertically centered Modal-->
