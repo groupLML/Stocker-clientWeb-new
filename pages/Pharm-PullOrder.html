@@ -39,7 +39,15 @@
 
     <script>
         $(document).ready(function () {
-            apiPullOrderDetails = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetOrderDetails/orderId/";
+            //apiPullOrderDetails = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetOrderDetails/orderId/";
+            //apiUpdateTaken = "https://proj.ruppin.ac.il/cgroup36/prod/UpdatePharmTaken"
+            //apiUpdateIssued = "https://localhost:7102/api/PullOrder//api/PullOrder/UpdatePharmIssued/"
+
+            apiPullOrderDetails = "https://localhost:7102/api/PullOrder/GetOrderDetails/orderId/"; 
+            apiUpdateTaken = "https://localhost:7102/api/PullOrder/UpdatePharmTaken/"
+            apiUpdateIssued = "https://localhost:7102/api/PullOrder//api/PullOrder/UpdatePharmIssued/"
+            /*pullId / { pullId }*/
+            /*/ pullId / 49 / pUser / 5*/
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
@@ -150,10 +158,25 @@
 
 
         function StatusUpdate() {
+
             console.log("StatusUpdate button clicked");
+            if (order.status === "בהמתנה") {//Update order status from waiting to taken
+                ajaxCall("PUT", apiUpdateTaken + "pullId/" + order.orderId + "/pUser/" + user.userId , "", updateStatusSCB, updateStatusECB);
+                return false;
+            }
+            //else {//Update order status from taken to issued
+            //    ajaxCall("PUT", apiUpdateIssued + , "", updateStatusSCB, updateStatusECB);
+            //    /*pullId / { pullId }*/
+            //}
         }
 
+        function updateStatusSCB(data) {
+            console.log(data);
+        }
 
+        function updateStatusECB(err) {
+            console.log(err);
+        }
 
         function clearStorage() {
             sessionStorage.clear();
