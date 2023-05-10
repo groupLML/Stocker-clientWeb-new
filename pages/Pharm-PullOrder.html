@@ -43,11 +43,9 @@
             //apiUpdateTaken = "https://proj.ruppin.ac.il/cgroup36/prod/UpdatePharmTaken"
             //apiUpdateIssued = "https://localhost:7102/api/PullOrder//api/PullOrder/UpdatePharmIssued/"
 
-            apiPullOrderDetails = "https://localhost:7102/api/PullOrder/GetOrderDetails/orderId/"; 
+            apiPullOrderDetails = "https://localhost:7102/api/PullOrder/GetOrderDetails/orderId/";
             apiUpdateTaken = "https://localhost:7102/api/PullOrder/UpdatePharmTaken/"
             apiUpdateIssued = "https://localhost:7102/api/PullOrder//api/PullOrder/UpdatePharmIssued/"
-            /*pullId / { pullId }*/
-            /*/ pullId / 49 / pUser / 5*/
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
@@ -59,9 +57,12 @@
             GetPullOrderDetails();
             MedsList = [];
 
+            renderButtons();
+            //renderModal();
             const statusSpan = document.querySelector(".badge");
             if (order.status === "בהמתנה") {
                 statusSpan.classList.add("bg-danger");
+                
             }
             else if (order.status === "בטיפול") {
                 statusSpan.classList.add("bg-warning");
@@ -69,15 +70,23 @@
             else {
                 statusSpan.classList.add("bg-success");
             }
-
-            if (order.status === "בהמתנה") {
-                // Show the button
-                $("#takeOrderBTN").show();
-            } else {
-                // Hide the button
-                $("#takeOrderBTN").hide();
-            }
         })
+
+        function renderButtons() {
+            let str = ``;
+            if (order.status === "בהמתנה") {
+                str += `<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#verticalycentered">טיפול בהזמנה</button>`;
+                str += `<button type="button" class="btn btn-primary" onclick="location.href='Pharm-PullOrders.html'">חזרה</button>`;
+            }
+            else if (order.status === "בטיפול") {
+                str += `<button type="button" class="btn btn-success" id="takeOrderBTN" data-bs-toggle="modal" data-bs-target="#verticalycentered">הנפקת הזמנה</button>`;
+                str += `<button type="button" class="btn btn-primary" onclick="location.href='Pharm-PullOrders.html'">חזרה</button>`;
+            }
+            else {
+                str += `<button type="button" class="btn btn-primary" onclick="location.href='Pharm-PullOrders.html'">חזרה</button>`;
+            }
+            document.getElementById("buttons_ph").innerHTML = str;
+        }
 
         function renderUser(user) { //render active user
             let str = `<h6> ${user.firstName} ${user.lastName}</h6>`;
@@ -158,16 +167,18 @@
 
 
         function StatusUpdate() {
-
-            console.log("StatusUpdate button clicked");
             if (order.status === "בהמתנה") {//Update order status from waiting to taken
-                ajaxCall("PUT", apiUpdateTaken + "pullId/" + order.orderId + "/pUser/" + user.userId , "", updateStatusSCB, updateStatusECB);
+                ajaxCall("PUT", apiUpdateTaken + "pullId/" + order.orderId + "/pUser/" + user.userId, "", updateStatusSCB, updateStatusECB);
                 return false;
             }
-            //else {//Update order status from taken to issued
-            //    ajaxCall("PUT", apiUpdateIssued + , "", updateStatusSCB, updateStatusECB);
-            //    /*pullId / { pullId }*/
-            //}
+            else {//Update order status from taken to issued
+                if (order.pUser == user.userId) {//only the user who has taken the order can check that the order was issued!
+                    ajaxCall("PUT", apiUpdateIssued + "pullId/" + order.orderId, "", updateStatusSCB, updateStatusECB);
+                }
+                else {
+                    alert("only the user who has taken the order can check that the order was issued!")
+                }
+            }
         }
 
         function updateStatusSCB(data) {
@@ -292,14 +303,11 @@
                     </thead>
                 </table>
                 <!-- End Table with stripped rows -->
-                <div class="d-flex justify-content-center">
-                    <button type="button" class="btn btn-success" id="takeOrderBTN" data-bs-toggle="modal" data-bs-target="#verticalycentered">טיפול בהזמנה</button>
-                    <button type="button" class="btn btn-primary" onclick="location.href='Pharm-PullOrders.html'">חזרה</button>
-                </div>
+                <div id="buttons_ph" class="d-flex justify-content-center"></div>
                 <!-- Vertically centered Modal -->
                 <div class="modal fade" id="verticalycentered" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
+                        <div class="modal-content" id="modal_ph">
                             <div class="modal-header">
                                 <h5 class="modal-title">טיפול בהזמנה</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
