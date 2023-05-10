@@ -42,8 +42,11 @@
 
         $(document).ready(function () {
 
-            apiDep = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
-            apiUser = "https://proj.ruppin.ac.il/cgroup36/prod/api/User";
+            //apiDep = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
+            //apiUser = "https://proj.ruppin.ac.il/cgroup36/prod/api/User";
+
+            apiDep = "https://localhost:7102/api/Department";
+            apiUser = "https://localhost:7102/api/User";
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
@@ -204,13 +207,19 @@
         function successPostUCBF(data) {
             console.log(data);
 
-            if (data == true) {
-                alert("In Success");
-                sessionStorage.removeItem('UserId');
-                window.location.href = 'Admin-Users.html';
-            }
-            else
-                alert("Error");
+            //if (data == 1) {
+            //    alert("In Success");
+            //    sessionStorage.removeItem('UserId');
+            //    window.location.href = 'Admin-Users.html';
+            //}
+            //else {
+            //    if (data == -1) {
+            //        alert("This username is already taken, please choose someting else");
+            //        return;
+            //    }
+            //    else
+            //        alert("Error");
+            //}
         }
 
         function errorPostUCBF(err) {
