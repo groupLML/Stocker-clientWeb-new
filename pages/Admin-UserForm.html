@@ -42,11 +42,8 @@
 
         $(document).ready(function () {
 
-            //apiDep = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
-            //apiUser = "https://proj.ruppin.ac.il/cgroup36/prod/api/User";
-
-            apiDep = "https://localhost:7102/api/Department";
-            apiUser = "https://localhost:7102/api/User";
+            apiDep = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
+            apiUser = "https://proj.ruppin.ac.il/cgroup36/prod/api/User";
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
@@ -70,15 +67,6 @@
                 else
                     postUserToServer();
             });
-
-
-            //$(window).on('unload', function () {
-            //    var item = sessionStorage.getItem('DepId');
-            //    if (item !== null) {
-            //        sessionStorage.removeItem('DepId');
-            //    }
-            //});
-
 
         });
 
@@ -169,7 +157,7 @@
             const password = $("#passwordTB").val();
             const phone = $("#phoneTB").val().replace(/[^\d]/g, '');
             const position = $("#positionTB").val();
-            const jobType = $("#jobTypeTB").val(); 
+            const jobType = $("#jobTypeTB").val();
             var depName = $("#input").val();
             const isActive = $("#isActiveCB").is(":checked");
 
@@ -178,10 +166,10 @@
                 return;
             else {
 
-                const depId = 0;
+                var depId = 0;
                 for (var i = 0; i < deps.length; i++) {
                     if (deps[i]['depName'] == depName)
-                        depId= data[i]['depId'];
+                        depId = deps[i]['depId'];
                 }
 
                 const user = {
@@ -207,19 +195,19 @@
         function successPostUCBF(data) {
             console.log(data);
 
-            //if (data == 1) {
-            //    alert("In Success");
-            //    sessionStorage.removeItem('UserId');
-            //    window.location.href = 'Admin-Users.html';
-            //}
-            //else {
-            //    if (data == -1) {
-            //        alert("This username is already taken, please choose someting else");
-            //        return;
-            //    }
-            //    else
-            //        alert("Error");
-            //}
+            if (data == 1) {
+                alert("In Success");
+                sessionStorage.removeItem('UserId');
+                window.location.href = 'Admin-Users.html';
+            }
+            else {
+                if (data == -1) {
+                    alert("This username is already taken, please choose someting else");
+                    return;
+                }
+                else
+                    alert("Error");
+            }
         }
 
         function errorPostUCBF(err) {
@@ -308,7 +296,7 @@
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="Admin-Departments.html" class="logo d-flex align-items-center">
+            <a href="Admin-Departments.html" class="logo d-flex align-items-center" onclick="reload()">
                 <span class="d-none d-xl-block">St<img class="header-logo" src="../assets/img/logo.png" alt="">cker</span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -333,7 +321,7 @@
                 <li class="nav-item dropdown pe-3">
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown" id="user_ph2">
                         <span class="d-none d-md-block dropdown-toggle ps-2"></span>
-                    </a><!-- End Profile Iamge Icon -->
+                    </a><!-- End Profile Image Icon -->
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu profile">
                         <li class="dropdown-header" id="user_ph1">
@@ -359,17 +347,17 @@
         <ul class="sidebar-nav" id="sidebar-nav">
 
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#departments-nav" data-bs-toggle="collapse" href="#">
+                <a class="nav-link collapsed" data-bs-target="#departments-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
                     <span>מחלקות</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="departments-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="Admin-Departments.html">
+                        <a href="Admin-Departments.html" onclick="reload()">
                             <i class="bi bi-circle"></i><span>צפייה במחלקות</span>
                         </a>
                     </li>
                     <li>
-                        <a href="Admin-DepForm.html">
+                        <a href="Admin-DepForm.html" onclick="reload()">
                             <i class="bi bi-circle"></i><span>טופס מחלקה</span>
                         </a>
                     </li>
@@ -377,18 +365,18 @@
             </li><!-- End Departments Nav -->
 
             <li class="nav-item">
-                <a class="nav-link active" data-bs-target="#users-nav" data-bs-toggle="collapse" href="#">
+                <a class="nav-link active" data-bs-target="#users-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
                     <span>משתמשים</span>
                     <i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="users-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="Admin-Users.html" >
+                        <a href="Admin-Users.html" onclick="reload()" >
                             <i class="bi bi-circle"></i><span>צפייה במשתמשים</span>
                         </a>
                     </li>
                     <li>
-                        <a href="Admin-UserForm.html" class="active">
+                        <a href="Admin-UserForm.html" class="active" onclick="reload()">
                             <i class="bi bi-circle"></i><span>טופס משתמש</span>
                         </a>
                     </li>
@@ -452,9 +440,9 @@
                                     <select id="jobTypeTB" class="form-select form-control" autocomplete="on" required>
                                         <option value=""></option>
                                         <option value="A">אדמין</option>
-                                        <option value="N">אחות</option>
-                                        <option value="P">רוקח</option>
-                                        <option value="M">מנהל בית מרקחת</option>
+                                        <option value="N">אח/ות</option>
+                                        <option value="P">רוקח/ת</option>
+                                        <option value="M">מנהל/ת בית מרקחת</option>
                                     </select>
                                     <div class="valid-feedback"> אנא בחר את סוג המשתמש מתוך הרשימה</div>
                                 </div>

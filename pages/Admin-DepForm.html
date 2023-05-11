@@ -42,9 +42,7 @@
 
         $(document).ready(function () {
 
-            //api = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
-
-            api = "https://localhost:7102/api/Department";
+            api = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
@@ -65,16 +63,6 @@
                 else
                     postDepToServer();
             });
-
-
-            //$(window).on('unload', function () {
-            //    var item = sessionStorage.getItem('DepId');
-            //    if (item !== null) {
-            //        sessionStorage.removeItem('DepId');
-            //    }
-            //});
-
-
         });
 
         function renderUser(user) { //render active user
@@ -93,7 +81,7 @@
                 titleStr += `<li class="breadcrumb-item">מחלקה מספר ${depId}</li>`;
             else
                 titleStr += `<li class="breadcrumb-item">יצירת מחלקה חדשה</li>`;
-            titleStr += `<li class="breadcrumb-item active"><a href="Admin-Departments.html">מחלקות</a></li>`;
+            titleStr += `<li class="breadcrumb-item active"><a href="Admin-Departments.html" onclick="reload()">מחלקות</a></li>`;
             titleStr += `</ol>`;
             titleStr += `</nav>`;
             document.getElementById("title_ph").innerHTML = titleStr;
@@ -226,7 +214,7 @@
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="Admin-Departments.html" class="logo d-flex align-items-center">
+            <a href="Admin-Departments.html" class="logo d-flex align-items-center" onclick="reload()">
                 <span class="d-none d-xl-block">St<img class="header-logo" src="../assets/img/logo.png" alt="">cker</span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -277,17 +265,17 @@
         <ul class="sidebar-nav" id="sidebar-nav">
 
             <li class="nav-item">
-                <a class="nav-link active" data-bs-target="#departments-nav" data-bs-toggle="collapse" href="#">
+                <a class="nav-link active" data-bs-target="#departments-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
                     <span>מחלקות</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="departments-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="Admin-Departments.html">
+                        <a href="Admin-Departments.html" onclick="reload()">
                             <i class="bi bi-circle"></i><span>צפייה במחלקות</span>
                         </a>
                     </li>
                     <li>
-                        <a href="Admin-DepForm.html" class="active">
+                        <a href="Admin-DepForm.html" class="active" onclick="reload()">
                             <i class="bi bi-circle"></i><span>טופס מחלקה</span>
                         </a>
                     </li>
@@ -295,18 +283,18 @@
             </li><!-- End Departments Nav -->
 
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#users-nav" data-bs-toggle="collapse" href="#">
+                <a class="nav-link collapsed" data-bs-target="#users-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
                     <span>משתמשים</span>
                     <i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="users-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="Admin-Users.html">
+                        <a href="Admin-Users.html" onclick="reload()">
                             <i class="bi bi-circle"></i><span>צפייה במשתמשים</span>
                         </a>
                     </li>
                     <li>
-                        <a href="Admin-UserForm.html">
+                        <a href="Admin-UserForm.html" onclick="reload()">
                             <i class="bi bi-circle"></i><span>טופס משתמש</span>
                         </a>
                     </li>
