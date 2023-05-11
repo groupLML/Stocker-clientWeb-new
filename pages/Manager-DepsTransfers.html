@@ -40,12 +40,15 @@
 
     <script>
 
-        let dataTable;
-
         $(document).ready(function () {
+
+            apiRequests = "https://proj.ruppin.ac.il/cgroup36/prod/api/MedRequest";
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
+
+            GetRequests();
+            RequestsList = [];
 
         })
 
@@ -55,6 +58,53 @@
             document.getElementById("user_ph1").innerHTML += str;
             str = `<span>שלום, ${user.firstName}</span>`;
             document.getElementById("user_ph2").innerHTML += str;
+        }
+
+        function GetRequests() {
+            ajaxCall("GET", apiRequests, "", getReqsSCB, getReqsECB);
+        }
+
+        function getReqsSCB(data) {
+            console.log(data);
+            RequestsList = data;
+            DataTableRender(data);
+        }
+
+        function getReqsECB(err) {
+            console.log(err);
+        }
+
+        function DataTableRender(reqsData) {
+
+            let reqsArray = [];
+            for (var i = 0; i < reqsData.length; i++) {
+
+                var date = new Date(reqsData[i].reqDate); // המרה לתאריך
+                reqsData[i].reqDate = date.toISOString().slice(0, 10); //yyyy-mm-dd פורמט מבוקש
+
+                reqsArray.push(reqsData[i]);
+            }
+            try {
+                tbl = $('#Table').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
+                    },
+                    data: reqsArray,
+                    pageLength: 5,
+                    columns: [
+                        { data: "reqDate" },
+                        { data: "medId" },
+                        { data: "cDep" },
+                        { data: "aDep" },
+                        { data: "reqQty" },
+                        { data: "reqStatus" }
+                    ],
+                });
+            }
+
+            catch (err) {
+                alert(err);
+            }
         }
 
     </script>
@@ -67,7 +117,7 @@
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="index.html" class="logo d-flex align-items-center">
+            <a href="#" class="logo d-flex align-items-center">
                 <span class="d-none d-xl-block">St<img class="header-logo" src="../assets/img/logo.png" alt="">cker</span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -151,7 +201,7 @@
                 </a>
                 <ul id="departments-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="Manager-DepsInventory.html" class="active" onclick="reload()">
+                        <a href="Manager-DepsInventory.html" onclick="reload()">
                             <i class="bi bi-circle"></i><span>מחסן המחלקות</span>
                         </a>
                     </li>
@@ -161,7 +211,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="Manager-DepsTransfers.html" onclick="reload()">
+                        <a href="Manager-DepsTransfers.html" class="active" onclick="reload()">
                             <i class="bi bi-circle"></i><span>העברות בין מחלקות</span>
                         </a>
                     </li>
@@ -169,10 +219,10 @@
             </li>
             <!-- End Deps Nav -->
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#requests-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
-                    <span>מחלקות</span><i class="bi bi-chevron-down ms-auto"></i>
+                <a class="nav-link collapsed" data-bs-target="#norms-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>תקנים</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="requests-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <ul id="norms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="#" onclick="reload()">
                             <i class="bi bi-circle"></i><span>תקן המחלקות</span>
@@ -194,7 +244,22 @@
             <h1>העברות בין המחלקות</h1>
         </div><!-- End Page Title -->
         <div class="card">
-            <div class="card-body"></div>
+            <div class="card-body">
+                <!-- Table with stripped rows table-striped-->
+                <table class="table hover table-striped-custom " id="Table" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>תאריך</th>
+                            <th>תרופה</th>
+                            <th>מחלקה שמסרה</th>
+                            <th>מחלקה שקיבלה</th>
+                            <th>כמות</th>
+                            <th>סטטוס</th>
+                        </tr>
+                    </thead>
+                </table>
+                <!-- End Table with stripped rows -->
+            </div>
         </div>
     </main><!-- End #main -->
     <!-- ======= Footer ======= -->

@@ -104,7 +104,10 @@
                 str += `<div class="row msgHeader"><h6 class="col-9 msgTitle"> ${Messages[i].msg}</h6>`
                 str += `<p class="col-3 date">${Messages[i].msgDate.slice(0, 10)} ${Messages[i].msgDate.slice(11, 16)}</p></div>`;
                 str += `<div class="row"><p class="col">נוצר על ידי: ${Messages[i].pharmacistName}</p></div>`;
-                str += `</div><hr/>`;
+                str += `</div>`;
+                if (i !== Messages.length - 1) {
+                    str += `<hr/>`;
+                }
             }
             document.getElementById("messages_ph").innerHTML = str;
         }
@@ -157,7 +160,7 @@
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="index.html" class="logo d-flex align-items-center">
+            <a href="#" class="logo d-flex align-items-center">
                 <span class="d-none d-xl-block">St<img class="header-logo" src="../assets/img/logo.png" alt="">cker</span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -259,10 +262,10 @@
             </li>
             <!-- End Deps Nav -->
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#requests-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
-                    <span>מחלקות</span><i class="bi bi-chevron-down ms-auto"></i>
+                <a class="nav-link collapsed" data-bs-target="#norms-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>תקנים</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="requests-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <ul id="norms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="#" onclick="reload()">
                             <i class="bi bi-circle"></i><span>תקן המחלקות</span>
