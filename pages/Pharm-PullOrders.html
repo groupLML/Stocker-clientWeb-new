@@ -39,8 +39,8 @@
 
     <script>
         $(document).ready(function () {
-            //apiPullOrders = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetPullOrdersPharm";
-            apiPullOrders = "https://localhost:7102/api/PullOrder/GetPullOrdersPharm";
+
+            apiPullOrders = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetPullOrdersPharm";
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);

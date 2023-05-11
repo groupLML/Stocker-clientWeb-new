@@ -40,13 +40,10 @@
     <script>
 
         $(document).ready(function () {
-            //apiPullOrderDetails = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetOrderDetails/orderId/";
-            //apiUpdateTaken = "https://proj.ruppin.ac.il/cgroup36/prod/UpdatePharmTaken"
-            //apiUpdateIssued = "https://localhost:7102/api/PullOrder//api/PullOrder/UpdatePharmIssued/"
 
-            apiPullOrderDetails = "https://localhost:7102/api/PullOrder/GetOrderDetails/orderId/";
-            apiUpdateTaken = "https://localhost:7102/api/PullOrder/UpdatePharmTaken/"
-            apiUpdateIssued = "https://localhost:7102/api/PullOrder//api/PullOrder/UpdatePharmIssued/"
+            apiPullOrderDetails = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetOrderDetails/orderId/";
+            apiUpdateTaken = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/UpdatePharmTaken/"
+            apiUpdateIssued = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/UpdatePharmIssued/"
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
@@ -251,11 +248,33 @@
         function StatusUpdate() {
             if (order.status === "בהמתנה") {//Update order status from waiting to taken
                 ajaxCall("PUT", apiUpdateTaken + "pullId/" + order.orderId + "/pUser/" + user.userId, "", updateStatusSCB, updateStatusECB);
-                return false;
             }
             else {//Update order status from taken to issued
+
+                //var data = {
+                //    "pullOrder": {
+                //        "nUser": 4,
+                //        "orderId": 92,
+                //        "depId": 3,
+                //        "pUser": 5,
+                //        "reportNum": "11111",
+                //        "status": "T",
+                //        "orderDate": "2023-04-15T12:15:32.323",
+                //        "lastUpdate": "2023-04-15T14:03:00.633",
+                //        "medList": []
+                //    },
+                //    "medList": [{
+                //        "medId": 1,
+                //        "poQty": 3,
+                //        "supQty": 1,
+                //        "mazNum": "M1191300"
+                //    }]
+                //};
+
                 if (order.pUser == user.userId) {//only the user who has taken the order can check that the order was issued!
-                    ajaxCall("PUT", apiUpdateIssued + "pullId/" + order.orderId, "", updateStatusSCB, updateStatusECB);
+
+                    updateMedsListFromDataTable();
+                    //ajaxCall("PUT", apiUpdateIssued + "pullId/" + order.orderId, "", updateStatusSCB, updateStatusECB);
                 }
                 else {//התנאים של הכפתורים מונעים את האפשרות שזה יקרה
                     console.log("only the user who has taken the order can check that the order was issued!")
@@ -266,11 +285,54 @@
         function updateStatusSCB(data) {
             console.log(data);
             $('#verticalycentered').modal('hide'); // Hide the modal
+
+            // Update status in session storage
+            var order = JSON.parse(sessionStorage.getItem('Order'));
+            if (order.status === 'בהמתנה') {
+                order.status = 'בטיפול';
+            }
+            else if (order.status === 'בטיפול') {
+                order.status = 'נופק';
+            }
+            sessionStorage.setItem('Order', JSON.stringify(order));
+
             location.reload(); // Reload the page
         }
 
         function updateStatusECB(err) {
             console.log(err);
+        }
+
+        function updateMedsListFromDataTable() {// Update medsList with new supQty values from tbl inputs
+            var tableData = tbl.rows().data().toArray();
+
+            for (var i = 0; i < MedsList.length; i++) {
+                var med = MedsList[i];
+                var medId = med.medId;
+
+                for (var j = 0; j < tableData.length; j++) {
+                    var rowData = tableData[j];
+
+                    if (rowData.medId === medId) {
+                        var supQtyInput = $('input', tbl.row(j).node()).val();
+                        med.supQty = parseInt(supQtyInput);
+                        break;
+                    }
+                }
+            }
+
+            console.log(MedsList); // Updated medsList with new supQty values
+
+            //var formattedArray = MedsList.map(function (med) {
+            //    return {
+            //        "medId": med.medId,
+            //        "poQty": med.poQty,
+            //        "supQty": med.supQty,
+            //        "mazNum": ""
+            //    };
+            //});
+
+            //return formattedArray;
         }
 
         function clearStorage() {
@@ -373,14 +435,7 @@
                 <div id="orderData_ph" class="orderData"></div>
                 <!-- Table with stripped rows table-striped-->
                 <table class="table hover table-striped-custom " id="Table" style="width:100%">
-                    <thead id="TableColNames_ph">
-                        <!--<tr>
-                            <th>#</th>
-                            <th>שם תרופה</th>
-                            <th>כמות נדרשת</th>
-                            <th>כמות שהונפקה</th>
-                        </tr>-->
-                    </thead>
+                    <thead id="TableColNames_ph"></thead>
                 </table>
                 <!-- End Table with stripped rows -->
                 <div id="buttons_ph" class="d-flex justify-content-center"></div>
@@ -391,6 +446,7 @@
                     </div>
                 </div><!-- End Vertically centered Modal-->
             </div>
+        </div>
     </main><!-- End #main -->
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
