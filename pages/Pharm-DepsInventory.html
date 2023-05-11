@@ -242,14 +242,20 @@
         <div class="card">
             <div class="card-body">
                 <form id="DepSearch">
-                    <div class="row mb-4">
-                        <label class="col-form-label">בחר מחלקה<i class="bi bi-asterisk"></i></label>
-                        <div class="custom-dropdown input-group has-validation">
-                            <input type="text" id="input" class="form-control" required>
-                            <ul class="dropdown-options" id="dropdown-options"></ul>
-                            <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="col-form-label">בחר מחלקה<i class="bi bi-asterisk"></i></label>
                         </div>
-                        <div class="text-center">
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="input-group has-validation">
+                                <input type="text" id="input" class="form-control" autocomplete="off" required>
+                                <ul class="dropdown-options" id="dropdown-options"></ul>
+                                <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
                             <button type="submit" class="btn btn-primary">הצג</button>
                         </div>
                     </div>

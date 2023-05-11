@@ -1,15 +1,30 @@
 ﻿function createDropDownInput(optionsList) {
     var input = $("#input");
     var dropdownOptions = $("#dropdown-options");
+    var isInputClicked = false;
 
-    input.focus(function () {
-        dropdownOptions.show();
+    input.click(function (e) {
+        e.stopPropagation(); // Prevent the click event from bubbling up
+
+        if (!dropdownOptions.is(":visible")) {
+            dropdownOptions.show();
+        }
+
+        isInputClicked = true;
     });
 
-    dropdownOptions.on("click", "li", function () {
+    input.focus(function () {
+        if (!isInputClicked) {
+            dropdownOptions.show();
+        }
+    });
+
+    dropdownOptions.on("click", "li", function (e) {
         var selectedValue = $(this).data("value");
         input.val(selectedValue);
         dropdownOptions.hide();
+        isInputClicked = false;
+        e.stopPropagation(); // Prevent the click event from propagating to document click event
     });
 
     input.on("input", function () {
@@ -35,6 +50,7 @@
     $(document).on("click", function (e) {
         if (!$(e.target).closest(".custom-dropdown").length) {
             dropdownOptions.hide();
+            isInputClicked = false;
         }
     });
 }
