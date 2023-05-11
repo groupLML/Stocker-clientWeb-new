@@ -187,14 +187,6 @@ img {
     font-weight: 400;
     margin: 0px;
     align-self: center;
-    left: 30px;
-    position: fixed;
-}
-
-.orderStatus {
-    left: 30px;
-    top: 110px;
-    position: fixed;
 }
 
 /*table style*/

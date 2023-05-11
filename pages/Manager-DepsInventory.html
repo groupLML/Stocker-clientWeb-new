@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Stocker - push order</title>
+    <title>Stocker - DepsInventory</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -32,32 +32,31 @@
     <!-- ajaxCalls and JQuery -->
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="../assets/js/custom-dropdown-input.js"></script>
 
     <!-- datatables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 
     <script>
+
+        let dataTable;
+
         $(document).ready(function () {
-            apiPushOrderDetails = "https://proj.ruppin.ac.il/cgroup36/prod/api/PushOrder/GetOrderDetails/orderId/";
+
+            GetDepsApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
+            GetDepStockApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Stock/";
+
+            deps = []; // Array to save departments data
+            depNames = [];
+            GetDepartments();
+            createDropDownInput(depNames);
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
-            order = JSON.parse(sessionStorage.getItem("Order")); //get order from storage
-            headerRender();
-            orderDataRender();
+            $("#DepSearch").submit(GetDepStock); //form validation
 
-            GetPushOrderDetails();
-            MedsList = [];
-
-            const statusSpan = document.querySelector(".badge");
-            if (order.status === "שוריין") {
-                statusSpan.classList.add("bg-danger");
-            }
-            else {
-                statusSpan.classList.add("bg-success");
-            }
         })
 
         function renderUser(user) { //render active user
@@ -68,71 +67,72 @@
             document.getElementById("user_ph2").innerHTML += str;
         }
 
-        function headerRender() {
-            var time = order.lastUpdate.slice(11, 16);
-            var date = order.lastUpdate.slice(0, 10);
-            let titleStr = `<h1>הזמנה מספר ${order.orderId}</h1>`
-            titleStr += `<nav>`
-            titleStr += `<ol class="breadcrumb">`
-            titleStr += `<li class="breadcrumb-item">הזמנה מספר ${order.orderId}</li>`
-            titleStr += `<li class="breadcrumb-item active"><a href="Pharm-PushOrders.html">הזמנות דחיפה</a></li>`
-            titleStr += `</ol>`
-            titleStr += `</nav>`
-            document.getElementById("title_ph").innerHTML = titleStr;
-
-            let orderHeaderStr = `<p class="orderDate">${date} ${time}</p>`
-            orderHeaderStr += `<span class="badge orderStatus">סטטוס: ${order.status}</span>`
-            document.getElementById("orderHeader").innerHTML = orderHeaderStr;
+        function GetDepartments() {
+            ajaxCall("GET", GetDepsApi, "", GetDepsSCB, GetDepsECB);
+            return false;
         }
 
-        function orderDataRender() {
-            let str = `<p>שם מחלקה: ${order.depName}</p>`
-            str += `<p>יוצר ההזמנה: ${order.nurseName}</p>`
-
-            str += `<p>פירוט הזמנה: </p>`
-
-            document.getElementById("orderData_ph").innerHTML = str;
-        }
-
-        function GetPushOrderDetails() {
-            const orderId = order.orderId;
-            ajaxCall("GET", apiPushOrderDetails + orderId, "", getOrderDetailsSCB, getOrderDetailsECB);
-        }
-
-        function getOrderDetailsSCB(data) {
+        function GetDepsSCB(data) {
             console.log(data);
-            MedsList = data;
-            DataTableRender(data);
+
+            for (var i = 0; i < data.length; i++) {
+                deps.push({ depId: data[i]['depId'], depName: data[i]['depName'] }); // Save department ID and name in the array
+                if (!depNames.includes(data[i]['depName']))
+                    depNames.push(data[i]['depName']);
+            }
+            renderOptions(depNames);
         }
 
-        function getOrderDetailsECB(err) {
+        function GetDepsECB(err) {
             console.log(err);
         }
 
-        function DataTableRender(medsData) {
+        function GetDepStock() {
+            DepName = $("#input").val();
 
-            let medsArray = [];
-            for (var i = 0; i < medsData.length; i++) {
+            Dep = deps.find(function (dep) {
+                return dep.depName === DepName;
+            });
 
-                medsArray.push(medsData[i]);
+            ajaxCall("GET", GetDepStockApi + Dep.depId, "", GetStockSCB, GetStockECB);
+            return false;
+        }
+
+        function GetStockSCB(data) {
+            console.log(data);
+            DataTableRender(data);
+        }
+
+        function GetStockECB(err) {
+            console.log(err);
+        }
+
+        function DataTableRender(stockData) {
+            let stockArray = [];
+            for (var i = 0; i < stockData.length; i++) {
+                stockArray.push(stockData[i]);
             }
             try {
-                tbl = $('#Table').DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
-                    },
-                    data: medsArray,
-                    pageLength: 5,
-                    columns: [
-                        { data: "medId" },
-                        { data: "medName" },
-                        { data: "poQty" },
-                        { data: "supQty" }
-                    ],
-                });
-            }
-
-            catch (err) {
+                if (dataTable) {
+                    // Clear the existing data from the table
+                    dataTable.clear().draw();
+                    // Add new data to the table
+                    dataTable.rows.add(stockArray).draw();
+                } else {
+                    dataTable = $('#Table').DataTable({
+                        "language": {
+                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
+                        },
+                        data: stockArray,
+                        pageLength: 5,
+                        columns: [
+                            { data: "medId" },
+                            { data: "medName" },
+                            { data: "stcQty" }
+                        ],
+                    });
+                }
+            } catch (err) {
                 alert(err);
             }
         }
@@ -142,6 +142,9 @@
         }
 
     </script>
+
+F
+
 </head>
 
 <body>
@@ -150,12 +153,12 @@
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="Pharm-PullOrders.html" class="logo d-flex align-items-center">
+            <a href="index.html" class="logo d-flex align-items-center">
                 <span class="d-none d-xl-block">St<img class="header-logo" src="../assets/img/logo.png" alt="">cker</span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div>
-        <!-- End Logo -->
+
         <div class="search-bar">
             <form class="search-form d-flex align-items-center" method="POST" action="#">
                 <input type="text" name="query" placeholder="חיפוש" title="Enter search keyword">
@@ -173,8 +176,7 @@
                 </li><!-- End Search Icon-->
 
                 <li class="nav-item dropdown">
-
-                    <a class="nav-link nav-icon" href="Pharm-Messages.html">
+                    <a class="nav-link nav-icon" href="Manager-messages.html">
                         <i class="bi bi-bell"></i>
                     </a><!-- End Notification Icon -->
                 </li><!-- End Notification Nav -->
@@ -206,44 +208,105 @@
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
             <li class="nav-item">
-                <a class="nav-link collapsed" href="Pharm-PullOrders.html">
-                    <span>הזמנות משיכה</span>
+                <a class="nav-link collapsed" href="#">
+                    <span>בית</span>
                 </a>
-            </li><!-- End PullOrders Nav -->
+            </li>
+            <!-- End Home Nav -->
             <li class="nav-item">
-                <a class="nav-link active" href="Pharm-PushOrders.html">
-                    <span>הזמנות דחיפה</span>
+                <a class="nav-link collapsed" data-bs-target="#orders-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>הזמנות</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End PushOrders Nav -->
+                <ul id="orders-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="Manager-PullOrders.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>הזמנות משיכה</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Manager-PushOrders.html"  onclick="reload()">
+                            <i class="bi bi-circle"></i><span>הזמנות דחיפה</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- End Orders Nav -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="Pharm-DepsInventory.html">
-                    <span>מחסן המחלקות</span>
+                <a class="nav-link active" data-bs-target="#departments-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>מחלקות</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End DepsStock Nav -->
+                <ul id="departments-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="Manager-DepsInventory.html" class="active" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>מחסן המחלקות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>צריכת המחלקות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Manager-DepsTransfers.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>העברות בין מחלקות</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- End Deps Nav -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="Pharm-DepsNorms.html">
-                    <span>תקן המחלקות</span>
+                <a class="nav-link collapsed" data-bs-target="#requests-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>מחלקות</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End DepsNorm Nav -->
+                <ul id="requests-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="#" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>תקן המחלקות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>בקשות לעדכון תקן</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- End Norms Nav -->
         </ul>
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
-        <div class="row">
-            <div id="title_ph" class="col-10 pagetitle"></div>
-            <div id="orderHeader" class="col-2"></div>
+        <div class="pagetitle">
+            <h1>מחסן המחלקות</h1>
         </div><!-- End Page Title -->
         <div class="card">
             <div class="card-body">
-                <div id="orderData_ph" class="orderData"></div>
+                <form id="DepSearch">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="col-form-label">בחר מחלקה<i class="bi bi-asterisk"></i></label>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="input-group has-validation">
+                                <input type="text" id="input" class="form-control" autocomplete="off" required>
+                                <ul class="dropdown-options" id="dropdown-options"></ul>
+                                <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <button type="submit" class="btn btn-primary">הצג</button>
+                        </div>
+                    </div>
+                </form>
                 <!-- Table with stripped rows table-striped-->
                 <table class="table hover table-striped-custom " id="Table" style="width:100%">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>שם תרופה</th>
-                            <th>כמות נדרשת</th>
-                            <th>כמות שהונפקה</th>
+                            <th>שם התרופה</th>
+                            <th>כמות במלאי</th>
                         </tr>
                     </thead>
                 </table>
@@ -266,7 +329,7 @@
     <script src="../assets/vendor/chart.js/chart.umd.js"></script>
     <script src="../assets/vendor/echarts/echarts.min.js"></script>
     <script src="../assets/vendor/quill/quill.min.js"></script>
-    <!--<script src="../assets/vendor/simple-datatables/simple-datatables.js"></script>-->
+    <script src="../assets/vendor/simple-datatables/simple-datatables.js"></script>
     <script src="../assets/vendor/tinymce/tinymce.min.js"></script>
     <script src="../assets/vendor/php-email-form/validate.js"></script>
 

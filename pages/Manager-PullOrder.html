@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+F#<!DOCTYPE html>
 <html lang="he" dir="rtl">
 
 <head>
@@ -391,25 +391,70 @@
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
             <li class="nav-item">
-                <a class="nav-link active" href="Pharm-PullOrders.html">
-                    <span>הזמנות משיכה</span>
+                <a class="nav-link collapsed" href="#">
+                    <span>בית</span>
                 </a>
-            </li><!-- End PullOrders Nav -->
+            </li>
+            <!-- End Home Nav -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="Pharm-PushOrders.html">
-                    <span>הזמנות דחיפה</span>
+                <a class="nav-link active" data-bs-target="#orders-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>הזמנות</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End PushOrders Nav -->
+                <ul id="orders-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="Manager-PullOrders.html" class="active" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>הזמנות משיכה</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Manager-PushOrders.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>הזמנות דחיפה</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- End Orders Nav -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="Pharm-DepsInventory.html">
-                    <span>מחסן המחלקות</span>
+                <a class="nav-link collapsed" data-bs-target="#departments-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>מחלקות</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End DepsStock Nav -->
+                <ul id="departments-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="Manager-DepsInventory.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>מחסן המחלקות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>צריכת המחלקות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Manager-DepsTransfers.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>העברות בין מחלקות</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- End Deps Nav -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="Pharm-DepsNorms.html">
-                    <span>תקן המחלקות</span>
+                <a class="nav-link collapsed" data-bs-target="#requests-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>מחלקות</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End DepsNorm Nav -->
+                <ul id="requests-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="#" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>תקן המחלקות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>בקשות לעדכון תקן</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- End Norms Nav -->
         </ul>
     </aside><!-- End Sidebar-->
 

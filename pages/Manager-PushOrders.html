@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+F<!DOCTYPE html>
 <html lang="he" dir="rtl">
 
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Stocker - push order</title>
+    <title>Stocker - push orders</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -39,25 +39,38 @@
 
     <script>
         $(document).ready(function () {
-            apiPushOrderDetails = "https://proj.ruppin.ac.il/cgroup36/prod/api/PushOrder/GetOrderDetails/orderId/";
+            apiPushOrders = "https://proj.ruppin.ac.il/cgroup36/prod/api/PushOrder/GetPushOrdersPharm";
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
-            order = JSON.parse(sessionStorage.getItem("Order")); //get order from storage
-            headerRender();
-            orderDataRender();
+            GetPushOrders();
+            PushOrdersList = [];
 
-            GetPushOrderDetails();
-            MedsList = [];
+            $('#Table').on('click', 'tbody tr', function () {// This function will be called when a row is clicked
+                // Create an array for the column names of the table
+                var columnNames = ["orderId", "orderDate", "orderTime", "depName", "nurseName", "status"];
 
-            const statusSpan = document.querySelector(".badge");
-            if (order.status === "שוריין") {
-                statusSpan.classList.add("bg-danger");
-            }
-            else {
-                statusSpan.classList.add("bg-success");
-            }
+                var orderData = {};// Create an empty object to store the row dat
+
+                $(this).find('td').each(function (index, cell) {// Loop through each cell in the clicked row
+                    orderData[columnNames[index]] = $(cell).text();// Get the cell value and add it to the orderData object
+                });
+
+                // Find the order in the PullOrdersList based on the orderId
+                var order = PushOrdersList.find(function (order) {
+                    return order.orderId === parseInt(orderData.orderId);// Convert the orderId to an integer
+                });
+
+                // Add the last update to the orderData object
+                orderData.lastUpdate = order.lastUpdate;
+
+                var orderDataJson = JSON.stringify(orderData);// Convert the orderData object to a JSON string
+
+                sessionStorage.setItem('Order', orderDataJson);// Add the rowDataJson to the session storage
+
+                window.location.href = 'Manager-PushOrder.html';// Navigate to PullOrder page
+            });
         })
 
         function renderUser(user) { //render active user
@@ -68,66 +81,54 @@
             document.getElementById("user_ph2").innerHTML += str;
         }
 
-        function headerRender() {
-            var time = order.lastUpdate.slice(11, 16);
-            var date = order.lastUpdate.slice(0, 10);
-            let titleStr = `<h1>הזמנה מספר ${order.orderId}</h1>`
-            titleStr += `<nav>`
-            titleStr += `<ol class="breadcrumb">`
-            titleStr += `<li class="breadcrumb-item">הזמנה מספר ${order.orderId}</li>`
-            titleStr += `<li class="breadcrumb-item active"><a href="Pharm-PushOrders.html">הזמנות דחיפה</a></li>`
-            titleStr += `</ol>`
-            titleStr += `</nav>`
-            document.getElementById("title_ph").innerHTML = titleStr;
-
-            let orderHeaderStr = `<p class="orderDate">${date} ${time}</p>`
-            orderHeaderStr += `<span class="badge orderStatus">סטטוס: ${order.status}</span>`
-            document.getElementById("orderHeader").innerHTML = orderHeaderStr;
+        function GetPushOrders() {
+            ajaxCall("GET", apiPushOrders, "", getPOSCB, getPOECB);
         }
 
-        function orderDataRender() {
-            let str = `<p>שם מחלקה: ${order.depName}</p>`
-            str += `<p>יוצר ההזמנה: ${order.nurseName}</p>`
-
-            str += `<p>פירוט הזמנה: </p>`
-
-            document.getElementById("orderData_ph").innerHTML = str;
-        }
-
-        function GetPushOrderDetails() {
-            const orderId = order.orderId;
-            ajaxCall("GET", apiPushOrderDetails + orderId, "", getOrderDetailsSCB, getOrderDetailsECB);
-        }
-
-        function getOrderDetailsSCB(data) {
+        function getPOSCB(data) {
             console.log(data);
-            MedsList = data;
+            PushOrdersList = data;
             DataTableRender(data);
         }
 
-        function getOrderDetailsECB(err) {
+        function getPOECB(err) {
             console.log(err);
         }
 
-        function DataTableRender(medsData) {
+        function DataTableRender(ordersData) {
 
-            let medsArray = [];
-            for (var i = 0; i < medsData.length; i++) {
+            let ordersArray = [];
+            for (var i = 0; i < ordersData.length; i++) {
+                //******format dd/mm/yyyy --> need to fix the sort
+                //var date = new Date(ordersData[i].orderDate);
+                //var formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                //ordersData[i].orderDate = formattedDate;
 
-                medsArray.push(medsData[i]);
+                //******format dd.mm.yyyy --> need to fix the sort
+                //var date = new Date(ordersData[i].orderDate);
+                //ordersData[i].orderDate = date.toLocaleDateString();
+
+                var date = new Date(ordersData[i].orderDate); // המרה לתאריך
+                ordersData[i].orderDate = date.toISOString().slice(0, 10); //yyyy-mm-dd פורמט מבוקש
+
+                ordersData[i].orderTime = ordersData[i].orderTime.slice(0, 5); //hh:mm פורמט מבוקש
+
+                ordersArray.push(ordersData[i]);
             }
             try {
                 tbl = $('#Table').DataTable({
                     "language": {
                         "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
                     },
-                    data: medsArray,
+                    data: ordersArray,
                     pageLength: 5,
                     columns: [
-                        { data: "medId" },
-                        { data: "medName" },
-                        { data: "poQty" },
-                        { data: "supQty" }
+                        { data: "orderId" },
+                        { data: "orderDate" },
+                        { data: "orderTime" },
+                        { data: "depName" },
+                        { data: "pharmName" },
+                        { data: "status" }
                     ],
                 });
             }
@@ -206,44 +207,89 @@
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
             <li class="nav-item">
-                <a class="nav-link collapsed" href="Pharm-PullOrders.html">
-                    <span>הזמנות משיכה</span>
+                <a class="nav-link collapsed" href="#">
+                    <span>בית</span>
                 </a>
-            </li><!-- End PullOrders Nav -->
+            </li>
+            <!-- End Home Nav -->
             <li class="nav-item">
-                <a class="nav-link active" href="Pharm-PushOrders.html">
-                    <span>הזמנות דחיפה</span>
+                <a class="nav-link active" data-bs-target="#orders-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>הזמנות</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End PushOrders Nav -->
+                <ul id="orders-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="Manager-PullOrders.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>הזמנות משיכה</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Manager-PushOrders.html" class="active" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>הזמנות דחיפה</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- End Orders Nav -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="Pharm-DepsInventory.html">
-                    <span>מחסן המחלקות</span>
+                <a class="nav-link collapsed" data-bs-target="#departments-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>מחלקות</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End DepsStock Nav -->
+                <ul id="departments-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="Manager-DepsInventory.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>מחסן המחלקות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>צריכת המחלקות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Manager-DepsTransfers.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>העברות בין מחלקות</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- End Deps Nav -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="Pharm-DepsNorms.html">
-                    <span>תקן המחלקות</span>
+                <a class="nav-link collapsed" data-bs-target="#requests-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>מחלקות</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End DepsNorm Nav -->
+                <ul id="requests-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="#" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>תקן המחלקות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>בקשות לעדכון תקן</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- End Norms Nav -->
         </ul>
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
-        <div class="row">
-            <div id="title_ph" class="col-10 pagetitle"></div>
-            <div id="orderHeader" class="col-2"></div>
+        <div class="pagetitle">
+            <h1>הזמנות דחיפה</h1>
         </div><!-- End Page Title -->
         <div class="card">
             <div class="card-body">
-                <div id="orderData_ph" class="orderData"></div>
                 <!-- Table with stripped rows table-striped-->
                 <table class="table hover table-striped-custom " id="Table" style="width:100%">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>שם תרופה</th>
-                            <th>כמות נדרשת</th>
-                            <th>כמות שהונפקה</th>
+                            <th>תאריך</th>
+                            <th>שעה</th>
+                            <th>שם מחלקה</th>
+                            <th>יוצר ההזמנה</th>
+                            <th>סטטוס</th>
                         </tr>
                     </thead>
                 </table>
