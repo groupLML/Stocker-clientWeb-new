@@ -1,4 +1,4 @@
-F#<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 
 <head>
@@ -87,7 +87,7 @@ F#<!DOCTYPE html>
             titleStr += `<nav>`
             titleStr += `<ol class="breadcrumb">`
             titleStr += `<li class="breadcrumb-item">הזמנה מספר ${order.orderId}</li>`
-            titleStr += `<li class="breadcrumb-item active"><a href="Pharm-PullOrders.html">הזמנות משיכה</a></li>`
+            titleStr += `<li class="breadcrumb-item active"><a href="Manager-PullOrders.html">הזמנות משיכה</a></li>`
             titleStr += `</ol>`
             titleStr += `</nav>`
             document.getElementById("title_ph").innerHTML = titleStr;
@@ -114,14 +114,14 @@ F#<!DOCTYPE html>
             let str = ``;
             if (order.status === "בהמתנה") {
                 str += `<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#verticalycentered">טיפול בהזמנה</button>`;
-                str += `<button type="button" class="btn btn-primary" onclick="location.href='Pharm-PullOrders.html'">חזרה</button>`;
+                str += `<button type="button" class="btn btn-primary" onclick="location.href='Manager-PullOrders.html'">חזרה</button>`;
             }
-            else if (order.status === "בטיפול" && order.pUser === user.userId) {
+            else if (order.status === "בטיפול") {
                 str += `<button type="button" class="btn btn-success" id="takeOrderBTN" data-bs-toggle="modal" data-bs-target="#verticalycentered">הנפקת הזמנה</button>`;
-                str += `<button type="button" class="btn btn-primary" onclick="location.href='Pharm-PullOrders.html'">חזרה</button>`;
+                str += `<button type="button" class="btn btn-primary" onclick="location.href='Manager-PullOrders.html'">חזרה</button>`;
             }
             else {
-                str += `<button type="button" class="btn btn-primary" onclick="location.href='Pharm-PullOrders.html'">חזרה</button>`;
+                str += `<button type="button" class="btn btn-primary" onclick="location.href='Manager-PullOrders.html'">חזרה</button>`;
             }
             document.getElementById("buttons_ph").innerHTML = str;
         }
@@ -153,7 +153,7 @@ F#<!DOCTYPE html>
 
         function renderTableCol() {
             let str = ``;
-            if (order.status === "בהמתנה" || (order.status === "בטיפול" && order.pUser !== user.userId)) {
+            if (order.status === "בהמתנה") {
                 str += `<tr><th>#</th>`;
                 str += `<th>שם תרופה</th>`;
                 str += `<th>כמות נדרשת</th></tr>`;
@@ -205,7 +205,7 @@ F#<!DOCTYPE html>
                         ],
                     });
                 }
-                else if (order.status === "בטיפול" && order.pUser === user.userId) {
+                else if (order.status === "בטיפול") {
                     tbl = $('#Table').DataTable({
                         "language": {
                             "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
@@ -252,19 +252,13 @@ F#<!DOCTYPE html>
             else {//Update order status from taken to issued
 
                 var formattedMedsList = updateMedsListFromDataTable();
-
                 var DataToSend = {
                     pUser: user.userId,
                     reportNum: "",
                     medList: formattedMedsList
                 };
 
-                if (order.pUser == user.userId) {//only the user who has taken the order can check that the order was issued!
-                    ajaxCall("PUT", apiUpdateIssued + "pullId/" + order.orderId, JSON.stringify(DataToSend) , updateStatusSCB, updateStatusECB);
-                }
-                else {//התנאים של הכפתורים מונעים את האפשרות שזה יקרה
-                    console.log("only the user who has taken the order can check that the order was issued!")
-                }
+                ajaxCall("PUT", apiUpdateIssued + "pullId/" + order.orderId, JSON.stringify(DataToSend), updateStatusSCB, updateStatusECB);
             }
         }
 
@@ -327,6 +321,7 @@ F#<!DOCTYPE html>
         }
 
     </script>
+
 </head>
 
 <body>
@@ -359,7 +354,7 @@ F#<!DOCTYPE html>
 
                 <li class="nav-item dropdown">
 
-                    <a class="nav-link nav-icon" href="Pharm-Messages.html">
+                    <a class="nav-link nav-icon" href="Manager-Messages.html">
                         <i class="bi bi-bell"></i>
                     </a><!-- End Notification Icon -->
                 </li><!-- End Notification Nav -->

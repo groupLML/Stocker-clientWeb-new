@@ -251,16 +251,15 @@
             }
             else {//Update order status from taken to issued
 
-                var formattedMedsList = updateMedsListFromDataTable();
+                if (order.pUser == user.userId) {//only the user who has taken the order and manager can check that the order was issued!
+                    var formattedMedsList = updateMedsListFromDataTable();
+                    var DataToSend = {
+                        pUser: user.userId,
+                        reportNum: "",
+                        medList: formattedMedsList
+                    };
 
-                var DataToSend = {
-                    pUser: user.userId,
-                    reportNum: "",
-                    medList: formattedMedsList
-                };
-
-                if (order.pUser == user.userId) {//only the user who has taken the order can check that the order was issued!
-                    ajaxCall("PUT", apiUpdateIssued + "pullId/" + order.orderId, JSON.stringify(DataToSend) , updateStatusSCB, updateStatusECB);
+                    ajaxCall("PUT", apiUpdateIssued + "pullId/" + order.orderId, JSON.stringify(DataToSend), updateStatusSCB, updateStatusECB);
                 }
                 else {//התנאים של הכפתורים מונעים את האפשרות שזה יקרה
                     console.log("only the user who has taken the order can check that the order was issued!")
