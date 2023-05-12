@@ -32,6 +32,7 @@
     <!-- ajaxCalls and JQuery -->
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="../assets/js/global-functions.js"></script>
 
     <script>
 
@@ -75,14 +76,6 @@
             $("#msgForm").submit(PostMsg); //form validation
         })
 
-        function renderUser(user) { //render active user
-            let str = `<h6> ${user.firstName} ${user.lastName}</h6>`;
-            str += `<span> ${user.position}</span>`;
-            document.getElementById("user_ph1").innerHTML += str;
-            str = `<span>שלום, ${user.firstName}</span>`;
-            document.getElementById("user_ph2").innerHTML += str;
-        }
-
         function GetMessages() {
             ajaxCall("GET", apiGetMessages, "", getMessagesSCB, getMessagesECB);
         }
@@ -120,7 +113,7 @@
             const userId = user.userId;
             const msgDate = new Date();
 
-            if (msgTxt =="") {
+            if (msgTxt == "") {
                 return;
             }
             else {
@@ -145,10 +138,6 @@
 
         function PostMsgECB(err) {
             console.log(err);
-        }
-
-        function clearStorage() {
-            sessionStorage.clear();
         }
 
     </script>
