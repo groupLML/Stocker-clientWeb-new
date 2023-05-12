@@ -56,7 +56,6 @@
             renderUser(user);
 
             $("#DepSearch").submit(GetDepStock); //form validation
-
         })
 
         function renderUser(user) { //render active user
@@ -131,6 +130,9 @@
                             { data: "stcQty" }
                         ],
                     });
+
+                    // Show the table header
+                    $('#Table thead').show();
                 }
             } catch (err) {
                 alert(err);
@@ -145,7 +147,7 @@
 
     <style>
         /* Hide the table headers */
-        #Table thead {
+        .hide-table-header thead {
             display: none;
         }
     </style>
@@ -261,7 +263,7 @@
                     </div>
                 </form>
                 <!-- Table with stripped rows table-striped-->
-                <table class="table hover table-striped-custom " id="Table" style="width:100%">
+                <table class="table hover table-striped-custom hide-table-header" id="Table" style="width:100%">
                     <thead>
                         <tr>
                             <th>#</th>
