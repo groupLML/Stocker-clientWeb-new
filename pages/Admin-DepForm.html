@@ -33,6 +33,7 @@
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script src="../assets/js/custom-dropdown-input.js"></script>
+    <script src="../assets/js/global-functions.js"></script>
 
     <!-- datatable -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -48,7 +49,7 @@
             renderUser(user);
 
             depTypes = [];
-            depId = JSON.parse(sessionStorage.getItem("DepId")); //get DepID from storage
+            depId = JSON.parse(sessionStorage.getItem("Id")); //get DepID from storage
 
             TitleRender();
 
@@ -57,21 +58,13 @@
             createDropDownInput(depTypes);
 
             $("#DepForm").submit(function () {
-                var item = sessionStorage.getItem('DepId');
+                var item = sessionStorage.getItem('Id');
                 if (item !== null)
                     updateDepInServer();
                 else
                     postDepToServer();
             });
         });
-
-        function renderUser(user) { //render active user
-            let str = `<h6> ${user.firstName} ${user.lastName}</h6>`;
-            str += `<span> ${user.position}</span>`;
-            document.getElementById("user_ph1").innerHTML += str;
-            str = `<span>שלום, ${user.firstName}</span>`;
-            document.getElementById("user_ph2").innerHTML += str;
-        }
 
         function TitleRender() {
             let titleStr = `<h1>טופס מחלקה</h1>`;
@@ -141,7 +134,7 @@
 
             if (data == true) {
                 alert("In Success");
-                sessionStorage.removeItem('DepId');
+                sessionStorage.removeItem('Id');
                 window.location.href = 'Admin-Departments.html';
             }
             else
@@ -179,7 +172,7 @@
 
             if (data == true) {
                 alert("In Success");
-                sessionStorage.removeItem('DepId');
+                sessionStorage.removeItem('Id');
                 window.location.href = 'Admin-Departments.html';
             }
             else
@@ -189,20 +182,6 @@
         function errorPutDCBF(err) {
             console.log(err);
         }
-
-
-        function clearStorage() {
-            sessionStorage.clear();
-        }
-
-        function reload() {
-            var item = sessionStorage.getItem('DepId');
-            if (item !== null) {
-                sessionStorage.removeItem('DepId');
-                location.reload();
-            }
-        }
-
 
     </script>
 
@@ -332,7 +311,7 @@
                                 <div class="row mb-4">
                                     <label class="col-form-label">סוג המחלקה <i class="bi bi-asterisk"></i></label>
                                     <div class="custom-dropdown input-group has-validation">
-                                        <input type="text" id="input" class="form-control" required>
+                                        <input type="text" id="input" class="form-control" autocomplete="off" required>
                                         <ul class="dropdown-options" id="dropdown-options"></ul>
                                         <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
                                     </div>

@@ -32,6 +32,7 @@
     <!-- ajaxCalls and JQuery -->
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="../assets/js/global-functions.js"></script>
 
     <!-- datatable -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -52,7 +53,7 @@
             $('#Table').on('click', 'tbody tr', function () {// This function will be called when a row is clicked
                 var depStr = $(this).find('td:first').text();
                 var depId = parseInt(depStr);
-                sessionStorage.setItem('DepId', depId);
+                sessionStorage.setItem('Id', depId);
                 window.location.href = 'Admin-DepForm.html';
             });
         })
@@ -90,19 +91,6 @@
 
         function errorGetDepsCBF(err) {
             console.log(err);
-        }
-
-        function renderUser(user) { //render active user
-            let str = `<h6> ${user.firstName} ${user.lastName}</h6>`;
-            str += `<span> ${user.position}</span>`;
-            document.getElementById("user_ph1").innerHTML += str;
-            str = `<span>שלום, ${user.firstName}</span>`;
-            document.getElementById("user_ph2").innerHTML += str;
-        }
-
-
-        function clearStorage() {
-            sessionStorage.clear();
         }
 
     </script>
