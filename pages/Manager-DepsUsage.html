@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Stocker - DepsTransfers</title>
+    <title>Stocker - DepsUsage</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -40,15 +40,22 @@
 
     <script>
 
+        let dataTable;
+
         $(document).ready(function () {
 
-            apiRequests = "https://proj.ruppin.ac.il/cgroup36/prod/api/MedRequest";
+            GetDepsApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
+            GetDepStockApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Stock/";
+
+            deps = []; // Array to save departments data
+            depNames = [];
+            GetDepartments();
+            createDropDownInput(depNames);
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
-            GetRequests();
-            RequestsList = [];
+            $("#DepSearch").submit(GetDepStock); //form validation
 
         })
 
@@ -60,54 +67,88 @@
             document.getElementById("user_ph2").innerHTML += str;
         }
 
-        function GetRequests() {
-            ajaxCall("GET", apiRequests, "", getReqsSCB, getReqsECB);
+        function GetDepartments() {
+            ajaxCall("GET", GetDepsApi, "", GetDepsSCB, GetDepsECB);
+            return false;
         }
 
-        function getReqsSCB(data) {
+        function GetDepsSCB(data) {
             console.log(data);
-            RequestsList = data;
-            DataTableRender(data);
+
+            for (var i = 0; i < data.length; i++) {
+                deps.push({ depId: data[i]['depId'], depName: data[i]['depName'] }); // Save department ID and name in the array
+                if (!depNames.includes(data[i]['depName']))
+                    depNames.push(data[i]['depName']);
+            }
+            renderOptions(depNames);
         }
 
-        function getReqsECB(err) {
+        function GetDepsECB(err) {
             console.log(err);
         }
 
-        function DataTableRender(reqsData) {
+        function GetDepStock() {
+            DepName = $("#input").val();
 
-            let reqsArray = [];
-            for (var i = 0; i < reqsData.length; i++) {
+            Dep = deps.find(function (dep) {
+                return dep.depName === DepName;
+            });
 
-                var date = new Date(reqsData[i].reqDate); // המרה לתאריך
-                reqsData[i].reqDate = date.toISOString().slice(0, 10); //yyyy-mm-dd פורמט מבוקש
+            ajaxCall("GET", GetDepStockApi + Dep.depId, "", GetStockSCB, GetStockECB);
+            return false;
+        }
 
-                reqsArray.push(reqsData[i]);
+        function GetStockSCB(data) {
+            console.log(data);
+            DataTableRender(data);
+        }
+
+        function GetStockECB(err) {
+            console.log(err);
+        }
+
+        function DataTableRender(stockData) {
+            let stockArray = [];
+            for (var i = 0; i < stockData.length; i++) {
+                stockArray.push(stockData[i]);
             }
             try {
-                tbl = $('#Table').DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
-                    },
-                    data: reqsArray,
-                    pageLength: 5,
-                    columns: [
-                        { data: "reqDate" },
-                        { data: "medId" },
-                        { data: "cDep" },
-                        { data: "aDep" },
-                        { data: "reqQty" },
-                        { data: "reqStatus" }
-                    ],
-                });
-            }
-
-            catch (err) {
+                if (dataTable) {
+                    // Clear the existing data from the table
+                    dataTable.clear().draw();
+                    // Add new data to the table
+                    dataTable.rows.add(stockArray).draw();
+                } else {
+                    dataTable = $('#Table').DataTable({
+                        "language": {
+                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
+                        },
+                        data: stockArray,
+                        pageLength: 5,
+                        columns: [
+                            { data: "medId" },
+                            { data: "medName" },
+                            { data: "stcQty" }
+                        ],
+                    });
+                }
+            } catch (err) {
                 alert(err);
             }
         }
 
+        function clearStorage() {
+            sessionStorage.clear();
+        }
+
     </script>
+
+    <style>
+        /* Hide the table headers */
+        #Table thead {
+            display: none;
+        }
+    </style>
 
 </head>
 
@@ -206,12 +247,12 @@
                         </a>
                     </li>
                     <li>
-                        <a href="Manager-DepsUsage.html" onclick="reload()">
+                        <a href="Manager-DepsUsage.html" class="active" onclick="reload()">
                             <i class="bi bi-circle"></i><span>צריכת המחלקות</span>
                         </a>
                     </li>
                     <li>
-                        <a href="Manager-DepsTransfers.html" class="active" onclick="reload()">
+                        <a href="Manager-DepsTransfers.html" onclick="reload()">
                             <i class="bi bi-circle"></i><span>העברות בין מחלקות</span>
                         </a>
                     </li>
@@ -241,20 +282,36 @@
 
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>העברות בין המחלקות</h1>
+            <h1>צריכת המחלקות</h1>
         </div><!-- End Page Title -->
         <div class="card">
             <div class="card-body">
+                <form id="DepSearch">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="col-form-label">בחר מחלקה<i class="bi bi-asterisk"></i></label>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="input-group has-validation">
+                                <input type="text" id="input" class="form-control" autocomplete="off" required>
+                                <ul class="dropdown-options" id="dropdown-options"></ul>
+                                <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <button type="submit" class="btn btn-primary">הצג</button>
+                        </div>
+                    </div>
+                </form>
                 <!-- Table with stripped rows table-striped-->
                 <table class="table hover table-striped-custom " id="Table" style="width:100%">
                     <thead>
                         <tr>
-                            <th>תאריך</th>
-                            <th>תרופה</th>
-                            <th>מחלקה שמסרה</th>
-                            <th>מחלקה שקיבלה</th>
-                            <th>כמות</th>
-                            <th>סטטוס</th>
+                            <th>#</th>
+                            <th>שם התרופה</th>
+                            <th>כמות במלאי</th>
                         </tr>
                     </thead>
                 </table>
