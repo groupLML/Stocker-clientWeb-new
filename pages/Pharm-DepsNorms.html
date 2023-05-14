@@ -61,6 +61,16 @@
 
         })
 
+        function lastUpdateRender(norm) {
+            console.log(norm[0].lastUpdate);
+            var time = norm[0].lastUpdate.slice(11, 16);
+            var date = norm[0].lastUpdate.slice(0, 10);
+
+            let LastUpdateStr = `<p class="orderDate"> ${date} ${time}</p>`
+                
+            document.getElementById("LastUpdate_ph").innerHTML = LastUpdateStr;
+        }
+
         function GetDepartments() {
             ajaxCall("GET", GetDepsApi, "", GetDepsSCB, GetDepsECB);
             return false;
@@ -95,6 +105,7 @@
         function GetNormSCB(data) {
             console.log(data);
             DataTableRender(data);
+            lastUpdateRender(data);
         }
 
         function GetNormECB(err) {
@@ -235,8 +246,9 @@
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
-        <div class="pagetitle">
-            <h1>תקן המחלקות</h1>
+        <div class="row">
+            <div class="col-10 pagetitle"><h1>תקן המחלקות</h1></div>
+            <div id="LastUpdate_ph" class="col-2"></div>
         </div><!-- End Page Title -->
         <div class="card">
             <div class="card-body">
