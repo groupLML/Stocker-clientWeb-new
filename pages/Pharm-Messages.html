@@ -220,10 +220,23 @@
                 </a>
             </li><!-- End DepsStock Nav -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="Pharm-DepsNorms.html">
-                    <span>תקן המחלקות</span>
+                <a class="nav-link collapsed" data-bs-target="#norms-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>תקני המחלקות</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End DepsNorm Nav -->
+                <ul id="norms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="Pharm-DepsNorms.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>תקנים</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>בקשה לעדכון תקן</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- End DepsNorm Nav -->
         </ul>
     </aside><!-- End Sidebar-->
 
