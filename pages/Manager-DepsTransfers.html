@@ -43,7 +43,7 @@
 
         $(document).ready(function () {
 
-            apiRequests = "https://proj.ruppin.ac.il/cgroup36/prod/api/MedRequest";
+            apiRequests = "https://proj.ruppin.ac.il/cgroup36/prod/api/MedRequest/RequestsManager";
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
@@ -86,9 +86,9 @@
                     pageLength: 5,
                     columns: [
                         { data: "reqDate" },
-                        { data: "medId" },
-                        { data: "cDep" },
-                        { data: "aDep" },
+                        { data: "medName" },
+                        { data: "cDepName" },
+                        { data: "aDepName" },
                         { data: "reqQty" },
                         { data: "reqStatus" }
                     ],

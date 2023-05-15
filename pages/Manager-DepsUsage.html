@@ -70,7 +70,7 @@
 
             for (var i = 0; i < data.length; i++) {
                 deps.push({ depId: data[i]['depId'], depName: data[i]['depName'] }); // Save department ID and name in the array
-                if (!depNames.includes(data[i]['depName']))
+                if (!depNames.includes(data[i]['depName']) && data[i]['depName'] != "מערכות מידע" && data[i]['depName'] != "בית מרקחת")
                     depNames.push(data[i]['depName']);
             }
             renderOptions(depNames);
