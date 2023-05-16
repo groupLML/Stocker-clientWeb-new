@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Stocker - messages</title>
+    <title>Stocker - Manager-DepsNorms</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -29,117 +29,166 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/ourStyle.css" rel="stylesheet" />
 
+
     <!-- ajaxCalls and JQuery -->
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="../assets/js/custom-dropdown-input.js"></script>
     <script src="../assets/js/global-functions.js"></script>
+
+    <!-- datatables -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 
     <script>
 
+        let dataTable;
+        let medsToUpdate = []; // Declare and initialize medsToUpdate array
+
         $(document).ready(function () {
 
-            apiGetMessages = "https://proj.ruppin.ac.il/cgroup36/prod/api/Message";
-            apiPostMessage = "https://proj.ruppin.ac.il/cgroup36/prod/api/Message";
+            GetDepsApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
+            apiGetDepNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
 
-            const textarea = document.getElementById("textarea");
-            const charCount = document.getElementById("charCount");
-
-            textarea.addEventListener("input", function () {
-                const maxLength = parseInt(textarea.getAttribute("maxlength"));
-                const currentLength = textarea.value.length;
-
-                charCount.textContent = `${currentLength}/${maxLength}`;
-
-                if (currentLength >= maxLength) {
-                    charCount.classList.add("text-danger");
-                } else {
-                    charCount.classList.remove("text-danger");
-                }
-            });
-
-            // Reset the value of the textarea whan modal is closed
-            $('#verticalycentered').on('hidden.bs.modal', function () {
-                $('#textarea').val('');
-                const charCount = document.getElementById('charCount');
-                charCount.textContent = '0/100'; // Reset the character count
-                charCount.classList.remove('text-danger'); // Remove the text-danger class if applied
-                $('#textarea').removeClass('is-valid is-invalid'); // Remove the is-valid and is-invalid classes from the textarea
-                $('#msgForm').removeClass('was-validated'); // Remove the was-validated class from the form
-            });
+            deps = []; // Array to save departments data
+            depNames = [];
+            GetDepartments();
+            createDropDownInput(depNames);
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
-            GetMessages();
-            MessagesList = [];
+            $("#DepSearch").submit(GetDepNorm); //form validation
 
-            $("#msgForm").submit(PostMsg); //form validation
         })
 
-        function GetMessages() {
-            ajaxCall("GET", apiGetMessages, "", getMessagesSCB, getMessagesECB);
+        function lastUpdateRender(norm) {
+            console.log(norm[0].lastUpdate);
+            var time = norm[0].lastUpdate.slice(11, 16);
+            var date = norm[0].lastUpdate.slice(0, 10);
+
+            let LastUpdateStr = `<p class="orderDate"> ${date} ${time}</p>`
+
+            document.getElementById("LastUpdate_ph").innerHTML = LastUpdateStr;
         }
 
-        function getMessagesSCB(data) {
+        function GetDepartments() {
+            ajaxCall("GET", GetDepsApi, "", GetDepsSCB, GetDepsECB);
+            return false;
+        }
+
+        function GetDepsSCB(data) {
             console.log(data);
-            MessagesList = data;
-            MessagesRender(data);
+
+            for (var i = 0; i < data.length; i++) {
+                deps.push({ depId: data[i]['depId'], depName: data[i]['depName'] }); // Save department ID and name in the array
+                if (!depNames.includes(data[i]['depName']) && data[i]['depName'] != "מערכות מידע" && data[i]['depName'] != "בית מרקחת")
+                    depNames.push(data[i]['depName']);
+            }
+            renderOptions(depNames);
         }
 
-        function getMessagesECB(err) {
+        function GetDepsECB(err) {
             console.log(err);
         }
 
-        function MessagesRender(Messages) {
-            let str = "";
-            for (var i = 0; i < Messages.length; i++) {
-                str += `<div class="row msg">`;
-                str += `<div class="row msgHeader"><h6 class="col-9 msgTitle"> ${Messages[i].msg}</h6>`
-                str += `<p class="col-3 date">${Messages[i].msgDate.slice(0, 10)} ${Messages[i].msgDate.slice(11, 16)}</p></div>`;
-                str += `<div class="row"><p class="col">נוצר על ידי: ${Messages[i].pharmacistName}</p></div>`;
-                str += `</div>`;
-                if (i !== Messages.length - 1) {
-                    str += `<hr/>`;
+        function GetDepNorm() {
+            DepName = $("#input").val();
+
+            Dep = deps.find(function (dep) {
+                return dep.depName === DepName;
+            });
+
+            ajaxCall("GET", apiGetDepNorm + "depId/" + Dep.depId, "", GetNormSCB, GetNormECB);
+            return false;
+        }
+
+        function GetNormSCB(data) {
+            console.log(data);
+            DataTableRender(data);
+            lastUpdateRender(data);
+        }
+
+        function GetNormECB(err) {
+            console.log(err);
+        }
+
+        function DataTableRender(normData) {
+            let normArray = [];
+            let medsNormArray = [];
+            for (var i = 0; i < normData.length; i++) {
+                normArray.push(normData[i]);
+                for (var j = 0; j < normData[i].medList.length; j++) {
+                    medsNormArray.push(normData[i].medList[j]);
                 }
             }
-            document.getElementById("messages_ph").innerHTML = str;
-        }
+            console.log(medsNormArray);
 
-        function PostMsg() {
+            try {
+                if (dataTable) {
+                    // Clear the existing data from the table
+                    dataTable.clear().draw();
+                    // Add new data to the table
+                    dataTable.rows.add(medsNormArray).draw();
+                } else {
+                    dataTable = $('#Table').DataTable({
+                        "language": {
+                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
+                        },
+                        data: medsNormArray,
+                        pageLength: 5,
+                        columns: [
+                            { data: null, render: function () { return '<input type="checkbox">'; } }, // Check boxes column
+                            { data: "medName" },
+                            { data: "normQty" }
+                        ],
+                    });
 
-            const msgId = 0;
-            const msgTxt = $("#textarea").val();
-            const userId = user.userId;
-            const msgDate = new Date();
-
-            if (msgTxt == "") {
-                return;
+                    // Show the table header
+                    $('#Table thead').show();
+                }
+            } catch (err) {
+                alert(err);
             }
-            else {
-                const msg = {
-                    MsgId: msgId,
-                    Msg: msgTxt,
-                    UserId: userId,
-                    MsgDate: msgDate
-                };
+        }
 
-                ajaxCall("POST", apiPostMessage, JSON.stringify(msg), PostMsgSCB, PostMsgECB);
+        // Attach change event listener to checkboxes
+        $(document).on('change', 'input[type="checkbox"]', function () {
+            var checkbox = $(this);
+            var rowData = dataTable.row(checkbox.closest('tr')).data();
 
-                return false;
+            if (checkbox.is(':checked')) {
+                // Add the selected value to the array
+                medsToUpdate.push(rowData);
+            } else {
+                // Remove the deselected value from the array
+                var index = medsToUpdate.findIndex(function (item) {
+                    return item === rowData;
+                });
+                if (index !== -1) {
+                    medsToUpdate.splice(index, 1);
+                }
             }
-        }
+            console.log("medsToUpdate: ", medsToUpdate);
+            renderUpdateButton();
+        });
 
-        function PostMsgSCB(data) {
-            console.log(data);
-            GetMessages();
-            $('#verticalycentered').modal('hide');
-        }
-
-        function PostMsgECB(err) {
-            console.log(err);
+        function renderUpdateButton() {
+            let str = "";
+            if (medsToUpdate.length !== 0) { //medsToUpdate array is not empty
+                str += `<button type="button" class="btn btn-success">עדכון</button>`;
+            }
+            document.getElementById("button_ph").innerHTML = str;
         }
 
     </script>
+
+    <style>
+        /* Hide the table headers */
+        .hide-table-header thead {
+            display: none;
+        }
+    </style>
 
 </head>
 
@@ -149,7 +198,7 @@
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="#" class="logo d-flex align-items-center">
+            <a href="index.html" class="logo d-flex align-items-center">
                 <span class="d-none d-xl-block">St<img class="header-logo" src="../assets/img/logo.png" alt="">cker</span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -172,8 +221,8 @@
                 </li><!-- End Search Icon-->
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link nav-icon" href="Pharm-messages.html" data-bs-toggle="dropdown">
-                        <i class="bi bi-bell-fill"></i>
+                    <a class="nav-link nav-icon" href="Manager-messages.html">
+                        <i class="bi bi-bell"></i>
                     </a><!-- End Notification Icon -->
                 </li><!-- End Notification Nav -->
 
@@ -233,7 +282,7 @@
                 </a>
                 <ul id="departments-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="Manager-DepsInventory.html" onclick="reload()">
+                        <a href="Manager-DepsInventory.html" class="active" onclick="reload()">
                             <i class="bi bi-circle"></i><span>מחסן המחלקות</span>
                         </a>
                     </li>
@@ -251,12 +300,12 @@
             </li>
             <!-- End Deps Nav -->
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#norms-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                <a class="nav-link active" data-bs-target="#norms-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
                     <span>תקנים</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="norms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <ul id="norms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="Manager-DepsNorms.html" onclick="reload()">
+                        <a href="Manager-DepsNorms.html" class="active" onclick="reload()">
                             <i class="bi bi-circle"></i><span>תקן המחלקות</span>
                         </a>
                     </li>
@@ -272,42 +321,51 @@
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
-        <div class="pagetitle">
-            <h1>הודעות</h1>
-            <button id="addMsgBtn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#verticalycentered">שליחת הודעה</button>
+        <div class="row">
+            <div class="col-10 pagetitle"><h1>תקן המחלקות</h1></div>
+            <div id="LastUpdate_ph" class="col-2"></div>
         </div><!-- End Page Title -->
         <div class="card">
             <div class="card-body">
-                <div id="messages_ph"></div>
-                <!-- Vertically centered Modal -->
-                <div class="modal fade" id="verticalycentered" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">יצירת הודעה</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="msgForm" class="needs-validation" novalidate>
-                                    <div class="input-group has-validation">
-                                        <textarea id="textarea" class="form-control" style="height: 100px" maxlength="100" required></textarea>
-                                    </div>
-                                    <div id="charCount" class="form-text"></div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">סגור</button>
-                                        <button type="submit" class="btn btn-primary">שלח</button>
-                                    </div>
-                                </form>
-                            </div>
+                <form id="DepSearch">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="col-form-label">בחר מחלקה</label>
                         </div>
                     </div>
-                </div><!-- End Vertically centered Modal-->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="input-group has-validation">
+                                <input type="text" id="input" class="form-control" autocomplete="off" required>
+                                <ul class="dropdown-options" id="dropdown-options"></ul>
+                                <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <button type="submit" class="btn btn-primary">הצג</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- Table with stripped rows table-striped-->
+                <table class="table hover table-striped-custom hide-table-header" id="Table" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>שם התרופה</th>
+                            <th>כמות בתקן</th>
+                        </tr>
+                    </thead>
+                </table>
+                <!-- End Table with stripped rows -->
+                <div id="button_ph" class="d-flex justify-content-center"></div>
             </div>
         </div>
     </main><!-- End #main -->
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
-        <div class="copyright"><p>copyrights here</p></div>
+        <div class="copyright">
+            &copy; Copyright <strong><span>LML</span></strong>. All Rights Reserved
+        </div>
     </footer><!-- End Footer -->
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>

@@ -47,7 +47,7 @@
         $(document).ready(function () {
 
             GetDepsApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
-            apiGetDepNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/MedsNorm/";
+            apiGetDepNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
 
             deps = []; // Array to save departments data
             depNames = [];
@@ -137,7 +137,7 @@
                         data: medsNormArray,
                         pageLength: 5,
                         columns: [
-                            { data: "normId" },
+                            { data: "medId" },
                             { data: "medName" },
                             { data: "normQty" }
                         ],
@@ -150,7 +150,6 @@
                 alert(err);
             }
         }
-
     </script>
 
     <style>
