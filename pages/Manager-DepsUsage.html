@@ -46,7 +46,8 @@
         $(document).ready(function () {
 
             GetDepsApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
-            GetDepStockApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Stock/";
+
+            GetDepStockApi = "https://proj.ruppin.ac.il/cgroup36/prod/GetDepUsage/dep/";
 
             deps = []; // Array to save departments data
             depNames = [];
@@ -55,9 +56,9 @@
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
+            BlockDates();
 
             $("#DepSearch").submit(GetDepStock); //form validation
-
         })
 
         function GetDepartments() {
@@ -82,12 +83,14 @@
 
         function GetDepStock() {
             DepName = $("#input").val();
+            startDate = new Date($("#startDateTB").val()).toISOString();
+            endDate = new Date($("#endDateTB").val()).toISOString();
 
             Dep = deps.find(function (dep) {
                 return dep.depName === DepName;
             });
 
-            ajaxCall("GET", GetDepStockApi + Dep.depId, "", GetStockSCB, GetStockECB);
+            ajaxCall("GET", GetDepStockApi + Dep.depId + "/start/" + startDate + "/end/" + endDate, "", GetStockSCB, GetStockECB);
             return false;
         }
 
@@ -121,13 +124,41 @@
                         columns: [
                             { data: "medId" },
                             { data: "medName" },
-                            { data: "stcQty" }
+                            { data: "useQty" }
                         ],
                     });
                 }
             } catch (err) {
                 alert(err);
             }
+        }
+
+        function BlockDates() {
+            // block all future dates
+            $(function () {
+                var date = new Date();
+                var getmonth = date.getMonth() + 1;
+                var getday = date.getDate();
+                var getyear = date.getFullYear();
+                if (getmonth < 10)
+                    getmonth = '0' + getmonth.toString();
+                if (getday < 10)
+                    getday = '0' + getday.toString();
+                var inDate = getyear + '-' + getmonth + '-' + getday;
+
+                $('#startDateTB').attr('max', inDate);
+                $('#endDateTB').attr('max', inDate);
+            });
+
+            //block all dates previous to start date
+            $('#startDateTB').change(function () {
+                $('#endDateTB').attr('min', $('#startDateTB').val());
+            });
+
+            //block all dates previous to start date
+            $('#endDateTB').change(function () {
+                $('#startDateTB').attr('max', $('#endDateTB').val());
+            });
         }
 
     </script>
@@ -218,7 +249,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="Manager-PushOrders.html"  onclick="reload()">
+                        <a href="Manager-PushOrders.html" onclick="reload()">
                             <i class="bi bi-circle"></i><span>הזמנות דחיפה</span>
                         </a>
                     </li>
@@ -282,14 +313,26 @@
                         </div>
                     </div>
                     <div class="row mb-4">
-                        <div class="col-md-4">
+                        <div class="col">
                             <div class="input-group has-validation">
                                 <input type="text" id="input" class="form-control" autocomplete="off" required>
                                 <ul class="dropdown-options" id="dropdown-options"></ul>
                                 <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
                             </div>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col">
+                            <div class="input-group has-validation">
+                                <input type="date" id="startDateTB" class="form-control" required>
+                                <div class="invalid-feedback">אנא בחר תאריך</div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="input-group has-validation">
+                                <input type="date" id="endDateTB" class="form-control" required>
+                                <div class="invalid-feedback">אנא בחר תאריך</div>
+                            </div>
+                        </div>
+                        <div class="col">
                             <button type="submit" class="btn btn-primary">הצג</button>
                         </div>
                     </div>
