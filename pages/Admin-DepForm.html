@@ -63,6 +63,7 @@
                     updateDepInServer();
                 else
                     postDepToServer();
+                return false;
             });
         });
 
@@ -132,13 +133,19 @@
         function successPostDCBF(data) {
             console.log(data);
 
-            if (data == true) {
+            if (data == 1) {
                 alert("In Success");
-                sessionStorage.removeItem('Id');
                 window.location.href = 'Admin-Departments.html';
+                sessionStorage.removeItem('Id');
             }
-            else
-                alert("Error");
+            else {
+                if (data == -1) {
+                    alert("This name is already taken, please choose someting else");
+                    return;
+                }
+                else
+                    alert("Error");
+            }
         }
 
         function errorPostDCBF(err) {
@@ -172,8 +179,8 @@
 
             if (data == true) {
                 alert("In Success");
-                sessionStorage.removeItem('Id');
                 window.location.href = 'Admin-Departments.html';
+                sessionStorage.removeItem('Id');
             }
             else
                 alert("Error");
