@@ -275,6 +275,7 @@
             sessionStorage.setItem('Order', JSON.stringify(order));
 
             location.reload(); // Reload the page
+            tbl.ajax.reload(); // Reload the table data
         }
 
         function updateStatusECB(err) {

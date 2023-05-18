@@ -152,34 +152,34 @@
             }
         }
 
-        // Attach change event listener to checkboxes
-        $(document).on('change', 'input[type="checkbox"]', function () {
-            var checkbox = $(this);
-            var rowData = dataTable.row(checkbox.closest('tr')).data();
+        //// Attach change event listener to checkboxes
+        //$(document).on('change', 'input[type="checkbox"]', function () {
+        //    var checkbox = $(this);
+        //    var rowData = dataTable.row(checkbox.closest('tr')).data();
 
-            if (checkbox.is(':checked')) {
-                // Add the selected value to the array
-                medsToUpdate.push(rowData);
-            } else {
-                // Remove the deselected value from the array
-                var index = medsToUpdate.findIndex(function (item) {
-                    return item === rowData;
-                });
-                if (index !== -1) {
-                    medsToUpdate.splice(index, 1);
-                }
-            }
-            console.log("medsToUpdate: ", medsToUpdate);
-            renderUpdateButton();
-        });
+        //    if (checkbox.is(':checked')) {
+        //        // Add the selected value to the array
+        //        medsToUpdate.push(rowData);
+        //    } else {
+        //        // Remove the deselected value from the array
+        //        var index = medsToUpdate.findIndex(function (item) {
+        //            return item === rowData;
+        //        });
+        //        if (index !== -1) {
+        //            medsToUpdate.splice(index, 1);
+        //        }
+        //    }
+        //    console.log("medsToUpdate: ", medsToUpdate);
+        //    renderUpdateButton();
+        //});
 
-        function renderUpdateButton() {
-            let str = "";
-            if (medsToUpdate.length !== 0) { //medsToUpdate array is not empty
-                str += `<button type="button" class="btn btn-success">עדכון</button>`;
-            }
-            document.getElementById("button_ph").innerHTML = str;
-        }
+        //function renderUpdateButton() {
+        //    let str = "";
+        //    if (medsToUpdate.length !== 0) { //medsToUpdate array is not empty
+        //        str += `<button type="button" class="btn btn-success">עדכון</button>`;
+        //    }
+        //    document.getElementById("button_ph").innerHTML = str;
+        //}
 
     </script>
 

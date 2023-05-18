@@ -270,44 +270,45 @@
             sessionStorage.setItem('Order', JSON.stringify(order));
 
             location.reload(); // Reload the page
+            tbl.ajax.reload(); // Reload the table data
         }
 
         function updateStatusECB(err) {
             console.log(err);
         }
 
-        function updateMedsListFromDataTable() {// Update medsList with new supQty values from tbl inputs
-            var tableData = tbl.rows().data().toArray();
+        //function updateMedsListFromDataTable() {// Update medsList with new supQty values from tbl inputs
+        //    var tableData = tbl.rows().data().toArray();
 
-            for (var i = 0; i < MedsList.length; i++) {
-                var med = MedsList[i];
-                var medId = med.medId;
+        //    for (var i = 0; i < MedsList.length; i++) {
+        //        var med = MedsList[i];
+        //        var medId = med.medId;
 
-                for (var j = 0; j < tableData.length; j++) {
-                    var rowData = tableData[j];
+        //        for (var j = 0; j < tableData.length; j++) {
+        //            var rowData = tableData[j];
 
-                    if (rowData.medId === medId) {
-                        var supQtyInput = $('input', tbl.row(j).node()).val();
-                        med.supQty = parseInt(supQtyInput);
-                        break;
-                    }
-                }
-            }
+        //            if (rowData.medId === medId) {
+        //                var supQtyInput = $('input', tbl.row(j).node()).val();
+        //                med.supQty = parseInt(supQtyInput);
+        //                break;
+        //            }
+        //        }
+        //    }
 
-            console.log(MedsList); // Updated medsList with new supQty values
+        //    console.log(MedsList); // Updated medsList with new supQty values
 
-            var formattedArray = MedsList.map(function (med) {
-                return {
-                    "medId": med.medId,
-                    "poQty": med.poQty,
-                    "supQty": med.supQty,
-                    "mazNum": ""
-                };
-            });
+        //    var formattedArray = MedsList.map(function (med) {
+        //        return {
+        //            "medId": med.medId,
+        //            "poQty": med.poQty,
+        //            "supQty": med.supQty,
+        //            "mazNum": ""
+        //        };
+        //    });
 
-            console.log(formattedArray);
-            return formattedArray;
-        }
+        //    console.log(formattedArray);
+        //    return formattedArray;
+        //}
 
     </script>
 
