@@ -49,17 +49,22 @@
 
             GetDepsApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
             apiGetDepNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
+            apiGetMeds = "https://proj.ruppin.ac.il/cgroup36/prod/GetActiveMeds";
 
             deps = []; // Array to save departments data
             depNames = [];
             GetDepartments();
             createDropDownInput(depNames);
 
+            meds = []; // Array to save meds data
+            medNames = [];
+            GetMeds();
+            //createDropDownInput(medNames);
+
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
             $("#DepSearch").submit(GetDepNorm); //form validation
-
         })
 
         function lastUpdateRender(norm) {
@@ -70,6 +75,26 @@
             let LastUpdateStr = `<p class="orderDate"> ${date} ${time}</p>`
 
             document.getElementById("LastUpdate_ph").innerHTML = LastUpdateStr;
+        }
+
+        function GetMeds() {
+            ajaxCall("GET", apiGetMeds, "", GetDepsSCB, GetDepsECB);
+            return false;
+        }
+
+        function GetMedsSCB(data) {
+            console.log(data);
+
+            for (var i = 0; i < data.length; i++) {
+                meds.push({ medId: data[i]['medId'], medName: data[i]['medName'] }); // Save med ID and name in the array
+                if (!medNames.includes(data[i]['medName']))
+                    medNames.push(data[i]['medName']);
+            }
+            renderOptions(medNames);
+        }
+
+        function GetMedsECB(err) {
+            console.log(err);
         }
 
         function GetDepartments() {
@@ -131,6 +156,9 @@
                     // Add new data to the table
                     dataTable.rows.add(medsNormArray).draw();
                 } else {
+                    // Add an empty row of inputs at the top of the data table
+                    medsNormArray.unshift({ medName: "", normQty: "" });
+
                     dataTable = $('#Table').DataTable({
                         "language": {
                             "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
@@ -138,48 +166,81 @@
                         data: medsNormArray,
                         pageLength: 5,
                         columns: [
-                            { data: null, render: function () { return '<input type="checkbox">'; } }, // Check boxes column
-                            { data: "medName" },
-                            { data: "normQty" }
+                            {
+                                data: null,
+                                render: function (data, type, row, meta) {
+                                    if (row.medName === "") {
+                                        return '<i class="bi bi-plus-lg add-icon"></i>';
+                                    } else {
+                                        return '<i class="bi bi-trash delete-icon"></i>';
+                                    }
+                                },
+                                createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
+                                    $(cell).on('click', '.delete-icon', function () {
+                                        // Get the index of the medication to delete
+                                        var index = dataTable.row($(this).closest('tr')).index();
+                                        // Remove the medication from the array
+                                        medsNormArray.splice(index, 1);
+                                        // Redraw the table
+                                        dataTable.clear().rows.add(medsNormArray).draw();
+                                        console.log(medsNormArray);
+                                    });
+                                }
+                            },
+                            {
+                                data: "medName",
+                                render: function (data, type, row, meta) {
+                                    if (type === 'display' && row.medName === "") {
+                                        return '<input type="text" id="input" class="medName-input form-control" autocomplete="off" required><ul class="dropdown-options" id="dropdown-options"></ul>';
+
+                                    } else {
+                                        return data;
+                                    }
+                                }
+                            },
+                            {
+                                data: "normQty",
+                                render: function (data, type, row, meta) {
+                                    if (type === 'display') {
+                                        return '<input type="number" class="normQty-input form-control" min="0" value="' + data + '">';
+                                    }
+                                    return data;
+                                }
+                            }
                         ],
                     });
 
-                    // Show the table header
+                    //Show the table header
                     $('#Table thead').show();
+
+                    //Update the normQty value of the med in the medsNormArray when the input value is changed
+                    $('#Table').on('change', '.normQty-input', function () {
+                        var newValue = parseInt($(this).val(), 10);
+                        var rowIndex = dataTable.row($(this).closest('tr')).index();
+                        var med = medsNormArray[rowIndex];
+                        med.normQty = newValue;
+                        console.log(medsNormArray);
+                    });
                 }
+
+                // Add an empty row of inputs if the table is empty
+                if (medsNormArray.length === 0) {
+                    medsNormArray.push({ medName: "", normQty: "" });
+                    dataTable.row.add({ medName: "", normQty: "" }).draw(false);
+                }
+
             } catch (err) {
                 alert(err);
             }
         }
 
-        //// Attach change event listener to checkboxes
-        //$(document).on('change', 'input[type="checkbox"]', function () {
-        //    var checkbox = $(this);
-        //    var rowData = dataTable.row(checkbox.closest('tr')).data();
-
-        //    if (checkbox.is(':checked')) {
-        //        // Add the selected value to the array
-        //        medsToUpdate.push(rowData);
-        //    } else {
-        //        // Remove the deselected value from the array
-        //        var index = medsToUpdate.findIndex(function (item) {
-        //            return item === rowData;
-        //        });
-        //        if (index !== -1) {
-        //            medsToUpdate.splice(index, 1);
-        //        }
-        //    }
-        //    console.log("medsToUpdate: ", medsToUpdate);
-        //    renderUpdateButton();
-        //});
-
-        //function renderUpdateButton() {
-        //    let str = "";
-        //    if (medsToUpdate.length !== 0) { //medsToUpdate array is not empty
-        //        str += `<button type="button" class="btn btn-success">עדכון</button>`;
-        //    }
-        //    document.getElementById("button_ph").innerHTML = str;
-        //}
+        function renderUpdateButton() {
+            let str = "";
+            if (medsToUpdate.length !== 0) { //medsToUpdate array is not empty
+                str += `<button type="button" class="btn btn-success">עדכון</button>`;
+            }
+            document.getElementById("button_ph").innerHTML = str;
+        }
 
     </script>
 
