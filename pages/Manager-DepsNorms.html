@@ -34,6 +34,7 @@
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script src="../assets/js/custom-dropdown-input.js"></script>
+    <script src="../assets/js/custom-dropdown-input-meds.js"></script>
     <script src="../assets/js/global-functions.js"></script>
 
     <!-- datatables -->
@@ -59,7 +60,7 @@
             meds = []; // Array to save meds data
             medNames = [];
             GetMeds();
-            //createDropDownInput(medNames);
+            //createDropDownMedsInput(medNames);
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
@@ -78,8 +79,7 @@
         }
 
         function GetMeds() {
-            ajaxCall("GET", apiGetMeds, "", GetDepsSCB, GetDepsECB);
-            return false;
+            ajaxCall("GET", apiGetMeds, "", GetMedsSCB, GetMedsECB);
         }
 
         function GetMedsSCB(data) {
@@ -90,7 +90,7 @@
                 if (!medNames.includes(data[i]['medName']))
                     medNames.push(data[i]['medName']);
             }
-            renderOptions(medNames);
+            console.log("medNames:" + medNames);
         }
 
         function GetMedsECB(err) {
@@ -107,7 +107,7 @@
 
             for (var i = 0; i < data.length; i++) {
                 deps.push({ depId: data[i]['depId'], depName: data[i]['depName'] }); // Save department ID and name in the array
-                if (!depNames.includes(data[i]['depName']) && data[i]['depName'] != "מערכות מידע" && data[i]['depName'] != "בית מרקחת")
+                if (!depNames.includes(data[i]['depName']) && data[i]['depType'] != "מערכות מידע" && data[i]['depType'] != "בית מרקחת")
                     depNames.push(data[i]['depName']);
             }
             renderOptions(depNames);
@@ -131,7 +131,6 @@
         function GetNormSCB(data) {
             console.log(data);
             DataTableRender(data);
-            lastUpdateRender(data);
         }
 
         function GetNormECB(err) {
@@ -139,7 +138,7 @@
         }
 
         function DataTableRender(normData) {
-            let normArray = [];
+            normArray = [];
             let medsNormArray = [];
             for (var i = 0; i < normData.length; i++) {
                 normArray.push(normData[i]);
@@ -147,6 +146,7 @@
                     medsNormArray.push(normData[i].medList[j]);
                 }
             }
+            console.log(normArray[0].lastUpdate);
             console.log(medsNormArray);
 
             try {
@@ -160,6 +160,9 @@
                     medsNormArray.unshift({ medName: "", normQty: "" });
 
                     dataTable = $('#Table').DataTable({
+                        //"drawCallback": function (settings) {
+                        //    alert('DataTables has redrawn the table');
+                        //},
                         "language": {
                             "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
                         },
@@ -191,7 +194,8 @@
                                 data: "medName",
                                 render: function (data, type, row, meta) {
                                     if (type === 'display' && row.medName === "") {
-                                        return '<input type="text" id="input" class="medName-input form-control" autocomplete="off" required><ul class="dropdown-options" id="dropdown-options"></ul>';
+
+                                        return '<input type="text" id="medInput" class="medName-input form-control" autocomplete="off" required><ul class="dropdown-options" id="meds-dropdown-options"></ul>';
 
                                     } else {
                                         return data;
@@ -229,8 +233,23 @@
                     dataTable.row.add({ medName: "", normQty: "" }).draw(false);
                 }
 
+                // Call checkTableRendered to check if the table is fully rendered
+                checkTableRendered();
+
             } catch (err) {
                 alert(err);
+            }
+        }
+
+        function checkTableRendered() {
+            if ($('#Table tbody tr').length > 0) {
+                // Data table is rendered and visible
+                lastUpdateRender(normArray);
+                createDropDownMedsInput(medNames);
+                renderMedsOptions(medNames);
+            } else {
+                // Data table is not yet rendered, wait for a short delay and check again
+                setTimeout(checkTableRendered, 100);
             }
         }
 
@@ -241,6 +260,20 @@
             }
             document.getElementById("button_ph").innerHTML = str;
         }
+
+        //function UpdateNorm() {
+
+        //    ajaxCall("PUT", apiPutNorm, JSON.stringify(msg), PutNormSCB, PutNormECB);
+        //    return false;
+        //}
+
+        //function PutNormSCB(){
+
+        //}
+
+        //function PutNormECB() {
+
+        //}
 
     </script>
 
