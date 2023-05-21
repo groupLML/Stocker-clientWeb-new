@@ -30,14 +30,14 @@
     input.on("input", function () {
         var text = input.val().toUpperCase();
         if (text === "") {
-            renderOptions(optionsList);
+            renderMedsOptions(optionsList);
             input[0].setCustomValidity(""); // Reset custom validity message
             dropdownOptions.show(); // Show dropdown options when input is empty
         } else {
             var filteredOptions = optionsList.filter(function (option) {
                 return option.toUpperCase().indexOf(text) > -1;
             });
-            renderOptions(filteredOptions);
+            renderMedsOptions(filteredOptions);
             if (filteredOptions.length === 0) {
                 input[0].setCustomValidity("אנא בחר את סוג המחלקה מתוך הרשימה");
             } else {
