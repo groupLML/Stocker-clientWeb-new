@@ -69,12 +69,13 @@
         })
 
         function lastUpdateRender(norm) {
-            var time = norm[0].lastUpdate.slice(11, 16);
-            var date = norm[0].lastUpdate.slice(0, 10);
+            if (norm.length!==0) {
+                var time = norm[0].lastUpdate.slice(11, 16);
+                var date = norm[0].lastUpdate.slice(0, 10);
 
-            let LastUpdateStr = `<p class="orderDate"> ${date} ${time}</p>`
-
-            document.getElementById("LastUpdate_ph").innerHTML = LastUpdateStr;
+                let LastUpdateStr = `<p class="orderDate"> ${date} ${time}</p>`
+                document.getElementById("LastUpdate_ph").innerHTML = LastUpdateStr;
+            }
         }
 
         function GetMeds() {
@@ -85,11 +86,12 @@
             console.log(data);
 
             for (var i = 0; i < data.length; i++) {
-                meds.push({ medId: data[i]['medId'], medName: data[i]['medName'] }); // Save med ID and name in the array
-                if (!medNames.includes(data[i]['medName']))
-                    medNames.push(data[i]['medName']);
+                var medId = data[i]['medId'];
+                var medName = data[i]['medName'];
+
+                medNames.push({ "medId": medId, "medName": medName}); // Save med ID as key and med name as value in the array
             }
-            console.log("medNames:" + medNames);
+            console.log(medNames);
         }
 
         function GetMedsECB(err) {
@@ -152,19 +154,11 @@
             console.log("medsToUpdate:", medsToUpdate);
 
             try {
-                if (dataTable) {
-                    // Clear the existing data from the table
-                    dataTable.clear().draw();
-                    // Add new data to the table
-                    dataTable.rows.add(medsToUpdate).draw();
-                } else {
+                if (!dataTable) {
                     // Add an empty row of inputs at the top of the data table
                     medsToUpdate.unshift({ medId: "", normQty: "", mazNum: "", medName: "" });
 
                     dataTable = $('#Table').DataTable({
-                        //"drawCallback": function (settings) {
-                        //    alert('DataTables has redrawn the table');
-                        //},
                         "language": {
                             "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
                         },
@@ -195,16 +189,35 @@
                                         // Get the input values from the first row
                                         var medInputValue = $('#medInput').val();
                                         var normQtyInputValue = parseInt($('#normQty-input').val(), 10);
+                                        var chosenMedId = $("#meds-dropdown-options li[data-value='" + medInputValue + "']").attr("id");
+
+                                        var doesNotIncludeMedName = true;
+                                        for (var i = 0; i < medsToUpdate.length; i++) {
+                                            if (medsToUpdate[i].medName === medInputValue) {
+                                                doesNotIncludeMedName = false;
+                                                break;
+                                            }
+                                        }
 
                                         // Validate the input values
                                         if (medInputValue.trim() === '' || isNaN(normQtyInputValue)) {
-                                            // Display an error message or handle the invalid input
+                                            alert("יש למלא את כל השדות")
+                                            return;
+                                        }
+                                        else if (!medNames.some(function (item) {
+                                            return item.medName === medInputValue;
+                                        })) {
+                                            alert("אנא בחר תרופה מהרשימה");
+                                            return;
+                                        }
+                                        else if (!doesNotIncludeMedName) {
+                                            alert("תרופה זו כבר קיימת בתקן")
                                             return;
                                         }
 
                                         // Create a new data object with the input values
                                         var newMedData = {
-                                            medId: '',
+                                            medId: chosenMedId,
                                             mazNum: '',
                                             normQty: normQtyInputValue,
                                             medName: medInputValue
@@ -219,10 +232,8 @@
                                         // Add the updated medsToUpdate data to the table
                                         dataTable.rows.add(medsToUpdate).draw();
 
-                                        // Reset the input values in the first row
-                                        $('#medInput').val('');
-                                        $('#normQty-input').val('');
-
+                                        // Call checkTableRendered to check if the table is fully rendered
+                                        checkTableRendered();
                                     });
                                 }
                             },
@@ -246,7 +257,7 @@
                                         return '<input type="number" id="normQty-input" class="form-control" min="0">';
                                     }
                                     else {
-                                        return '<input type="number" class="normQty-input form-control" min="0" value="'+data+'">';
+                                        return '<input type="number" class="normQty-input form-control" min="0" value="' + data + '">';
                                     }
                                 }
                             }
@@ -262,20 +273,25 @@
                         var rowIndex = dataTable.row($(this).closest('tr')).index();
                         var med = medsToUpdate[rowIndex];
                         med.normQty = newValue;
-                        console.log("medsToUpdate",medsToUpdate);
+                        console.log("medsToUpdate", medsToUpdate);
                     });
                 }
+                else {
+                    // Clear the existing data from the table
+                    dataTable.clear().draw();
 
-                // Add an empty row of inputs if the table is empty
-                if (medsToUpdate.length === 0) {
-                    medsToUpdate.push({ medName: "", normQty: "" });
-                    dataTable.row.add({ medName: "", normQty: "" }).draw(false);
+                    // Add an empty row of inputs at the top of the data table
+                    medsToUpdate.unshift({ medId: "", normQty: "", mazNum: "", medName: "" });
+
+                    // Add new data to the table
+                    dataTable.rows.add(medsToUpdate).draw();
                 }
 
                 // Call checkTableRendered to check if the table is fully rendered
                 checkTableRendered();
 
-            } catch (err) {
+            }
+            catch (err) {
                 alert(err);
             }
         }
