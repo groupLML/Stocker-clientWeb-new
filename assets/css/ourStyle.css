@@ -332,3 +332,14 @@ tbody, td, tfoot, th, thead, tr {
     direction: rtl;
     text-align: right;
 }
+
+/*element.style {
+    font-size: 14px;
+    margin-right: 3px;
+    font-family: "Open Sans", sans-serif;
+}
+
+element.style {
+    inset: auto 0px -10px;
+}
+*/
