@@ -44,6 +44,7 @@
     <script>
 
         let dataTable;
+        let normArray = [];
         let medsToUpdate = []; // Declare and initialize medsToUpdate array
 
         $(document).ready(function () {
@@ -51,6 +52,7 @@
             GetDepsApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
             apiGetDepNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
             apiGetMeds = "https://proj.ruppin.ac.il/cgroup36/prod/GetActiveMeds";
+            apiPutNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
 
             deps = []; // Array to save departments data
             depNames = [];
@@ -139,7 +141,6 @@
         }
 
         function DataTableRender(normData) {
-            normArray = [];
             medsNormArray = [];
             for (var i = 0; i < normData.length; i++) {
                 normArray.push(normData[i]);
@@ -321,17 +322,13 @@
                 else {
                     // Clear the existing data from the table
                     dataTable.clear().draw();
-
                     // Add an empty row of inputs at the top of the data table
                     medsToUpdate.unshift({ medId: "", normQty: "", mazNum: "", medName: "" });
-
                     // Add new data to the table
                     dataTable.rows.add(medsToUpdate).draw();
                 }
-
                 // Call checkTableRendered to check if the table is fully rendered
                 checkTableRendered();
-
             }
             catch (err) {
                 alert(err);
@@ -353,28 +350,37 @@
         function renderUpdateButton(doRender) {
             let str = "";
             if (doRender) {
-                str += `<button type="button" class="btn btn-success">עדכון</button>`;
-            }
-            else {
+                str += `<button type="button" class="btn btn-success" onclick="UpdateNorm()">עדכון</button>`;
+            } else {
                 str += ``;
             }
-
             document.getElementById("button_ph").innerHTML = str;
         }
 
-        //function UpdateNorm() {
+        function UpdateNorm() {
+            const slicedMedsToUpdate = medsToUpdate.slice(1);
+            const date = new Date;
+            const NewNorm = {
+                normId: 0,
+                depId: 0,
+                lastUpdate: date,
+                medList: slicedMedsToUpdate
+            }
 
-        //    ajaxCall("PUT", apiPutNorm, JSON.stringify(msg), PutNormSCB, PutNormECB);
-        //    return false;
-        //}
+            console.log(normArray);
 
-        //function PutNormSCB(){
+            ajaxCall("PUT", apiPutNorm + normArray[0].normId, JSON.stringify(NewNorm), PutNormSCB, PutNormECB);
+            return false;
+        }
 
-        //}
+        function PutNormSCB() {
+            alert("עודכן בהצלחה");
+            renderUpdateButton(false);
+        }
 
-        //function PutNormECB() {
-
-        //}
+        function PutNormECB() {
+            console.log(err);
+        }
 
     </script>
 
