@@ -374,7 +374,7 @@
         }
 
         function PutNormSCB() {
-            alert("עודכן בהצלחה");
+            $('#verticalycentered').modal('show');
             renderUpdateButton(false);
         }
 
@@ -559,6 +559,22 @@
                 </table>
                 <!-- End Table with stripped rows -->
                 <div id="button_ph" class="d-flex justify-content-center"></div>
+                <!-- Vertically centered Modal -->
+                <div class="modal fade" id="verticalycentered" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div>עדכון התקן בוצע בהצלחה</div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">סגור</button>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End Vertically centered Modal-->
             </div>
         </div>
     </main><!-- End #main -->
