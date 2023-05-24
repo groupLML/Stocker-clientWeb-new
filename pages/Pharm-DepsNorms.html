@@ -43,6 +43,7 @@
     <script>
 
         let dataTable;
+        let norm;
 
         $(document).ready(function () {
 
@@ -62,13 +63,18 @@
         })
 
         function lastUpdateRender(norm) {
-            console.log(norm[0].lastUpdate);
-            var time = norm[0].lastUpdate.slice(11, 16);
-            var date = norm[0].lastUpdate.slice(0, 10);
+            let LastUpdateStr;
+            if (norm.length !== 0) {
+                var time = norm[0].lastUpdate.slice(11, 16);
+                var date = norm[0].lastUpdate.slice(0, 10);
 
-            let LastUpdateStr = `<p class="orderDate"> ${date} ${time}</p>`
-                
+                LastUpdateStr = `<p class="orderDate"> ${date} ${time}</p>`
+            }
+            else {
+                LastUpdateStr = "";
+            }
             document.getElementById("LastUpdate_ph").innerHTML = LastUpdateStr;
+
         }
 
         function GetDepartments() {
@@ -81,7 +87,7 @@
 
             for (var i = 0; i < data.length; i++) {
                 deps.push({ depId: data[i]['depId'], depName: data[i]['depName'] }); // Save department ID and name in the array
-                if (!depNames.includes(data[i]['depName']) && data[i]['depName'] != "מערכות מידע" && data[i]['depName'] != "בית מרקחת")
+                if (!depNames.includes(data[i]['depName']) && data[i]['depType'] != "מערכות מידע" && data[i]['depType'] != "בית מרקחת")
                     depNames.push(data[i]['depName']);
             }
             renderOptions(depNames);
@@ -105,7 +111,7 @@
         function GetNormSCB(data) {
             console.log(data);
             DataTableRender(data);
-            lastUpdateRender(data);
+            //lastUpdateRender(data);
         }
 
         function GetNormECB(err) {
@@ -113,12 +119,14 @@
         }
 
         function DataTableRender(normData) {
-            let normArray = [];
             let medsNormArray = [];
-            for (var i = 0; i < normData.length; i++) {
-                normArray.push(normData[i]);
-                for (var j = 0; j < normData[i].medList.length; j++) {
-                    medsNormArray.push(normData[i].medList[j]);
+            if (normData.length === 0) {
+                norm = {};
+            }
+            else {
+                norm = normData[0];
+                for (var i = 0; i < norm.medList.length; i++) {
+                    medsNormArray.push(norm.medList[i]);
                 }
             }
             console.log(medsNormArray);
@@ -145,9 +153,24 @@
 
                     // Show the table header
                     $('#Table thead').show();
+
+                    // Call checkTableRendered to check if the table is fully rendered
+                    checkTableRendered();
                 }
             } catch (err) {
                 alert(err);
+            }
+        }
+
+        function checkTableRendered() {
+            if ($('#Table tbody tr').length > 0) {
+                // Data table is rendered and visible
+                lastUpdateRender(norm);
+                createDropDownMedsInput(medNames);
+                renderMedsOptions(medNames);
+            } else {
+                // Data table is not yet rendered, wait for a short delay and check again
+                setTimeout(checkTableRendered, 100);
             }
         }
     </script>
