@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Stocker - Pharm-NormRequest</title>
+    <title>Stocker - Manager-NormRequests</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -52,7 +52,7 @@
             GetDepsApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
             apiGetDepNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
             apiGetMeds = "https://proj.ruppin.ac.il/cgroup36/prod/GetActiveMeds";
-            apiPostNormReq = "https://proj.ruppin.ac.il/cgroup36/prod/api/NormRequest";
+            apiPutNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
 
             deps = []; // Array to save departments data
             depNames = [];
@@ -358,39 +358,33 @@
         function renderUpdateButton(doRender) {
             let str = "";
             if (doRender) {
-                str += `<button type="button" class="btn btn-success" onclick="PostNormRequest()">שליחה</button>`;
+                str += `<button type="button" class="btn btn-success" onclick="UpdateNorm()">עדכון</button>`;
             } else {
                 str += ``;
             }
             document.getElementById("button_ph").innerHTML = str;
         }
 
-        function PostNormRequest() {
-            const slicedMedsToUpdate = medsToUpdate.slice(1);//remove empty row data from array
+        function UpdateNorm() {
+            const slicedMedsToUpdate = medsToUpdate.slice(1);
             const date = new Date;
-            const NewNormReq = {
-                reqId: 0,
-                normId: norm.normId,
-                reqDate: date,
-                userId: user.userId,
-                reqStatus: "",
+            const NewNorm = {
+                normId: 0,
                 depId: 0,
-                depName: "",
-                fullName: "",
-                position: "",
-                medReqList: slicedMedsToUpdate
+                lastUpdate: date,
+                medList: slicedMedsToUpdate
             }
 
-            ajaxCall("POST", apiPostNormReq, JSON.stringify(NewNormReq), PostNormRequestSCB, PostNormRequestECB);
+            ajaxCall("PUT", apiPutNorm + norm.normId, JSON.stringify(NewNorm), PutNormSCB, PutNormECB);
             return false;
         }
 
-        function PostNormRequestSCB() {
+        function PutNormSCB() {
             $('#verticalycentered').modal('show');
             renderUpdateButton(false);
         }
 
-        function PostNormRequestECB(err) {
+        function PutNormECB() {
             console.log(err);
         }
 
@@ -434,7 +428,7 @@
                 </li><!-- End Search Icon-->
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link nav-icon" href="Pharm-messages.html">
+                    <a class="nav-link nav-icon" href="Manager-messages.html">
                         <i class="bi bi-bell"></i>
                     </a><!-- End Notification Icon -->
                 </li><!-- End Notification Nav -->
@@ -466,44 +460,76 @@
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
             <li class="nav-item">
-                <a class="nav-link collapsed" href="Pharm-PullOrders.html">
-                    <span>הזמנות משיכה</span>
+                <a class="nav-link collapsed" href="#">
+                    <span>בית</span>
                 </a>
-            </li><!-- End PullOrders Nav -->
+            </li>
+            <!-- End Home Nav -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="Pharm-PushOrders.html">
-                    <span>הזמנות דחיפה</span>
+                <a class="nav-link collapsed" data-bs-target="#orders-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>הזמנות</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-            </li><!-- End PushOrders Nav -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="Pharm-DepsInventory.html">
-                    <span>מחסן המחלקות</span>
-                </a>
-            </li><!-- End DepsStock Nav -->
-            <li class="nav-item">
-                <a class="nav-link active" data-bs-target="#norms-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
-                    <span>תקני המחלקות</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="norms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+                <ul id="orders-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="Pharm-DepsNorms.html" onclick="reload()">
-                            <i class="bi bi-circle"></i><span>תקנים</span>
+                        <a href="Manager-PullOrders.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>הזמנות משיכה</span>
                         </a>
                     </li>
                     <li>
-                        <a href="Pharm-NormRequest.html" class="active" onclick="reload()">
-                            <i class="bi bi-circle"></i><span>בקשה לעדכון תקן</span>
+                        <a href="Manager-PushOrders.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>הזמנות דחיפה</span>
                         </a>
                     </li>
                 </ul>
             </li>
-            <!-- End DepsNorm Nav -->
+            <!-- End Orders Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#departments-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>מחלקות</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="departments-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="Manager-DepsInventory.html" class="active" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>מחסן המחלקות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Manager-DepsUsage.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>צריכת המחלקות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Manager-DepsTransfers.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>העברות בין מחלקות</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- End Deps Nav -->
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-target="#norms-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>תקנים</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="norms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="Manager-DepsNorms.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>תקן המחלקות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Manager-NormRequests.html" class="active" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>בקשות לעדכון תקן</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!-- End Norms Nav -->
         </ul>
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
         <div class="row">
-            <div class="col-10 pagetitle"><h1>בקשה לשינוי תקן</h1></div>
+            <div class="col-10 pagetitle"><h1>בקשות לשינוי תקן</h1></div>
             <div id="LastUpdate_ph" class="col-2"></div>
         </div><!-- End Page Title -->
         <div class="card">
@@ -547,7 +573,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <div>בקשה נשלחה בהצלחה</div>
+                                <div>עדכון התקן בוצע בהצלחה</div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">סגור</button>
