@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Stocker - Manager-DepsNorms</title>
+    <title>Stocker - Manager-NormRequest</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -49,26 +49,21 @@
 
         $(document).ready(function () {
 
-            GetDepsApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
-            apiGetDepNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
-            apiGetMeds = "https://proj.ruppin.ac.il/cgroup36/prod/GetActiveMeds";
-            apiPutNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
-
-            deps = []; // Array to save departments data
-            depNames = [];
-            GetDepartments();
-            createDropDownInput(depNames);
-
-            meds = []; // Array to save meds data
-            medNames = [];
-            GetMeds();
-
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
-
-            $("#DepSearch").submit(GetDepNorm); //form validation
-
+            headerRender();
         })
+
+        function headerRender() {
+            let titleStr = `<h1>תקן מחלקה ###</h1>`
+            titleStr += `<nav>`
+            titleStr += `<ol class="breadcrumb">`
+            titleStr += `<li class="breadcrumb-item">בקשה ###</li>`
+            titleStr += `<li class="breadcrumb-item active"><a href="Manager-NormRequests.html">בקשות לשינוי תקן</a></li>`
+            titleStr += `</ol>`
+            titleStr += `</nav>`
+            document.getElementById("title_ph").innerHTML = titleStr;
+        }
 
         function lastUpdateRender(norm) {
             let LastUpdateStr;
@@ -83,66 +78,6 @@
             }
             document.getElementById("LastUpdate_ph").innerHTML = LastUpdateStr;
 
-        }
-
-        function GetMeds() {
-            ajaxCall("GET", apiGetMeds, "", GetMedsSCB, GetMedsECB);
-        }
-
-        function GetMedsSCB(data) {
-            console.log(data);
-
-            for (var i = 0; i < data.length; i++) {
-                var medId = data[i]['medId'];
-                var medName = data[i]['medName'];
-
-                medNames.push({ "medId": medId, "medName": medName }); // Save med ID as key and med name as value in the array
-            }
-            console.log(medNames);
-        }
-
-        function GetMedsECB(err) {
-            console.log(err);
-        }
-
-        function GetDepartments() {
-            ajaxCall("GET", GetDepsApi, "", GetDepsSCB, GetDepsECB);
-            return false;
-        }
-
-        function GetDepsSCB(data) {
-            console.log(data);
-
-            for (var i = 0; i < data.length; i++) {
-                deps.push({ depId: data[i]['depId'], depName: data[i]['depName'] }); // Save department ID and name in the array
-                if (!depNames.includes(data[i]['depName']) && data[i]['depType'] != "מערכות מידע" && data[i]['depType'] != "בית מרקחת")
-                    depNames.push(data[i]['depName']);
-            }
-            renderOptions(depNames);
-        }
-
-        function GetDepsECB(err) {
-            console.log(err);
-        }
-
-        function GetDepNorm() {
-            DepName = $("#input").val();
-
-            Dep = deps.find(function (dep) {
-                return dep.depName === DepName;
-            });
-
-            ajaxCall("GET", apiGetDepNorm + "depId/" + Dep.depId, "", GetNormSCB, GetNormECB);
-            return false;
-        }
-
-        function GetNormSCB(data) {
-            console.log(data);
-            DataTableRender(data);
-        }
-
-        function GetNormECB(err) {
-            console.log(err);
         }
 
         function DataTableRender(normData) {
@@ -362,7 +297,6 @@
         }
 
         function UpdateNorm() {
-            const slicedMedsToUpdate = medsToUpdate.slice(1);
             const date = new Date;
             const NewNorm = {
                 normId: 0,
@@ -508,12 +442,12 @@
                 </a>
                 <ul id="norms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="Manager-DepsNorms.html" class="active" onclick="reload()">
+                        <a href="Manager-DepsNorms.html"  onclick="reload()">
                             <i class="bi bi-circle"></i><span>תקן המחלקות</span>
                         </a>
                     </li>
                     <li>
-                        <a href="Manager-NormRequests.html" onclick="reload()">
+                        <a href="Manager-NormRequests.html" class="active" onclick="reload()">
                             <i class="bi bi-circle"></i><span>בקשות לעדכון תקן</span>
                         </a>
                     </li>
@@ -525,30 +459,11 @@
 
     <main id="main" class="main">
         <div class="row">
-            <div class="col-10 pagetitle"><h1>תקן המחלקות</h1></div>
+            <div id="title_ph" class="col-10 pagetitle"></div>
             <div id="LastUpdate_ph" class="col-2"></div>
         </div><!-- End Page Title -->
         <div class="card">
             <div class="card-body">
-                <form id="DepSearch">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label class="col-form-label">בחר מחלקה</label>
-                        </div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="col-md-4">
-                            <div class="input-group has-validation">
-                                <input type="text" id="input" class="form-control" autocomplete="off" required>
-                                <ul class="dropdown-options" id="dropdown-options"></ul>
-                                <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <button type="submit" class="btn btn-primary">הצג</button>
-                        </div>
-                    </div>
-                </form>
                 <!-- Table with stripped rows table-striped-->
                 <table class="table hover table-striped-custom hide-table-header" id="Table" style="width:100%">
                     <thead>

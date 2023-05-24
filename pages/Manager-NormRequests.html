@@ -43,359 +43,96 @@
 
     <script>
 
-        let dataTable;
-        let norm;
-        let medsToUpdate = []; // Declare and initialize medsToUpdate array
-
         $(document).ready(function () {
 
-            GetDepsApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
-            apiGetDepNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
-            apiGetMeds = "https://proj.ruppin.ac.il/cgroup36/prod/GetActiveMeds";
-            apiPutNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
-
-            deps = []; // Array to save departments data
-            depNames = [];
-            GetDepartments();
-            createDropDownInput(depNames);
-
-            meds = []; // Array to save meds data
-            medNames = [];
-            GetMeds();
+            GetNormReqsApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/NormRequest";
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
-            $("#DepSearch").submit(GetDepNorm); //form validation
+            GetNormReqs();
+            NormReqs = [];
+
+            $('#Table').on('click', 'tbody tr', function () {// This function will be called when a row is clicked
+                //// Create an array for the column names of the table
+                //var columnNames = ["orderId", "orderDate", "orderTime", "depName", "nurseName", "status"];
+
+                //var orderData = {};// Create an empty object to store the row data
+
+                //$(this).find('td').each(function (index, cell) {// Loop through each cell in the clicked row
+                //    orderData[columnNames[index]] = $(cell).text();// Get the cell value and add it to the orderData object
+                //});
+
+                //// Find the order in the PullOrdersList based on the orderId
+                //var order = PullOrdersList.find(function (order) {
+                //    return order.orderId === parseInt(orderData.orderId);// Convert the orderId to an integer
+                //});
+
+                //// Add the last update to the orderData object
+                //orderData.lastUpdate = order.lastUpdate;
+                //// Add the pUser to the orderData object
+                //orderData.pUser = order.pharmId;
+                //// Add the pharmName to the orderData object
+                //orderData.pharmName = order.pharmName;
+
+                //var orderDataJson = JSON.stringify(orderData);// Convert the orderData object to a JSON string
+
+                //sessionStorage.setItem('Order', orderDataJson);// Add the rowDataJson to the session storage
+
+                window.location.href = 'Manager-NormRequest.html';// Navigate to PullOrder page
+            });
 
         })
 
-        function lastUpdateRender(norm) {
-            let LastUpdateStr;
-            if (norm.length !== 0) {
-                var time = norm.lastUpdate.slice(11, 16);
-                var date = norm.lastUpdate.slice(0, 10);
-
-                LastUpdateStr = `<p class="orderDate"> ${date} ${time}</p>`
-            }
-            else {
-                LastUpdateStr = "";
-            }
-            document.getElementById("LastUpdate_ph").innerHTML = LastUpdateStr;
-
-        }
-
-        function GetMeds() {
-            ajaxCall("GET", apiGetMeds, "", GetMedsSCB, GetMedsECB);
-        }
-
-        function GetMedsSCB(data) {
-            console.log(data);
-
-            for (var i = 0; i < data.length; i++) {
-                var medId = data[i]['medId'];
-                var medName = data[i]['medName'];
-
-                medNames.push({ "medId": medId, "medName": medName }); // Save med ID as key and med name as value in the array
-            }
-            console.log(medNames);
-        }
-
-        function GetMedsECB(err) {
-            console.log(err);
-        }
-
-        function GetDepartments() {
-            ajaxCall("GET", GetDepsApi, "", GetDepsSCB, GetDepsECB);
+        function GetNormReqs() {
+            ajaxCall("GET", GetNormReqsApi, "", GetNormReqsSCB, GetNormReqsECB);
             return false;
         }
 
-        function GetDepsSCB(data) {
-            console.log(data);
-
-            for (var i = 0; i < data.length; i++) {
-                deps.push({ depId: data[i]['depId'], depName: data[i]['depName'] }); // Save department ID and name in the array
-                if (!depNames.includes(data[i]['depName']) && data[i]['depType'] != "מערכות מידע" && data[i]['depType'] != "בית מרקחת")
-                    depNames.push(data[i]['depName']);
-            }
-            renderOptions(depNames);
-        }
-
-        function GetDepsECB(err) {
-            console.log(err);
-        }
-
-        function GetDepNorm() {
-            DepName = $("#input").val();
-
-            Dep = deps.find(function (dep) {
-                return dep.depName === DepName;
-            });
-
-            ajaxCall("GET", apiGetDepNorm + "depId/" + Dep.depId, "", GetNormSCB, GetNormECB);
-            return false;
-        }
-
-        function GetNormSCB(data) {
+        function GetNormReqsSCB(data) {
             console.log(data);
             DataTableRender(data);
         }
 
-        function GetNormECB(err) {
+        function GetNormReqsECB(err) {
             console.log(err);
         }
 
-        function DataTableRender(normData) {
-            let medsNormArray = [];
-            if (normData.length === 0) {
-                norm = {};
-            }
-            else {
-                norm = normData[0];
-                for (var i = 0; i < norm.medList.length; i++) {
-                    medsNormArray.push(norm.medList[i]);
-                }
-                //independent copy the medsNormArray to medsToUpdate array to display changes
-                medsToUpdate = JSON.parse(JSON.stringify(medsNormArray));
-            }
+        function DataTableRender(reqsData) {
+            let reqsArray = [];
 
-            console.log("norm", norm);
-            console.log("medsNormArray", medsNormArray);
-            console.log("medsToUpdate:", medsToUpdate);
+            for (var i = 0; i < reqsData.length; i++) {
 
+                var date = new Date(reqsData[i].reqDate); // המרה לתאריך
+                reqsData[i].reqDate = date.toISOString().slice(0, 10); //yyyy-mm-dd פורמט מבוקש
+                //reqsData[i].reqTime = reqsData[i].reqTime.slice(0, 5); //hh:mm פורמט מבוקש
+
+                reqsArray.push(reqsData[i]);
+            }
             try {
-                if (!dataTable) {
-                    // Add an empty row of inputs at the top of the data table
-                    medsToUpdate.unshift({ medId: "", normQty: "", mazNum: "", medName: "" });
-
-                    dataTable = $('#Table').DataTable({
-                        "language": {
-                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
-                        },
-                        data: medsToUpdate,
-                        pageLength: 5,
-                        columns: [
-                            {
-                                data: null,
-                                render: function (data, type, row, meta) {
-                                    if (row.medName === "") {
-                                        return '<i id="add-icon" class="bi bi-plus-lg add-icon"></i>';
-                                    } else {
-                                        return '<i class="bi bi-trash delete-icon"></i>';
-                                    }
-                                },
-                                createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
-                                    $(cell).on('click', '.delete-icon', function () {
-                                        // Get the index of the medication to delete
-                                        var index = dataTable.row($(this).closest('tr')).index();
-                                        // Remove the medication from the array
-                                        medsToUpdate.splice(index, 1);
-                                        // Redraw the table
-                                        dataTable.clear().rows.add(medsToUpdate).draw();
-                                        console.log(medsToUpdate);
-                                        //if updated render update button
-                                        if (!areArraysIdentical(medsToUpdate, medsNormArray)) {
-                                            renderUpdateButton(true);
-                                        } else {
-                                            renderUpdateButton(false);
-                                        }
-                                    });
-
-                                    $(cell).on('click', '#add-icon', function () {
-                                        // Get the input values from the first row
-                                        var medInputValue = $('#medInput').val();
-                                        var normQtyInputValue = parseInt($('#normQty-input').val(), 10);
-                                        var chosenMedId = $("#meds-dropdown-options li[data-value='" + medInputValue + "']").attr("id");
-
-                                        var doesNotIncludeMedName = true;
-                                        for (var i = 0; i < medsToUpdate.length; i++) {
-                                            if (medsToUpdate[i].medName === medInputValue) {
-                                                doesNotIncludeMedName = false;
-                                                break;
-                                            }
-                                        }
-
-                                        // Remove any previous invalid class from medInput
-                                        $('#medInput').removeClass('is-invalid');
-                                        // Remove any previous invalid class from normQty-input
-                                        $('#normQty-input').removeClass('is-invalid');
-
-                                        // Validate the input values
-                                        if (medInputValue.trim() === '' && isNaN(normQtyInputValue)) {
-                                            $('#medInputValidation').text("יש למלא את כל השדות");
-                                            // Add the invalid class to medInput
-                                            $('#medInput').addClass('is-invalid');
-                                            // Add the invalid class to normQty-input
-                                            $('#normQty-input').addClass('is-invalid');
-                                            return;
-                                        }
-                                        else if (medInputValue.trim() === '') {
-                                            $('#medInputValidation').text("יש למלא את כל השדות");
-                                            // Add the invalid class to medInput
-                                            $('#medInput').addClass('is-invalid');
-                                            return;
-                                        }
-                                        else if (isNaN(normQtyInputValue)) {
-                                            $('#medInputValidation').text("יש למלא את כל השדות");
-                                            // Add the invalid class to normQty-input
-                                            $('#normQty-input').addClass('is-invalid');
-                                            return;
-                                        }
-                                        else if (!medNames.some(function (item) {
-                                            return item.medName === medInputValue;
-                                        })) {
-                                            $('#medInputValidation').text("אנא בחר תרופה מהרשימה");
-                                            // Add the invalid class to medInput
-                                            $('#medInput').addClass('is-invalid');
-                                            return;
-                                        }
-                                        else if (!doesNotIncludeMedName) {
-                                            $('#medInputValidation').text("תרופה זו כבר קיימת בתקן");
-                                            // Add the invalid class to normQty-input
-                                            $('#medInput').addClass('is-invalid');
-                                            return;
-                                        }
-
-                                        // Create a new data object with the input values
-                                        var newMedData = {
-                                            medId: parseInt(chosenMedId),
-                                            mazNum: '',
-                                            normQty: normQtyInputValue,
-                                            medName: medInputValue
-                                        };
-
-                                        // Add the new data object to the medsToUpdate
-                                        medsToUpdate.push(newMedData);
-                                        //if updated render update button
-                                        if (!areArraysIdentical(medsToUpdate, medsNormArray)) {
-                                            renderUpdateButton(true);
-                                        } else {
-                                            renderUpdateButton(false);
-                                        }
-                                        // Clear the existing data from the table
-                                        dataTable.clear().draw();
-                                        // Add the updated medsToUpdate data to the table
-                                        dataTable.rows.add(medsToUpdate).draw();
-                                        // Call checkTableRendered to check if the table is fully rendered
-                                        checkTableRendered();
-                                    });
-                                }
-                            },
-                            {
-                                data: "medName",
-                                render: function (data, type, row, meta) {
-                                    if (type === 'display' && row.medName === "") {
-                                        let str = '<input type="text" id="medInput" class="medName-input form-control" autocomplete="off" required>';
-                                        str += '<ul class="dropdown-options" id="meds-dropdown-options"></ul>';
-                                        str += '<div id="medInputValidation"></div>'
-                                        return str;
-                                    }
-                                    else {
-                                        return data;
-                                    }
-                                }
-                            },
-                            {
-                                data: "normQty",
-                                render: function (data, type, row, meta) {
-                                    if (type === 'display' && row.normQty === "") {
-                                        return '<input type="number" id="normQty-input" class="form-control" min="0">';
-                                    }
-                                    else {
-                                        return '<input type="number" class="normQty-input form-control" min="0" value="' + data + '">';
-                                    }
-                                }
-                            }
-                        ],
-                    });
-
-                    //Show the table header
-                    $('#Table thead').show();
-
-                    //Update the normQty value of the med in the medsToUpdate when the input value is changed
-                    $('#Table').on('change', '.normQty-input', function () {
-                        var newValue = parseInt($(this).val(), 10);
-                        var rowIndex = dataTable.row($(this).closest('tr')).index();
-                        var med = medsToUpdate[rowIndex];
-                        med.normQty = newValue;
-                        console.log("medsNormArray", medsNormArray);
-                        console.log("medsToUpdate", medsToUpdate);
-                        if (!areArraysIdentical(medsToUpdate, medsNormArray)) {
-                            renderUpdateButton(true);
-                        } else {
-                            renderUpdateButton(false);
-                        }
-                    });
-                }
-                else {
-                    // Clear the existing data from the table
-                    dataTable.clear().draw();
-                    // Add an empty row of inputs at the top of the data table
-                    medsToUpdate.unshift({ medId: "", normQty: "", mazNum: "", medName: "" });
-                    // Add new data to the table
-                    dataTable.rows.add(medsToUpdate).draw();
-                }
-                // Call checkTableRendered to check if the table is fully rendered
-                checkTableRendered();
+                tbl = $('#Table').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
+                    },
+                    data: reqsArray,
+                    pageLength: 5,
+                    columns: [
+                        { data: "reqId" },
+                        { data: "reqDate" },
+                        //{ data: "reqTime" },
+                        { data: "depName" },
+                        { data: "fullName" },
+                        { data: "position" },
+                    ],
+                });
             }
+
             catch (err) {
                 alert(err);
             }
         }
 
-        function checkTableRendered() {
-            if ($('#Table tbody tr').length > 0) {
-                // Data table is rendered and visible
-                lastUpdateRender(norm);
-                createDropDownMedsInput(medNames);
-                renderMedsOptions(medNames);
-            } else {
-                // Data table is not yet rendered, wait for a short delay and check again
-                setTimeout(checkTableRendered, 100);
-            }
-        }
-
-        function renderUpdateButton(doRender) {
-            let str = "";
-            if (doRender) {
-                str += `<button type="button" class="btn btn-success" onclick="UpdateNorm()">עדכון</button>`;
-            } else {
-                str += ``;
-            }
-            document.getElementById("button_ph").innerHTML = str;
-        }
-
-        function UpdateNorm() {
-            const slicedMedsToUpdate = medsToUpdate.slice(1);
-            const date = new Date;
-            const NewNorm = {
-                normId: 0,
-                depId: 0,
-                lastUpdate: date,
-                medList: slicedMedsToUpdate
-            }
-
-            ajaxCall("PUT", apiPutNorm + norm.normId, JSON.stringify(NewNorm), PutNormSCB, PutNormECB);
-            return false;
-        }
-
-        function PutNormSCB() {
-            $('#verticalycentered').modal('show');
-            renderUpdateButton(false);
-        }
-
-        function PutNormECB() {
-            console.log(err);
-        }
-
     </script>
-
-    <style>
-        /* Hide the table headers */
-        .hide-table-header thead {
-            display: none;
-        }
-    </style>
 
 </head>
 
@@ -512,12 +249,12 @@
                 </a>
                 <ul id="norms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="Manager-DepsNorms.html" onclick="reload()">
+                        <a href="Manager-DepsNorms.html" " onclick="reload()">
                             <i class="bi bi-circle"></i><span>תקן המחלקות</span>
                         </a>
                     </li>
                     <li>
-                        <a href="Manager-NormRequests.html" class="active" onclick="reload()">
+                        <a href="Manager-NormRequests.html" class="active onclick="reload()">
                             <i class="bi bi-circle"></i><span>בקשות לעדכון תקן</span>
                         </a>
                     </li>
@@ -534,32 +271,16 @@
         </div><!-- End Page Title -->
         <div class="card">
             <div class="card-body">
-                <form id="DepSearch">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label class="col-form-label">בחר מחלקה</label>
-                        </div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="col-md-4">
-                            <div class="input-group has-validation">
-                                <input type="text" id="input" class="form-control" autocomplete="off" required>
-                                <ul class="dropdown-options" id="dropdown-options"></ul>
-                                <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <button type="submit" class="btn btn-primary">הצג</button>
-                        </div>
-                    </div>
-                </form>
                 <!-- Table with stripped rows table-striped-->
                 <table class="table hover table-striped-custom hide-table-header" id="Table" style="width:100%">
                     <thead>
                         <tr>
-                            <th></th>
-                            <th>שם התרופה</th>
-                            <th>כמות בתקן</th>
+                            <th>#</th>
+                            <th>תאריך</th>
+                            <!--<th>שעה</th>-->
+                            <th>שם המחלקה</th>
+                            <th>יוצר ההזמנה</th>
+                            <th>תפקיד</th>
                         </tr>
                     </thead>
                 </table>
