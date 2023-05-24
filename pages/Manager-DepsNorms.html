@@ -44,7 +44,7 @@
     <script>
 
         let dataTable;
-        let normArray = [];
+        let norm;
         let medsToUpdate = []; // Declare and initialize medsToUpdate array
 
         $(document).ready(function () {
@@ -146,21 +146,20 @@
         }
 
         function DataTableRender(normData) {
-            medsNormArray = [];
+            let medsNormArray = [];
             if (normData.length === 0) {
-                normArray = [];
+                norm = {};
             }
             else {
-                for (var i = 0; i < normData.length; i++) {
-                    normArray = normData[i];
-                    for (var j = 0; j < normData[i].medList.length; j++) {
-                        medsNormArray.push(normData[i].medList[j]);
-                    }
+                norm = normData[0];
+                for (var i = 0; i < norm.medList.length; i++) {
+                    medsNormArray.push(norm.medList[i]);
                 }
+                //independent copy the medsNormArray to medsToUpdate array to display changes
+                medsToUpdate = JSON.parse(JSON.stringify(medsNormArray));
             }
-            //independent copy the medsNormArray to medsToUpdate array to display changes
-            medsToUpdate = JSON.parse(JSON.stringify(medsNormArray));
-            console.log("normArray", normArray);
+
+            console.log("norm", norm);
             console.log("medsNormArray", medsNormArray);
             console.log("medsToUpdate:", medsToUpdate);
 
@@ -253,7 +252,7 @@
                                         else if (!doesNotIncludeMedName) {
                                             $('#medInputValidation').text("תרופה זו כבר קיימת בתקן");
                                             // Add the invalid class to normQty-input
-                                            $('#normQty-input').addClass('is-invalid');
+                                            $('#medInput').addClass('is-invalid');
                                             return;
                                         }
 
@@ -347,7 +346,7 @@
         function checkTableRendered() {
             if ($('#Table tbody tr').length > 0) {
                 // Data table is rendered and visible
-                lastUpdateRender(normArray);
+                lastUpdateRender(norm);
                 createDropDownMedsInput(medNames);
                 renderMedsOptions(medNames);
             } else {
@@ -376,7 +375,7 @@
                 medList: slicedMedsToUpdate
             }
 
-            ajaxCall("PUT", apiPutNorm + normArray[0].normId, JSON.stringify(NewNorm), PutNormSCB, PutNormECB);
+            ajaxCall("PUT", apiPutNorm + norm.normId, JSON.stringify(NewNorm), PutNormSCB, PutNormECB);
             return false;
         }
 
