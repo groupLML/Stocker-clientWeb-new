@@ -71,13 +71,18 @@
         })
 
         function lastUpdateRender(norm) {
+            let LastUpdateStr;
             if (norm.length !== 0) {
-                var time = norm[0].lastUpdate.slice(11, 16);
-                var date = norm[0].lastUpdate.slice(0, 10);
+                var time = norm.lastUpdate.slice(11, 16);
+                var date = norm.lastUpdate.slice(0, 10);
 
-                let LastUpdateStr = `<p class="orderDate"> ${date} ${time}</p>`
-                document.getElementById("LastUpdate_ph").innerHTML = LastUpdateStr;
+                LastUpdateStr = `<p class="orderDate"> ${date} ${time}</p>`
             }
+            else {
+                LastUpdateStr = "";
+            }
+            document.getElementById("LastUpdate_ph").innerHTML = LastUpdateStr;
+
         }
 
         function GetMeds() {
@@ -142,16 +147,20 @@
 
         function DataTableRender(normData) {
             medsNormArray = [];
-            for (var i = 0; i < normData.length; i++) {
-                normArray.push(normData[i]);
-                for (var j = 0; j < normData[i].medList.length; j++) {
-                    medsNormArray.push(normData[i].medList[j]);
+            if (normData.length === 0) {
+                normArray = [];
+            }
+            else {
+                for (var i = 0; i < normData.length; i++) {
+                    normArray = normData[i];
+                    for (var j = 0; j < normData[i].medList.length; j++) {
+                        medsNormArray.push(normData[i].medList[j]);
+                    }
                 }
             }
-
             //independent copy the medsNormArray to medsToUpdate array to display changes
             medsToUpdate = JSON.parse(JSON.stringify(medsNormArray));
-
+            console.log("normArray", normArray);
             console.log("medsNormArray", medsNormArray);
             console.log("medsToUpdate:", medsToUpdate);
 
@@ -366,8 +375,6 @@
                 lastUpdate: date,
                 medList: slicedMedsToUpdate
             }
-
-            console.log(normArray);
 
             ajaxCall("PUT", apiPutNorm + normArray[0].normId, JSON.stringify(NewNorm), PutNormSCB, PutNormECB);
             return false;
