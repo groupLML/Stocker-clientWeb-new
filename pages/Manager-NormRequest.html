@@ -43,13 +43,17 @@
 
     <script>
 
-        let dataTable;
+        let norm;
+        let medsInNorm = [];
         let medsToUpdate = []; // Declare and initialize medsToUpdate array
 
         $(document).ready(function () {
+            apiGetDepNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
+
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             normReq = JSON.parse(sessionStorage.getItem("NormRequest")); //get user from storage
 
+            GetDepNorm();
             renderUser(user);
             headerRender();
             reqDateRender();
@@ -78,15 +82,29 @@
             document.getElementById("reqDate_ph").innerHTML = reqDateStr;
         }
 
+        function GetDepNorm() {
+            ajaxCall("GET", apiGetDepNorm + "depId/" + normReq.depId, "", GetNormSCB, GetNormECB);
+            return false;
+        }
+
+        function GetNormSCB(data) {
+            norm = data;
+            medsInNorm = data[0].medList;
+            console.log("DepNorm:", norm);
+            console.log("medsInNorm:", medsInNorm);
+        }
+
+        function GetNormECB(err) {
+            console.log(err);
+        }
+
         function DataTableRender() {
             let medsReqArray = [];
-
-            //normReq.medReqList
 
             for (var i = 0; i < normReq.medReqList.length; i++) {
                 medsReqArray.push(normReq.medReqList[i]);
             }
-            //independent copy the medsNormArray to medsToUpdate array to display changes
+            //independent copy the medsReqArray to medsToUpdate array to display changes
             medsToUpdate = JSON.parse(JSON.stringify(medsReqArray));
 
             try {
@@ -94,7 +112,7 @@
                     "language": {
                         "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
                     },
-                    data: medsReqArray,
+                    data: medsToUpdate,
                     pageLength: 5,
                     columns: [
                         { data: "medId" },
@@ -109,20 +127,20 @@
                     ],
                 });
 
-                ////Update the normQty value of the med in the medsToUpdate when the input value is changed
-                //$('#Table').on('change', '.normQty-input', function () {
-                //    var newValue = parseInt($(this).val(), 10);
-                //    var rowIndex = dataTable.row($(this).closest('tr')).index();
-                //    var med = medsToUpdate[rowIndex];
-                //    med.normQty = newValue;
-                //    console.log("medsNormArray", medsNormArray);
-                //    console.log("medsToUpdate", medsToUpdate);
-                //    if (!areArraysIdentical(medsToUpdate, medsNormArray)) {
-                //        renderUpdateButton(true);
-                //    } else {
-                //        renderUpdateButton(false);
-                //    }
-                //});
+                //Update the normQty value of the med in the medsToUpdate when the input value is changed
+                $('#Table').on('change', '.normQty-input', function () {
+                    var newValue = parseInt($(this).val(), 10);
+                    var rowIndex = dataTable.row($(this).closest('tr')).index();
+                    var med = medsToUpdate[rowIndex];
+                    med.normQty = newValue;
+                    console.log("medsReqArray", medsReqArray);
+                    console.log("medsToUpdate", medsToUpdate);
+                    if (!areArraysIdentical(medsToUpdate, medsReqArray)) {
+                        renderUpdateButton(true);
+                    } else {
+                        renderUpdateButton(false);
+                    }
+                });
             }
             catch (err) {
                 alert(err);
@@ -139,27 +157,38 @@
             document.getElementById("button_ph").innerHTML = str;
         }
 
-        //function UpdateNorm() {
-        //    const date = new Date;
-        //    const NewNorm = {
-        //        normId: 0,
-        //        depId: 0,
-        //        lastUpdate: date,
-        //        medList: slicedMedsToUpdate
-        //    }
+        function UpdateNorm() {
+            // Iterate over medsToUpdate array
+            for (const updatedMed of medsToUpdate) {
+                // Find the corresponding item in medsInNorm array
+                const existingMed = medsInNorm.find(med => med.id === updatedMed.id);
 
-        //    ajaxCall("PUT", apiPutNorm + norm.normId, JSON.stringify(NewNorm), PutNormSCB, PutNormECB);
-        //    return false;
-        //}
+                // Update the normQty property if the item exists
+                if (existingMed) {
+                    existingMed.normQty = updatedMed.normQty;
+                }
+            }
 
-        //function PutNormSCB() {
-        //    $('#verticalycentered').modal('show');
-        //    renderUpdateButton(false);
-        //}
+            const date = new Date;
+            const NewNorm = {
+                normId: 0,
+                depId: 0,
+                lastUpdate: date,
+                medList: medsInNorm
+            }
 
-        //function PutNormECB(err) {
-        //    console.log(err);
-        //}
+            ajaxCall("PUT", apiPutNorm + norm.normId, JSON.stringify(NewNorm), PutNormSCB, PutNormECB);
+            return false;
+        }
+
+        function PutNormSCB() {
+            $('#verticalycentered').modal('show');
+            renderUpdateButton(false);
+        }
+
+        function PutNormECB(err) {
+            console.log(err);
+        }
 
     </script>
 
@@ -304,6 +333,7 @@
                 <table class="table hover table-striped-custom hide-table-header" id="Table" style="width:100%">
                     <thead>
                         <tr>
+                            <th>#</th>
                             <th>שם התרופה</th>
                             <th>כמות רצויה</th>
                             <th>כמות בפועל</th>

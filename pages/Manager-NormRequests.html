@@ -68,8 +68,10 @@
                     return req.reqId === parseInt(reqData.reqId);// Convert the reqId to an integer
                 });
 
-                // Add the last update to the reqData object
+                // Add the medReqList to the reqData object
                 reqData.medReqList = req.medReqList;
+                // Add the last update to the reqData object
+                reqData.depId = req.depId;
 
                 var reqDataJson = JSON.stringify(reqData);// Convert the reqData object to a JSON string
 
