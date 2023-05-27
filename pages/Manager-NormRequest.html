@@ -130,7 +130,7 @@
                 //Update the normQty value of the med in the medsToUpdate when the input value is changed
                 $('#Table').on('change', '.normQty-input', function () {
                     var newValue = parseInt($(this).val(), 10);
-                    var rowIndex = dataTable.row($(this).closest('tr')).index();
+                    var rowIndex = tbl.row($(this).closest('tr')).index();
                     var med = medsToUpdate[rowIndex];
                     med.normQty = newValue;
                     console.log("medsReqArray", medsReqArray);

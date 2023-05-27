@@ -21,13 +21,13 @@ function reload() {
 }
 
 function areArraysIdentical(arr1, arr2) {
-    const slicedArr1 = arr1.slice(1);
-    if (slicedArr1.length !== arr2.length) {
+    //const slicedArr1 = arr1.slice(1);
+    if (arr1.length !== arr2.length) {
         return false; // Arrays have different lengths, not identical
     }
 
-    for (let i = 0; i < slicedArr1.length; i++) {
-        if (JSON.stringify(slicedArr1[i]) !== JSON.stringify(arr2[i])) {
+    for (let i = 0; i < arr1.length; i++) {
+        if (JSON.stringify(arr1[i]) !== JSON.stringify(arr2[i])) {
             return false; // Arrays have different values at index i, not identical
         }
     }

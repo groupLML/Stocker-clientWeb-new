@@ -72,7 +72,7 @@
 
         function lastUpdateRender(norm) {
             let LastUpdateStr;
-            if (norm.length !== 0) {
+            if (norm.lastUpdate) {
                 var time = norm.lastUpdate.slice(11, 16);
                 var date = norm.lastUpdate.slice(0, 10);
 
@@ -138,7 +138,13 @@
 
         function GetNormSCB(data) {
             console.log(data);
-            DataTableRender(data);
+            if (data.length === 0) {
+                norm = {};
+            } else {
+                norm = data[0];
+            }
+
+            DataTableRender(norm);
         }
 
         function GetNormECB(err) {
@@ -147,17 +153,14 @@
 
         function DataTableRender(normData) {
             let medsNormArray = [];
-            if (normData.length === 0) {
-                norm = {};
-            }
-            else {
-                norm = normData[0];
-                for (var i = 0; i < norm.medList.length; i++) {
-                    medsNormArray.push(norm.medList[i]);
+            if (normData.medList !== undefined) {
+                for (var i = 0; i < normData.medList.length; i++) {
+                    medsNormArray.push(normData.medList[i]);
                 }
-                //independent copy the medsNormArray to medsToUpdate array to display changes
-                medsToUpdate = JSON.parse(JSON.stringify(medsNormArray));
             }
+
+            //independent copy the medsNormArray to medsToUpdate array to display changes
+            medsToUpdate = JSON.parse(JSON.stringify(medsNormArray));
 
             try {
                 if (!dataTable) {
@@ -190,7 +193,8 @@
                                         dataTable.clear().rows.add(medsToUpdate).draw();
                                         console.log(medsToUpdate);
                                         //if updated render update button
-                                        if (!areArraysIdentical(medsToUpdate, medsNormArray)) {
+                                        const slicedMedsToUpdate = medsToUpdate.slice(1);
+                                        if (!areArraysIdentical(slicedMedsToUpdate, medsNormArray)) {
                                             renderUpdateButton(true);
                                         } else {
                                             renderUpdateButton(false);
@@ -263,7 +267,8 @@
                                         // Add the new data object to the medsToUpdate
                                         medsToUpdate.push(newMedData);
                                         //if updated render update button
-                                        if (!areArraysIdentical(medsToUpdate, medsNormArray)) {
+                                        const slicedMedsToUpdate = medsToUpdate.slice(1);
+                                        if (!areArraysIdentical(slicedMedsToUpdate, medsNormArray)) {
                                             renderUpdateButton(true);
                                         } else {
                                             renderUpdateButton(false);
@@ -316,7 +321,8 @@
                         med.normQty = newValue;
                         console.log("medsNormArray", medsNormArray);
                         console.log("medsToUpdate", medsToUpdate);
-                        if (!areArraysIdentical(medsToUpdate, medsNormArray)) {
+                        const slicedMedsToUpdate = medsToUpdate.slice(1);
+                        if (!areArraysIdentical(slicedMedsToUpdate, medsNormArray)) {
                             renderUpdateButton(true);
                         } else {
                             renderUpdateButton(false);
