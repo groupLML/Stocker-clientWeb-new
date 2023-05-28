@@ -57,7 +57,6 @@
             renderUser(user);
             headerRender();
             reqDateRender();
-            DataTableRender();
         })
 
         function headerRender() {
@@ -92,6 +91,7 @@
             medsInNorm = data[0].medList;
             console.log("DepNorm:", norm);
             console.log("medsInNorm:", medsInNorm);
+            DataTableRender();
         }
 
         function GetNormECB(err) {

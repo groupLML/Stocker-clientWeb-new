@@ -70,7 +70,7 @@
 
                 // Add the medReqList to the reqData object
                 reqData.medReqList = req.medReqList;
-                // Add the last update to the reqData object
+                // Add the depId to the reqData object
                 reqData.depId = req.depId;
 
                 var reqDataJson = JSON.stringify(reqData);// Convert the reqData object to a JSON string
@@ -88,7 +88,7 @@
         }
 
         function GetNormReqsSCB(data) {
-            console.log(data);
+            console.log("NormReqs:",data);
             NormReqs = data;
             DataTableRender(data);
         }
