@@ -165,7 +165,7 @@
             try {
                 if (!dataTable) {
                     // Add an empty row of inputs at the top of the data table
-                    medsToUpdate.unshift({ medId: "", normQty: "", mazNum: "", medName: "" });
+                    medsToUpdate.unshift({ medId: "", normQty: "", mazNum: "", medName: "", predQty: "" });
 
                     dataTable = $('#Table').DataTable({
                         "language": {
@@ -306,7 +306,8 @@
                                         return '<input type="number" class="normQty-input form-control" min="0" value="' + data + '">';
                                     }
                                 }
-                            }
+                            },
+                            { data: "predQty" }
                         ],
                     });
 
@@ -562,6 +563,7 @@
                             <th></th>
                             <th>שם התרופה</th>
                             <th>כמות בתקן</th>
+                            <th>כמות מומלצת</th>
                         </tr>
                     </thead>
                 </table>
