@@ -44,6 +44,7 @@
     <script>
 
         let dataTable;
+        let Dep;
         let norm;
         let medsToUpdate = []; // Declare and initialize medsToUpdate array
 
@@ -383,7 +384,7 @@
             const date = new Date;
             const NewNorm = {
                 normId: 0,
-                depId: 0,
+                depId: Dep.depId,
                 lastUpdate: date,
                 medList: slicedMedsToUpdate
             }
@@ -402,7 +403,6 @@
         function PutNormSCB() {
             $('#verticalycentered').modal('show');
             renderUpdateButton(false);
-            //DataTableRender(norm);
         }
 
         function PutNormECB(err) {
