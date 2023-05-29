@@ -49,6 +49,7 @@
 
         $(document).ready(function () {
             apiGetDepNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
+            apiPutNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/NormRequest/reqId/";
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             normReq = JSON.parse(sessionStorage.getItem("NormRequest")); //get user from storage
@@ -159,26 +160,19 @@
         }
 
         function UpdateNorm() {
-            // Iterate over medsToUpdate array
-            for (const updatedMed of medsToUpdate) {
-                // Find the corresponding item in medsInNorm array
-                const existingMed = medsInNorm.find(med => med.id === updatedMed.id);
+            // Create a new array with object modifications and sent to PUT 
+            const PutArray = medsToUpdate.map(med => {
+                return {
+                    medId: med.medId,
+                    medName: med.medName,
+                    normQty: med.normQty,
+                    predQty: med.predQty,
+                    mazNum: "",
+                };
+            });
+            console.log()
 
-                // Update the normQty property if the item exists
-                if (existingMed) {
-                    existingMed.normQty = updatedMed.normQty;
-                }
-            }
-
-            const date = new Date;
-            const NewNorm = {
-                normId: 0,
-                depId: 0,
-                lastUpdate: date,
-                medList: medsInNorm
-            }
-
-            ajaxCall("PUT", apiPutNorm + norm.normId, JSON.stringify(NewNorm), PutNormSCB, PutNormECB);
+            ajaxCall("PUT", apiPutNorm + normReq.reqId + "/normId/" + norm[0].normId, JSON.stringify(PutArray), PutNormSCB, PutNormECB);
             return false;
         }
 
