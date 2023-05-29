@@ -46,6 +46,8 @@
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
+
+            $("#Filters").submit(GetDashbord);
         });
 
 
@@ -186,12 +188,13 @@
             </ul>
         </nav><!-- End Icons Navigation -->
     </header><!-- End Header -->
+   
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
             <li class="nav-item">
-                <a class="nav-link collapsed active" href="Manager-Dashboard.html">
-                    <span>דף הבית</span>
+                <a class="nav-link active" href="#">
+                    <span>דף בית</span>
                 </a>
             </li>
             <!-- End Home Nav -->
@@ -256,10 +259,11 @@
             <!-- End Norms Nav -->
         </ul>
     </aside><!-- End Sidebar-->
+
     <!-- ======= Main ======= -->
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>דף הבית</h1>
+            <h1>דף בית</h1>
         </div><!-- End Page Title -->
 
         <section class="section dashboard">
@@ -269,116 +273,56 @@
                 <div class="col-lg-8">
                     <div class="row">
 
-                        <!-- Sales Card -->
-                        <div class="col-xxl-4 col-md-6">
-                            <div class="card info-card sales-card">
-
-                                <div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>Filter</h6>
-                                        </li>
-
-                                        <li><a class="dropdown-item" href="#">שבוע</a></li>
-                                        <li><a class="dropdown-item" href="#">חודש</a></li>
-                                        <li><a class="dropdown-item" href="#">שנה</a></li>
-                                    </ul>
-                                </div>
-
-                                <div class="card-body">
-                                    <h5 class="card-title">Sales <span>| Today</span></h5>
-
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-cart"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <h6>145</h6>
-                                            <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div><!-- End Sales Card -->
-                        <!-- Revenue Card -->
-                        <div class="col-xxl-4 col-md-6">
-                            <div class="card info-card revenue-card">
-
-                                <div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>Filter</h6>
-                                        </li>
-
-                                        <li><a class="dropdown-item" href="#">שבוע</a></li>
-                                        <li><a class="dropdown-item" href="#">חודש</a></li>
-                                        <li><a class="dropdown-item" href="#">שנה</a></li>
-                                    </ul>
-                                </div>
-
-                                <div class="card-body">
-                                    <h5 class="card-title">Revenue <span>| This Month</span></h5>
-
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-currency-dollar"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <h6>$3,264</h6>
-                                            <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div><!-- End Revenue Card -->
-                        <!-- Customers Card -->
-                        <div class="col-xxl-4 col-xl-12">
-
-                            <div class="card info-card customers-card">
-
-                                <div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>Filter</h6>
-                                        </li>
-
-                                        <li><a class="dropdown-item" href="#">שבוע</a></li>
-                                        <li><a class="dropdown-item" href="#">חודש</a></li>
-                                        <li><a class="dropdown-item" href="#">שנה</a></li>
-                                    </ul>
-                                </div>
-
-                                <div class="card-body">
-                                    <h5 class="card-title">Customers <span>| This Year</span></h5>
-
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-people"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <h6>1244</h6>
-                                            <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
-
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </div><!-- End Customers Card -->
-                       
-                        <!-- Reports -->
+                        <!-- Filter Card -->
                         <div class="col-12">
                             <div class="card">
+                                <div class="card-body" style="padding: 15px">
+                                    <!--<div class="d-flex align-items-center">-->
+                                        <form id="Filters">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="input-group has-validation">
+                                                        <input type="text" id="input" class="form-control" autocomplete="off" placeholder="שם מחלקה" required>
+                                                        <ul class="dropdown-options" id="dropdown-options"></ul>
+                                                        <div class="invalid-feedback">אנא בחר את מחלקה מתוך הרשימה</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="input-group has-validation">
+                                                        <input type="text" id="input" class="form-control" autocomplete="off" placeholder="שם תרופה" required>
+                                                        <ul class="dropdown-options" id="dropdown-options"></ul>
+                                                        <div class="invalid-feedback">אנא בחר את תרופה מתוך הרשימה</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="input-group has-validation">
+                                                        <input type="text" id="input" class="form-control" autocomplete="off" placeholder="שבוע" required>
+                                                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                                            <li class="dropdown-header text-start">
+                                                                <h6>סינון</h6>
+                                                            </li>
 
-                                <div class="filter">
+                                                            <li><a class="dropdown-item" href="#">שבוע</a></li>
+                                                            <li><a class="dropdown-item" href="#">חודש</a></li>
+                                                            <li><a class="dropdown-item" href="#">שנה</a></li>
+                                                        </ul>
+                                                        <div class="invalid-feedback">אנא בחר את פרק הזמן הרצוי</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <button type="submit" class="btn btn-primary">הצג</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    </div>
+                                </div><!-- End Filter Card -->
+
+                        <!-- Orders Card -->
+                        <div class="col-xxl-4 col-md-4">
+                            <div class="card info-card sales-card">
+
+                                <!--<div class="filter">
                                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                                         <li class="dropdown-header text-start">
@@ -389,10 +333,114 @@
                                         <li><a class="dropdown-item" href="#">חודש</a></li>
                                         <li><a class="dropdown-item" href="#">שנה</a></li>
                                     </ul>
+                                </div>-->
+
+                                <div class="card-body" style="padding: 10px">
+                                    <h5 class="card-title" style="padding: 10px">הזמנות משיכה <span>| השבוע</span></h5>
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-cart"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6>15</h6>
+                                            <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">עלייה</span>
+
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="card-body">
-                                    <h5 class="card-title">צריכה מול תקן <span>| השבוע </span></h5>
+                            </div>
+                        </div><!-- End Orders Card -->
+                        <!-- Tranport Card -->
+                        <div class="col-xxl-4 col-md-4">
+                            <div class="card info-card revenue-card">
+
+                                <!--<div class="filter">
+                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                        <li class="dropdown-header text-start">
+                                            <h6>סינון</h6>
+                                        </li>
+
+                                        <li><a class="dropdown-item" href="#">שבוע</a></li>
+                                        <li><a class="dropdown-item" href="#">חודש</a></li>
+                                        <li><a class="dropdown-item" href="#">שנה</a></li>
+                                    </ul>
+                                </div>-->
+
+                                <div class="card-body" style="padding: 10px">
+                                    <h5 class="card-title" style="padding: 10px">העברות שבוצעו <span>| השבוע</span></h5>
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-people"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6>8</h6>
+                                            <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">עלייה</span>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div><!-- End Tranport Card -->
+                        <!-- Requests Card -->
+                        <div class="col-xxl-4 col-md-4">
+
+                            <div class="card info-card customers-card">
+
+                                <!--<div class="filter">
+                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                        <li class="dropdown-header text-start">
+                                            <h6>סינון</h6>
+                                        </li>
+
+                                        <li><a class="dropdown-item" href="#">שבוע</a></li>
+                                        <li><a class="dropdown-item" href="#">חודש</a></li>
+                                        <li><a class="dropdown-item" href="#">שנה</a></li>
+                                    </ul>
+                                </div>-->
+
+                                <div class="card-body" style="padding: 10px">
+                                    <h5 class="card-title" style="padding: 10px">בקשות שלא מומשו <span>| השבוע</span></h5>
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-hand-thumbs-down"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6>31</h6>
+                                            <span class="text-danger small pt-1 fw-bold">2%</span> <span class="text-muted small pt-2 ps-1">ירידה</span>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div><!-- End Requests Card -->
+                        <!-- Reports -->
+                        <div class="col-12">
+                            <div class="card">
+
+                                <!--<div class="filter">
+                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                        <li class="dropdown-header text-start">
+                                            <h6>סינון</h6>
+                                        </li>
+
+                                        <li><a class="dropdown-item" href="#">שבוע</a></li>
+                                        <li><a class="dropdown-item" href="#">חודש</a></li>
+                                        <li><a class="dropdown-item" href="#">שנה</a></li>
+                                    </ul>
+                                </div>-->
+
+                                <div class="card-body" style="padding-bottom: 10px">
+                                    <h5 class="card-title" style="padding-top: 10px">צריכה מול הנפקה <span>| השבוע </span></h5>
 
                                     <!-- Line Chart -->
                                     <div id="reportsChart"></div>
@@ -401,7 +449,8 @@
                             </div>
 
                             <div class="card">
-                                <div class="filter">
+
+                                <!--<div class="filter">
                                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                                         <li class="dropdown-header text-start">
@@ -412,9 +461,9 @@
                                         <li><a class="dropdown-item" href="#">חודש</a></li>
                                         <li><a class="dropdown-item" href="#">שנה</a></li>
                                     </ul>
-                                </div>
+                                </div>-->
                                 <div class="card-body">
-                                    <h5 class="card-title">נתוני צריכה <span>| השבוע </span></h5>
+                                    <h5 class="card-title" style="padding-top: 10px">נתוני צריכה <span>| השבוע </span></h5>
 
                                     <!--Bar Chart-->
                                     <div id="barChart"></div>
@@ -432,53 +481,48 @@
 
                     <!-- Recent Activity -->
                     <div class="card">
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body">
-                            <h5 class="card-title">Recent Activity <span>| Today</span></h5>
+                        <div class="card-body" style="padding-bottom: 32px">
+                            <h5 class="card-title">הודעות ועדכונים</h5>
 
                             <div class="activity">
 
                                 <div class="activity-item d-flex">
                                     <div class="activite-label">32 min</div>
-                                    <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
+                                    <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
                                     <div class="activity-content">
-                                        Quia quae rerum <a href="#" class="fw-bold text-dark">explicabo officiis</a> beatae
+                                        <a href="#" class="fw-bold text-dark">בקשה חדשה לעדכון תקן</a>
+                                        <br />
+                                        <span>עבור מחלקה 4 מאת מיטב מקבריט</span>
                                     </div>
-                                </div><!-- End activity item-->
+                                </div> <!--End activity item-->
 
                                 <div class="activity-item d-flex">
                                     <div class="activite-label">56 min</div>
                                     <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
                                     <div class="activity-content">
-                                        Voluptatem blanditiis blanditiis eveniet
+                                        <a href="#" class="fw-bold text-dark">מלאי מחלקה התרוקן</a>
+                                        <br />
+                                        <span>מחלקה 3</span>
                                     </div>
                                 </div><!-- End activity item-->
 
                                 <div class="activity-item d-flex">
-                                    <div class="activite-label">2 hrs</div>
-                                    <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
+                                    <div class="activite-label">4 weeks</div>
+                                    <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
                                     <div class="activity-content">
-                                        Voluptates corrupti molestias voluptatem
+                                        <a href="#" class="fw-bold text-dark">העברה בוצעה</a>
+                                        <br />
+                                        <span>מחלקה 4 העבירה Acamol 20mg למחלקה 3</span>
                                     </div>
                                 </div><!-- End activity item-->
 
                                 <div class="activity-item d-flex">
                                     <div class="activite-label">1 day</div>
-                                    <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
+                                    <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
                                     <div class="activity-content">
-                                        Tempore autem saepe <a href="#" class="fw-bold text-dark">occaecati voluptatem</a> tempore
+                                        <a href="#" class="fw-bold text-dark">הודעה חדשה</a>
+                                        <br />
+                                        <span>מאת לין בן מאיר</span>
                                     </div>
                                 </div><!-- End activity item-->
 
@@ -486,22 +530,55 @@
                                     <div class="activite-label">2 days</div>
                                     <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
                                     <div class="activity-content">
-                                        Est sit eum reiciendis exercitationem
+                                        <a href="#" class="fw-bold text-dark">בקשה חדשה לעדכון תקן</a>
+                                        <br />
+                                        <span>עבור מחלקה 3 מאת ליטל יהודה</span>
                                     </div>
                                 </div><!-- End activity item-->
 
                                 <div class="activity-item d-flex">
                                     <div class="activite-label">4 weeks</div>
-                                    <i class='bi bi-circle-fill activity-badge text-muted align-self-start'></i>
+                                    <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
                                     <div class="activity-content">
-                                        Dicta dolorem harum nulla eius. Ut quidem quidem sit quas
+                                        <a href="#" class="fw-bold text-dark">הודעה חדשה</a>
+                                        <br />
+                                        <span>מאת בן מכלוף</span>
                                     </div>
                                 </div><!-- End activity item-->
 
-                            </div>
+                                <div class="activity-item d-flex">
+                                    <div class="activite-label">2 hrs</div>
+                                    <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
+                                    <div class="activity-content">
+                                        <a href="#" class="fw-bold text-dark">מלאי מחלקה התרוקן</a>
+                                        <br />
+                                        <span>מחלקה 4</span>
+                                    </div>
+                                </div><!-- End activity item-->
 
+                                <div class="activity-item d-flex">
+                                    <div class="activite-label">4 weeks</div>
+                                    <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
+                                    <div class="activity-content">
+                                        <a href="#" class="fw-bold text-dark">העברה בוצעה</a>
+                                        <br />
+                                        <span>מחלקה 4 העבירה Acamol 20mg למחלקה 5</span>
+                                    </div>
+                                </div><!-- End activity item-->
+                                <div class="activity-item d-flex">
+                                    <div class="activite-label">4 weeks</div>
+                                    <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
+                                    <div class="activity-content">
+                                        <a href="#" class="fw-bold text-dark">העברה בוצעה</a>
+                                        <br />
+                                        <span>מחלקה 4 העבירה Acamol 100mg למחלקה 3</span>
+                                    </div>
+                                </div><!-- End activity item-->
+                        
+                            </div>
                         </div>
                     </div><!-- End Recent Activity -->
+
                     <!-- Website Traffic -->
                     <div class="card">
                         <div class="filter">
@@ -579,65 +656,13 @@
 
                         </div>
                     </div><!-- End Website Traffic -->
-                    <!-- News & Updates Traffic -->
-                    <div class="card">
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body pb-0">
-                            <h5 class="card-title">News &amp; Updates <span>| Today</span></h5>
-
-                            <div class="news">
-                                <div class="post-item clearfix">
-                                    <img src="../assets/img/news-1.jpg" alt="">
-                                    <h4><a href="#">Nihil blanditiis at in nihil autem</a></h4>
-                                    <p>Sit recusandae non aspernatur laboriosam. Quia enim eligendi sed ut harum...</p>
-                                </div>
-
-                                <div class="post-item clearfix">
-                                    <img src="../assets/img/news-2.jpg" alt="">
-                                    <h4><a href="#">Quidem autem et impedit</a></h4>
-                                    <p>Illo nemo neque maiores vitae officiis cum eum turos elan dries werona nande...</p>
-                                </div>
-
-                                <div class="post-item clearfix">
-                                    <img src="../assets/img/news-3.jpg" alt="">
-                                    <h4><a href="#">Id quia et et ut maxime similique occaecati ut</a></h4>
-                                    <p>Fugiat voluptas vero eaque accusantium eos. Consequuntur sed ipsam et totam...</p>
-                                </div>
-
-                                <div class="post-item clearfix">
-                                    <img src="../assets/img/news-4.jpg" alt="">
-                                    <h4><a href="#">Laborum corporis quo dara net para</a></h4>
-                                    <p>Qui enim quia optio. Eligendi aut asperiores enim repellendusvel rerum cuder...</p>
-                                </div>
-
-                                <div class="post-item clearfix">
-                                    <img src="../assets/img/news-5.jpg" alt="">
-                                    <h4><a href="#">Et dolores corrupti quae illo quod dolor</a></h4>
-                                    <p>Odit ut eveniet modi reiciendis. Atque cupiditate libero beatae dignissimos eius...</p>
-                                </div>
-
-                            </div><!-- End sidebar recent posts-->
-
-                        </div>
-                    </div><!-- End News & Updates -->
-
+               
                 </div><!-- End Right side columns -->
             </div>
         </section>
 
     </main><!-- End #main -->
+  
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
         <div class="copyright">

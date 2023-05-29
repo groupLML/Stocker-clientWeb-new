@@ -343,3 +343,28 @@ element.style {
     inset: auto 0px -10px;
 }
 */
+
+/*.container {
+    width: 400px;
+    height: 200px;
+    overflow: auto;
+}
+
+.scrollbar {
+    content: "";
+    position: absolute;
+    right: 70px;
+    width: 4px;
+    top: 0;
+    bottom: 0;
+    background-color: #eceefe;
+}
+
+    .scrollbar::-webkit-scrollbar {
+        width: 10px;
+        background-color: gray;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background-color: darkgray;
+    }*/
