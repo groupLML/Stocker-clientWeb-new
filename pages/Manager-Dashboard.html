@@ -44,15 +44,72 @@
     <script>
         $(document).ready(function () {
 
-            api = "https://proj.ruppin.ac.il/cgroup36/prod/api/Usage";
+            api = "https://proj.ruppin.ac.il/cgroup36/prod/GetDashboard/interval/";
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
-            $("#Filters").submit(GetDashbord);
+            /*   $("#Filters").submit(GetDashbord);*/
+            h = null;
+            goToServer();
+           /* getData();*/
+
+            //window.onunload = function () {
+            //    stopThread();
+            //};
         });
 
-        
+        function goToServer() {
+            if (h != null) //בודק האם כבר רץ
+                return;
+            let timeInterval = 8000000; //כל 80 שניות
+            h = setInterval(getData, timeInterval);
+        }
+
+        function getData() {
+            ajaxCall("GET", api+ 7, "", successGetDataCBF, errorGetDataCBF);
+        /*    return false;*/
+        }
+
+        function successGetDataCBF(data) {
+            console.log(data);
+
+            renderBoxs(data); 
+        }
+
+        function renderBoxs(data) { ///לבדוק חילוק באפס + שווה
+            str = `<h6>${data.currentPO}</h6>`;
+            if (data.currentPO >= data.prevPO)
+                str += `<span class="text-success small pt-1 fw-bold">${(data.currentPO / data.prevPO)*100} %</span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
+            else
+                str += `<span class="text-danger small pt-1 fw-bold">${(data.currentPO / data.prevPO) * 100} %</span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
+            document.getElementById("PO").innerHTML = str;
+
+            str = `<h6>${data.currentMR}</h6>`;
+            if (data.currentMR >= data.prevMR)
+                str += `<span class="text-success small pt-1 fw-bold">${(data.currentMR / data.prevMR)*100} %</span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
+            else
+                str += `<span class="text-danger small pt-1 fw-bold">${(data.currentMR / data.prevMR)* 100} %</span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
+            document.getElementById("MR").innerHTML = str;
+
+            str = `<h6>${data.currentMRD}</h6>`;
+            if (data.currentMRD >= data.prevMRD)
+                str += `<span class="text-success small pt-1 fw-bold">${(data.currentMRD / data.prevMRD)* 100} %</span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
+            else
+                str += `<span class="text-danger small pt-1 fw-bold">${(data.currentMRD / data.prevMRD) * 100} %</span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
+            document.getElementById("MRD").innerHTML = str;
+        }
+
+        function errorGetDataCBF(err) {
+            console.log(err);
+        }
+
+        function stopThread() {
+            if (h != null) {
+                clearInterval(h);
+                h = null;
+            }
+        }
 
     </script>
 
@@ -64,8 +121,8 @@
                     name: 'צריכה בפועל',
                     data: [31, 40, 28, 51, 42, 82, 56],
                 }, {
-                    name: 'תקן',
-                    data: [30, 30, 30, 30, 30, 30, 30]
+                    name: 'הנפקה',
+                    data: [23, 30, 31, 32, 28, 15, 35]
                 }],
                 chart: {
                     height: 350,
@@ -272,9 +329,9 @@
     </aside><!-- End Sidebar-->
     <!-- ======= Main ======= -->
     <main id="main" class="main">
-        <div class="pagetitle">
+        <!--<div class="pagetitle">
             <h1>דף בית</h1>
-        </div><!-- End Page Title -->
+        </div>--><!-- End Page Title -->
 
         <section class="section dashboard">
             <div class="row">
@@ -351,10 +408,9 @@
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-cart"></i>
                                         </div>
-                                        <div class="ps-3">
+                                        <div class="ps-3" id="PO">
                                             <h6>15</h6>
                                             <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">עלייה</span>
-
                                         </div>
                                     </div>
                                 </div>
@@ -385,7 +441,7 @@
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-people"></i>
                                         </div>
-                                        <div class="ps-3">
+                                        <div class="ps-3" id="MR">
                                             <h6>8</h6>
                                             <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">עלייה</span>
 
@@ -420,7 +476,7 @@
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-hand-thumbs-down"></i>
                                         </div>
-                                        <div class="ps-3">
+                                        <div class="ps-3" id="MRD">
                                             <h6>31</h6>
                                             <span class="text-danger small pt-1 fw-bold">2%</span> <span class="text-muted small pt-2 ps-1">ירידה</span>
 
@@ -484,6 +540,7 @@
 
                     </div>
                 </div><!-- End Left side columns -->
+
                 <!-- Right side columns -->
                 <div class="col-lg-4">
 
@@ -495,7 +552,7 @@
                             <div class="activity">
 
                                 <div class="activity-item d-flex">
-                                    <div class="activite-label">32 min</div>
+                                    <div class="activite-label">2 min</div>
                                     <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
                                     <div class="activity-content">
                                         <a href="#" class="fw-bold text-dark">בקשה חדשה לעדכון תקן</a>
@@ -505,7 +562,7 @@
                                 </div> <!--End activity item-->
 
                                 <div class="activity-item d-flex">
-                                    <div class="activite-label">56 min</div>
+                                    <div class="activite-label">36 min</div>
                                     <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
                                     <div class="activity-content">
                                         <a href="#" class="fw-bold text-dark">מלאי מחלקה התרוקן</a>
@@ -515,7 +572,7 @@
                                 </div><!-- End activity item-->
 
                                 <div class="activity-item d-flex">
-                                    <div class="activite-label">4 weeks</div>
+                                    <div class="activite-label">53 min</div>
                                     <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
                                     <div class="activity-content">
                                         <a href="#" class="fw-bold text-dark">העברה בוצעה</a>
@@ -525,7 +582,7 @@
                                 </div><!-- End activity item-->
 
                                 <div class="activity-item d-flex">
-                                    <div class="activite-label">1 day</div>
+                                    <div class="activite-label">56 min</div>
                                     <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
                                     <div class="activity-content">
                                         <a href="#" class="fw-bold text-dark">הודעה חדשה</a>
@@ -535,7 +592,7 @@
                                 </div><!-- End activity item-->
 
                                 <div class="activity-item d-flex">
-                                    <div class="activite-label">2 days</div>
+                                    <div class="activite-label">1 hr</div>
                                     <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
                                     <div class="activity-content">
                                         <a href="#" class="fw-bold text-dark">בקשה חדשה לעדכון תקן</a>
@@ -545,7 +602,7 @@
                                 </div><!-- End activity item-->
 
                                 <div class="activity-item d-flex">
-                                    <div class="activite-label">4 weeks</div>
+                                    <div class="activite-label">2 hrs</div>
                                     <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
                                     <div class="activity-content">
                                         <a href="#" class="fw-bold text-dark">הודעה חדשה</a>
@@ -565,7 +622,7 @@
                                 </div><!-- End activity item-->
 
                                 <div class="activity-item d-flex">
-                                    <div class="activite-label">4 weeks</div>
+                                    <div class="activite-label">4 hrs</div>
                                     <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
                                     <div class="activity-content">
                                         <a href="#" class="fw-bold text-dark">העברה בוצעה</a>
@@ -574,7 +631,7 @@
                                     </div>
                                 </div><!-- End activity item-->
                                 <div class="activity-item d-flex">
-                                    <div class="activite-label">4 weeks</div>
+                                    <div class="activite-label">1 week</div>
                                     <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
                                     <div class="activity-content">
                                         <a href="#" class="fw-bold text-dark">העברה בוצעה</a>
