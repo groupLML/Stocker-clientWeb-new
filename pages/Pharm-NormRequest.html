@@ -199,6 +199,12 @@
                                         } else {
                                             renderUpdateButton(false);
                                         }
+                                        // Clear the existing data from the table
+                                        dataTable.clear().draw();
+                                        // Add the updated medsToUpdate data to the table
+                                        dataTable.rows.add(medsToUpdate).draw();
+                                        // Call checkTableRendered to check if the table is fully rendered
+                                        checkTableRendered();
                                     });
 
                                     $(cell).on('click', '#add-icon', function () {
