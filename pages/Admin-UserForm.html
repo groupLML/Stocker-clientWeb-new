@@ -180,7 +180,11 @@
                     IsActive: isActive
                 };
 
+                sessionStorage.setItem("newUser", JSON.stringify(user));
+
                 ajaxCall("POST", apiUser, JSON.stringify(user), successPostUCBF, errorPostUCBF);
+
+
 
                 return false;
             }
@@ -192,6 +196,8 @@
             if (data == 1) {
                 alert("In Success");
                 sessionStorage.removeItem('Id');
+                newUser = JSON.parse(sessionStorage.getItem("newUser"));
+                ajaxCall("POST", apiUser + '/Email', JSON.stringify(newUser), successPostECBF, errorPostECBF);
                 window.location.href = 'Admin-Users.html';
             }
             else {
@@ -202,6 +208,14 @@
                 else
                     alert("Error");
             }
+        }
+
+        function successPostECBF(data) {
+            sessionStorage.removeItem('newUser');
+        }
+
+        function errorPostECBF(err) {
+            console.log(err);
         }
 
         function errorPostUCBF(err) {

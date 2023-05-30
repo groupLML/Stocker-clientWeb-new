@@ -47,6 +47,7 @@
         let Dep;
         let norm;
         let medsToUpdate = []; // Declare and initialize medsToUpdate array
+        let newMedPrediction;
 
         $(document).ready(function () {
 
@@ -54,6 +55,7 @@
             apiGetDepNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
             apiGetMeds = "https://proj.ruppin.ac.il/cgroup36/prod/GetActiveMeds";
             apiPutNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
+            apiGetMedPred ="https://proj.ruppin.ac.il/cgroup36/prod/NormMedPrediction/dep/"
 
             deps = []; // Array to save departments data
             depNames = [];
@@ -199,6 +201,12 @@
                                         } else {
                                             renderUpdateButton(false);
                                         }
+                                        // Clear the existing data from the table
+                                        dataTable.clear().draw();
+                                        // Add the updated medsToUpdate data to the table
+                                        dataTable.rows.add(medsToUpdate).draw();
+                                        // Call checkTableRendered to check if the table is fully rendered
+                                        checkTableRendered();
                                     });
 
                                     $(cell).on('click', '#add-icon', function () {
@@ -256,13 +264,17 @@
                                             return;
                                         }
 
+                                        let medId = parseInt(chosenMedId);
+                                        GetMedPredQty(medId);
+                                        console.log(newMedPrediction);
+
                                         // Create a new data object with the input values
                                         var newMedData = {
-                                            medId: parseInt(chosenMedId),
+                                            medId: medId,
                                             mazNum: '',
                                             normQty: normQtyInputValue,
                                             medName: medInputValue,
-                                            predQty: 0
+                                            predQty: newMedPrediction
                                         };
 
                                         // Add the new data object to the medsToUpdate
@@ -355,6 +367,20 @@
             catch (err) {
                 alert(err);
             }
+        }
+        
+        function GetMedPredQty(medId) {
+            ajaxCall("GET", apiGetMedPred + Dep.depId + "/med/" + medId, "", GetMedPredQtySCB, GetMedPredQtyECB);
+            return false;
+        }
+
+        function GetMedPredQtySCB(data) {
+            console.log(data);
+            newMedPrediction = data;
+        }
+
+        function GetMedPredQtyECB(err) {
+            console.log(err);
         }
 
         function checkTableRendered() {
