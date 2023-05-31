@@ -50,8 +50,9 @@
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
-            GetNormReqs();
             NormReqs = [];
+            GetNormReqs();
+
 
             $('#Table').on('click', 'tbody tr', function () {// This function will be called when a row is clicked
                 // Create an array for the column names of the table
