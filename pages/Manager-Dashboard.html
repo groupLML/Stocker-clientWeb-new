@@ -32,6 +32,7 @@
     <!-- ajaxCalls and JQuery -->
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
     <script src="../assets/js/global-functions.js"></script>
     <script src="../assets/js/signalr.js"></script>
     <script src="../assets/js/signalr.min.js"></script>
@@ -52,7 +53,7 @@
             /*   $("#Filters").submit(GetDashbord);*/
             h = null;
             goToServer();
-           /* getData();*/
+            /* getData();*/
 
             //window.onunload = function () {
             //    stopThread();
@@ -62,39 +63,39 @@
         function goToServer() {
             if (h != null) //בודק האם כבר רץ
                 return;
-            let timeInterval = 8000000; //כל 80 שניות
+            let timeInterval = 80000000; //כל 80 שניות
             h = setInterval(getData, timeInterval);
         }
 
         function getData() {
-            ajaxCall("GET", api+ 7, "", successGetDataCBF, errorGetDataCBF);
-        /*    return false;*/
+            ajaxCall("GET", api + 7, "", successGetDataCBF, errorGetDataCBF);
+            /*    return false;*/
         }
 
         function successGetDataCBF(data) {
             console.log(data);
 
-            renderBoxs(data); 
+            renderBoxs(data);
         }
 
         function renderBoxs(data) { ///לבדוק חילוק באפס + שווה
             str = `<h6>${data.currentPO}</h6>`;
             if (data.currentPO >= data.prevPO)
-                str += `<span class="text-success small pt-1 fw-bold">${(data.currentPO / data.prevPO)*100} %</span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
+                str += `<span class="text-success small pt-1 fw-bold">${(data.currentPO / data.prevPO) * 100} %</span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
             else
                 str += `<span class="text-danger small pt-1 fw-bold">${(data.currentPO / data.prevPO) * 100} %</span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
             document.getElementById("PO").innerHTML = str;
 
             str = `<h6>${data.currentMR}</h6>`;
             if (data.currentMR >= data.prevMR)
-                str += `<span class="text-success small pt-1 fw-bold">${(data.currentMR / data.prevMR)*100} %</span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
+                str += `<span class="text-success small pt-1 fw-bold">${(data.currentMR / data.prevMR) * 100} %</span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
             else
-                str += `<span class="text-danger small pt-1 fw-bold">${(data.currentMR / data.prevMR)* 100} %</span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
+                str += `<span class="text-danger small pt-1 fw-bold">${(data.currentMR / data.prevMR) * 100} %</span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
             document.getElementById("MR").innerHTML = str;
 
             str = `<h6>${data.currentMRD}</h6>`;
             if (data.currentMRD >= data.prevMRD)
-                str += `<span class="text-success small pt-1 fw-bold">${(data.currentMRD / data.prevMRD)* 100} %</span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
+                str += `<span class="text-success small pt-1 fw-bold">${(data.currentMRD / data.prevMRD) * 100} %</span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
             else
                 str += `<span class="text-danger small pt-1 fw-bold">${(data.currentMRD / data.prevMRD) * 100} %</span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
             document.getElementById("MRD").innerHTML = str;
