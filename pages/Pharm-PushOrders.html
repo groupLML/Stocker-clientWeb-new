@@ -39,6 +39,8 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 
     <script>
+        var PushOrdersList = [];
+
         $(document).ready(function () {
             apiPushOrders = "https://proj.ruppin.ac.il/cgroup36/prod/api/PushOrder/GetPushOrdersPharm";
 
@@ -46,7 +48,6 @@
             renderUser(user);
 
             GetPushOrders();
-            PushOrdersList = [];
 
             $('#Table').on('click', 'tbody tr', function () {// This function will be called when a row is clicked
                 // Create an array for the column names of the table
