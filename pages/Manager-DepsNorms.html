@@ -55,7 +55,7 @@
             apiGetDepNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
             apiGetMeds = "https://proj.ruppin.ac.il/cgroup36/prod/GetActiveMeds";
             apiPutNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
-            apiGetMedPred ="https://proj.ruppin.ac.il/cgroup36/prod/NormMedPrediction/dep/"
+            apiGetMedPred = "https://proj.ruppin.ac.il/cgroup36/prod/NormMedPrediction/dep/"
 
             deps = []; // Array to save departments data
             depNames = [];
@@ -368,7 +368,7 @@
                 alert(err);
             }
         }
-        
+
         function GetMedPredQty(medId) {
             ajaxCall("GET", apiGetMedPred + Dep.depId + "/med/" + medId, "", GetMedPredQtySCB, GetMedPredQtyECB);
             return false;
@@ -594,16 +594,18 @@
                     </div>
                 </form>
                 <!-- Table with stripped rows table-striped-->
-                <table class="table hover table-striped-custom hide-table-header" id="Table" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>שם התרופה</th>
-                            <th>כמות בתקן</th>
-                            <th>כמות מומלצת</th>
-                        </tr>
-                    </thead>
-                </table>
+                <div class="table-responsive">
+                    <table class="table hover table-striped-custom hide-table-header" id="Table" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>שם התרופה</th>
+                                <th>כמות בתקן</th>
+                                <th>כמות מומלצת</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
                 <!-- End Table with stripped rows -->
                 <div id="button_ph" class="d-flex justify-content-center"></div>
                 <!-- Vertically centered Modal -->

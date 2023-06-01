@@ -38,6 +38,10 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 
+
+    <!--<script type="text/javascript" src=""></script>-->
+    <!--<link rel="stylesheet" type="text/css" href="">-->
+
     <script>
 
         $(document).ready(function () {
@@ -58,8 +62,24 @@
             });
         })
 
+        function toggleColumns() {
+            var table = $('#Table').DataTable();
+            var containerWidth = $('.table-container').width();
+            var tableWidth = table.table().container().offsetWidth;
+
+            if (tableWidth > containerWidth) {
+                table.column(':last-child').visible(false);
+            } else {
+                table.column(':last-child').visible(true);
+            }
+        }
+
+        $(window).resize(function () {
+            toggleColumns();
+        });
+
         function GetUsers() {
-            ajaxCall("GET", api +"/GetUsers", "", successGetUsersCBF, errorGetUsersCBF);
+            ajaxCall("GET", api + "/GetUsers", "", successGetUsersCBF, errorGetUsersCBF);
         }
 
         function successGetUsersCBF(data) {
@@ -153,7 +173,6 @@
             </ul>
         </nav><!-- End Icons Navigation -->
     </header><!-- End Header -->
- 
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
@@ -197,7 +216,6 @@
 
         </ul><!-- End Nav -->
     </aside><!-- End Sidebar-->
-   
     <!-- ======= Main ======= -->
     <main id="main" class="main">
         <div class="pagetitle">
@@ -212,21 +230,23 @@
                         <div class="card-body">
                             <br />
                             <!-- Table with stripped rows table-striped-->
-                            <table class="table hover table-striped-custom " id="Table" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>שם פרטי</th>
-                                        <th>שם משפחה</th>
-                                        <th>שם משתמש</th>
-                                        <th>דוא"ל</th>
-                                        <th>טלפון</th>
-                                        <th>סוג משתמש</th>
-                                        <th>מחלקה</th>
-                                        <th>פעיל</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                            <div class="table-container">
+                                <table class="table hover table-striped-custom" id="Table" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>שם פרטי</th>
+                                            <th>שם משפחה</th>
+                                            <th>שם משתמש</th>
+                                            <th>דוא"ל</th>
+                                            <th>טלפון</th>
+                                            <th>סוג משתמש</th>
+                                            <th>מחלקה</th>
+                                            <th>פעיל</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
                             <!-- End Table with stripped rows -->
 
                         </div>
@@ -236,7 +256,6 @@
         </section>
 
     </main><!-- End #main -->
-   
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
         <div class="copyright">
