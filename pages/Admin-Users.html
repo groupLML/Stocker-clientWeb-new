@@ -38,10 +38,6 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 
-
-    <!--<script type="text/javascript" src=""></script>-->
-    <!--<link rel="stylesheet" type="text/css" href="">-->
-
     <script>
 
         $(document).ready(function () {
@@ -61,22 +57,6 @@
                 window.location.href = 'Admin-UserForm.html';
             });
         })
-
-        function toggleColumns() {
-            var table = $('#Table').DataTable();
-            var containerWidth = $('.table-container').width();
-            var tableWidth = table.table().container().offsetWidth;
-
-            if (tableWidth > containerWidth) {
-                table.column(':last-child').visible(false);
-            } else {
-                table.column(':last-child').visible(true);
-            }
-        }
-
-        $(window).resize(function () {
-            toggleColumns();
-        });
 
         function GetUsers() {
             ajaxCall("GET", api + "/GetUsers", "", successGetUsersCBF, errorGetUsersCBF);
@@ -231,7 +211,7 @@
                             <br />
                             <!-- Table with stripped rows table-striped-->
                             <div class="table-container">
-                                <table class="table hover table-striped-custom" id="Table" style="width:100%">
+                                <table class="table hover table-striped-custom " id="Table" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>#</th>

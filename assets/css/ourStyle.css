@@ -333,12 +333,12 @@ tbody, td, tfoot, th, thead, tr {
     text-align: right;
 }
 
-/********************************/
-@media (max-width: 767px) {
-    .table-container {
-        display: none;
-    }
+/************************************************/
+.table-container {
+    overflow-x: auto;
+    max-width: 100%;
 }
+
 
 /*element.style {
     font-size: 14px;
