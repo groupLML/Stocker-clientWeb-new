@@ -89,7 +89,7 @@
         }
 
         function GetNormReqsSCB(data) {
-            console.log("NormReqs:",data);
+            console.log("NormReqs:", data);
             NormReqs = data;
             DataTableRender(data);
         }
@@ -247,7 +247,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="Manager-NormRequests.html" class="active"" onclick="reload()">
+                        <a href="Manager-NormRequests.html" class="active" " onclick="reload()">
                             <i class="bi bi-circle"></i><span>בקשות לעדכון תקן</span>
                         </a>
                     </li>
@@ -265,18 +265,20 @@
         <div class="card">
             <div class="card-body">
                 <!-- Table with stripped rows table-striped-->
-                <table class="table hover table-striped-custom hide-table-header" id="Table" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>תאריך</th>
-                            <!--<th>שעה</th>-->
-                            <th>שם המחלקה</th>
-                            <th>יוצר ההזמנה</th>
-                            <th>תפקיד</th>
-                        </tr>
-                    </thead>
-                </table>
+                <div class="table-responsive">
+                    <table class="table hover table-striped-custom hide-table-header" id="Table" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>תאריך</th>
+                                <!--<th>שעה</th>-->
+                                <th>שם המחלקה</th>
+                                <th>יוצר ההזמנה</th>
+                                <th>תפקיד</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
                 <!-- End Table with stripped rows -->
                 <div id="button_ph" class="d-flex justify-content-center"></div>
                 <!-- Vertically centered Modal -->

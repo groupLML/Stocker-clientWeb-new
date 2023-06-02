@@ -70,7 +70,7 @@
 
             for (var i = 0; i < data.length; i++) {
                 deps.push({ depId: data[i]['depId'], depName: data[i]['depName'] }); // Save department ID and name in the array
-                if (!depNames.includes(data[i]['depName']) && data[i]['depName'] != "מערכות מידע" && data[i]['depName']!="בית מרקחת")
+                if (!depNames.includes(data[i]['depName']) && data[i]['depName'] != "מערכות מידע" && data[i]['depName'] != "בית מרקחת")
                     depNames.push(data[i]['depName']);
             }
             renderOptions(depNames);
@@ -215,7 +215,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="Manager-PushOrders.html"  onclick="reload()">
+                        <a href="Manager-PushOrders.html" onclick="reload()">
                             <i class="bi bi-circle"></i><span>הזמנות דחיפה</span>
                         </a>
                     </li>
@@ -292,15 +292,17 @@
                     </div>
                 </form>
                 <!-- Table with stripped rows table-striped-->
-                <table class="table hover table-striped-custom " id="Table" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>שם התרופה</th>
-                            <th>כמות במלאי</th>
-                        </tr>
-                    </thead>
-                </table>
+                <div class="table-responsive">
+                    <table class="table hover table-striped-custom " id="Table" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>שם התרופה</th>
+                                <th>כמות במלאי</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
                 <!-- End Table with stripped rows -->
             </div>
         </div>

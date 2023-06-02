@@ -59,7 +59,7 @@
         })
 
         function GetUsers() {
-            ajaxCall("GET", api +"/GetUsers", "", successGetUsersCBF, errorGetUsersCBF);
+            ajaxCall("GET", api + "/GetUsers", "", successGetUsersCBF, errorGetUsersCBF);
         }
 
         function successGetUsersCBF(data) {
@@ -153,7 +153,6 @@
             </ul>
         </nav><!-- End Icons Navigation -->
     </header><!-- End Header -->
- 
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
@@ -197,7 +196,6 @@
 
         </ul><!-- End Nav -->
     </aside><!-- End Sidebar-->
-   
     <!-- ======= Main ======= -->
     <main id="main" class="main">
         <div class="pagetitle">
@@ -212,21 +210,23 @@
                         <div class="card-body">
                             <br />
                             <!-- Table with stripped rows table-striped-->
-                            <table class="table hover table-striped-custom " id="Table" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>שם פרטי</th>
-                                        <th>שם משפחה</th>
-                                        <th>שם משתמש</th>
-                                        <th>דוא"ל</th>
-                                        <th>טלפון</th>
-                                        <th>סוג משתמש</th>
-                                        <th>מחלקה</th>
-                                        <th>פעיל</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                            <div class="table-container">
+                                <table class="table hover table-striped-custom " id="Table" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>שם פרטי</th>
+                                            <th>שם משפחה</th>
+                                            <th>שם משתמש</th>
+                                            <th>דוא"ל</th>
+                                            <th>טלפון</th>
+                                            <th>סוג משתמש</th>
+                                            <th>מחלקה</th>
+                                            <th>פעיל</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
                             <!-- End Table with stripped rows -->
 
                         </div>
@@ -236,7 +236,6 @@
         </section>
 
     </main><!-- End #main -->
-   
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
         <div class="copyright">

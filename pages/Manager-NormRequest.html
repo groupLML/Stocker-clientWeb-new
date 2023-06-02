@@ -160,7 +160,7 @@
         }
 
         function UpdateNorm() {
-            // Create a new array with object modifications and sent to PUT 
+            // Create a new array with object modifications and sent to PUT
             const PutArray = medsToUpdate.map(med => {
                 return {
                     medId: med.medId,
@@ -318,17 +318,19 @@
         <div class="card">
             <div class="card-body">
                 <!-- Table with stripped rows table-striped-->
-                <table class="table hover table-striped-custom hide-table-header" id="Table" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>שם התרופה</th>
-                            <th>כמות רצויה</th>
-                            <th>כמות בפועל</th>
-                            <th>כמות מומלצת</th>
-                        </tr>
-                    </thead>
-                </table>
+                <div class="table-responsive">
+                    <table class="table hover table-striped-custom hide-table-header" id="Table" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>שם התרופה</th>
+                                <th>כמות רצויה</th>
+                                <th>כמות בפועל</th>
+                                <th>כמות מומלצת</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
                 <!-- End Table with stripped rows -->
                 <div id="button_ph" class="d-flex justify-content-center"></div>
                 <!-- Vertically centered Modal -->

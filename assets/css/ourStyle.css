@@ -333,6 +333,13 @@ tbody, td, tfoot, th, thead, tr {
     text-align: right;
 }
 
+/************************************************/
+.table-container {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+
 /*element.style {
     font-size: 14px;
     margin-right: 3px;
