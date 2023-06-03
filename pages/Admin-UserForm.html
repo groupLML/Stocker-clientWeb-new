@@ -34,6 +34,7 @@
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script src="../assets/js/custom-dropdown-input.js"></script>
     <script src="../assets/js/global-functions.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <!-- datatable -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -57,7 +58,7 @@
 
             deps = [];
             depNames = [];
-            GetDepartments();  
+            GetDepartments();
             createDropDownInput(depNames);
 
 
@@ -93,22 +94,32 @@
 
         function successGetUserCBF(data) {
             console.log(data);
-
+      
             if (data != null) {
                 for (var i = 0; i < data.length; i++) {
                     if (data[i]['userId'] == userId)
                         renderUserDetails(data[i]);
                 }
             }
-            else
-                alert("Error");
+            else {
+                swal({ // this will open a dialouge
+                    title: "משהו השתבש",
+                    text: "", 
+                    buttons: true,
+                    dangerMode: false
+                })
+                    .then(function (willDelete) {
+                        if (willDelete)
+                            return false;
+                    });
+            }
         }
 
         function errorGetUserCBF(err) {
             console.log(err);
         }
 
-        function renderUserDetails(user) { 
+        function renderUserDetails(user) {
             $("#usernameTB").val(user.username);
             $("#firstNameTB").val(user.firstName);
             $("#lastNameTB").val(user.lastName);
@@ -116,7 +127,7 @@
             $("#passwordTB").val(user.password);
             $("#phoneTB").val(user.phone);
             $("#positionTB").val(user.position);
-            $("#jobTypeTB").val(user.jobType); 
+            $("#jobTypeTB").val(user.jobType);
             $("#input").val(user.depName);
             $("#isActiveCB").prop('checked', user.isActive);
         }
