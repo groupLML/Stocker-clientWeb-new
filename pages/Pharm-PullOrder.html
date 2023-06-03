@@ -94,15 +94,15 @@
         }
 
         function orderDataRender() {
-            let str = `<p>שם מחלקה: ${order.depName}</p>`;
+            let str = `<div class="row"><div class="col-10"><p>שם מחלקה: ${order.depName}</p></div><div class="col-2"><div class="printerIcon"><i class="bi bi-printer" onclick = "exportPFD()"></i></div></div></div>`;
             str += `<p>יוצר ההזמנה: ${order.nurseName}</p>`;
             if (order.status === "בטיפול") {
                 str += `<p>רוקח אחראי: ${order.pharmName}</p>`
             }
             else if (order.status === "נופק") {
                 str += `<p>רוקח שהנפיק: ${order.pharmName}</p>`
-            }
-            str += `<button type="button" class="btn btn-primary" onclick="exportPFD()">הדפס</button>`;
+            } 
+            str += ``;
             str += `<p>פירוט הזמנה: </p>`;
             document.getElementById("orderData_ph").innerHTML = str;
         }
