@@ -32,17 +32,16 @@
     <!-- ajaxCalls and JQuery -->
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
-    <!--<script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>-->
     <script src="../assets/js/global-functions.js"></script>
-    <script src="../assets/js/signalr.js"></script>
-    <script src="../assets/js/signalr.min.js"></script>
-    <!--<script src="~/js/signalr/dist/browser/signalr.js"></script>
-    <script src="~/js/ClientNoticetion.js"></script>-->
+  
     <!-- datatables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 
     <script>
+        var inPooling = false;
+        var lastPooling = Date.now();
+
         $(document).ready(function () {
 
             api = "https://proj.ruppin.ac.il/cgroup36/prod/GetDashboard/interval/";
@@ -50,25 +49,31 @@
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
-            /*   $("#Filters").submit(GetDashbord);*/
-            h = null;
-         /*   goToServer();*/
-             getData();
+            getData();
 
-            //window.onunload = function () {
-            //    stopThread();
-            //};
+            $("#Filters").submit(getData);
+
+            h = null;
+            goToServer();
+
+            window.onunload = function () {
+                stopThread();
+            };
         });
 
         function goToServer() {
             if (h != null) //בודק האם כבר רץ
                 return;
-            let timeInterval = 80000000; //כל 80 שניות
+            let timeInterval = 10000; //כל 80 שניות
             h = setInterval(getData, timeInterval);
         }
 
         function getData() {
-            ajaxCall("GET", api + 7, "", successGetDataCBF, errorGetDataCBF);
+            if (inPooling == false || (Date.now()-lastPooling) > 30000) {
+                inPooling = true;
+                lastPooling = Date.now();
+                ajaxCall("GET", api + 7, "", successGetDataCBF, errorGetDataCBF);
+            }
             /*    return false;*/
         }
 
@@ -99,10 +104,12 @@
             else
                 str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt((data.currentMRD / data.prevMRD) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
             document.getElementById("MRD").innerHTML = str;
+            inPooling = false;
         }
 
         function errorGetDataCBF(err) {
             console.log(err);
+            inPooling = false;
         }
 
         function stopThread() {
@@ -153,8 +160,8 @@
                     width: 2
                 },
                 xaxis: {
-                    type: 'datetime',
-                    categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
+                    type: 'string',
+                    categories: ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"]
                 },
                 tooltip: {
                     x: {
@@ -195,15 +202,6 @@
             }).render();
         });
     </script>
-
-    <!--<script>
-        "use strict";
-        var connection = new signalR.HubConnectionBuilder().withUrl("/ClientNoticetion").build();
-
-        connection.on("ReceiveMessage", function (message) {
-            var str = `${message}`;
-            document.getElementById("numOfOrder").innerHTML = str;
-        });</script>-->
 
 </head>
 
@@ -343,7 +341,7 @@
 
                         <!-- Filter Card -->
                         <div class="col-12">
-                            <div class="card">
+                            <div class="card"  style="margin-bottom: 22px">
                                 <div class="card-body" style="padding: 15px">
                                     <!--<div class="d-flex align-items-center">-->
                                     <form id="Filters">
@@ -364,7 +362,7 @@
                                             </div>
                                             <div class="col">
                                                 <div class="input-group has-validation">
-                                                    <input type="text" id="input" class="form-control" autocomplete="off" placeholder="שבוע" required>
+                                                    <input type="text" id="input" class="form-control" autocomplete="off" placeholder="שנה" required>
                                                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                                                         <li class="dropdown-header text-start">
                                                             <h6>סינון</h6>
@@ -387,7 +385,7 @@
                         </div><!-- End Filter Card -->
                         <!-- Orders Card -->
                         <div class="col-xxl-4 col-md-4">
-                            <div class="card info-card sales-card">
+                            <div class="card info-card sales-card" style="margin-bottom: 22px">
 
                                 <!--<div class="filter">
                                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
@@ -403,7 +401,7 @@
                                 </div>-->
 
                                 <div class="card-body" style="padding: 10px">
-                                    <h5 class="card-title" style="padding: 10px">הזמנות משיכה <span>| השבוע</span></h5>
+                                    <h5 class="card-title" style="padding: 10px">הזמנות משיכה <span>| החודש</span></h5>
 
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -420,7 +418,7 @@
                         </div><!-- End Orders Card -->
                         <!-- Tranport Card -->
                         <div class="col-xxl-4 col-md-4">
-                            <div class="card info-card revenue-card">
+                            <div class="card info-card revenue-card" style="margin-bottom: 22px">
 
                                 <!--<div class="filter">
                                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
@@ -436,7 +434,7 @@
                                 </div>-->
 
                                 <div class="card-body" style="padding: 10px">
-                                    <h5 class="card-title" style="padding: 10px">העברות שבוצעו <span>| השבוע</span></h5>
+                                    <h5 class="card-title" style="padding: 10px">העברות שבוצעו <span>| החודש</span></h5>
 
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -455,7 +453,7 @@
                         <!-- Requests Card -->
                         <div class="col-xxl-4 col-md-4">
 
-                            <div class="card info-card customers-card">
+                            <div class="card info-card customers-card" style="margin-bottom: 22px">
 
                                 <!--<div class="filter">
                                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
@@ -471,7 +469,7 @@
                                 </div>-->
 
                                 <div class="card-body" style="padding: 10px">
-                                    <h5 class="card-title" style="padding: 10px">בקשות שלא מומשו <span>| השבוע</span></h5>
+                                    <h5 class="card-title" style="padding: 10px">בקשות שלא מומשו <span>| החודש</span></h5>
 
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -490,7 +488,7 @@
                         </div><!-- End Requests Card -->
                         <!-- Reports -->
                         <div class="col-12">
-                            <div class="card">
+                            <div class="card" style="margin-bottom: 22px">
 
                                 <!--<div class="filter">
                                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
@@ -506,7 +504,7 @@
                                 </div>-->
 
                                 <div class="card-body" style="padding-bottom: 10px">
-                                    <h5 class="card-title" style="padding-top: 10px">צריכה מול הנפקה <span>| השבוע </span></h5>
+                                    <h5 class="card-title" style="padding-top: 10px">צריכה מול הנפקה <span> </span></h5>
 
                                     <!-- Line Chart -->
                                     <div id="reportsChart"></div>
@@ -514,7 +512,7 @@
                                 </div>
                             </div>
 
-                            <div class="card">
+                            <div class="card" style="margin-bottom: 22px">
 
                                 <!--<div class="filter">
                                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
