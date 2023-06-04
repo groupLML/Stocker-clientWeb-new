@@ -79,12 +79,24 @@
         }
 
         function orderDataRender() {
-            let str = `<p>שם מחלקה: ${order.depName}</p>`
+            let str = `<div class="row"><div class="col-10"><p>שם מחלקה: ${order.depName}</p></div><div class="col-2"><div class="printerIcon"><i class="bi bi-printer" onclick = "exportPFD()"></i></div></div></div>`;
             str += `<p>יוצר ההזמנה: ${order.nurseName}</p>`
 
             str += `<p>פירוט הזמנה: </p>`
 
             document.getElementById("orderData_ph").innerHTML = str;
+        }
+
+        function exportPFD() {
+            // Assuming you have initialized DataTable on your HTML table
+            var dataTable = $('#Table').DataTable();
+            var pageLength = dataTable.page.len();
+            // Change the page length to 1000
+            dataTable.page.len(1000).draw();
+
+            window.print();
+
+            dataTable.page.len(pageLength).draw();
         }
 
         function GetPushOrderDetails() {

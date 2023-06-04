@@ -126,10 +126,26 @@
 
                     // Show the table header
                     $('#Table thead').show();
+
+                    let str = `<div class="col-2"><div class="printerIcon"><i class="bi bi-printer" onclick = "exportPFD()"></i></div></div></div>`;
+                    document.getElementById("printer_ph").innerHTML = str;
+
                 }
             } catch (err) {
                 alert(err);
             }
+        }
+        
+        function exportPFD() {
+            // Assuming you have initialized DataTable on your HTML table
+            var dataTable = $('#Table').DataTable();
+            var pageLength = dataTable.page.len();
+            // Change the page length to 1000
+            dataTable.page.len(1000).draw();
+
+            window.print();
+
+            dataTable.page.len(pageLength).draw();
         }
 
     </script>
@@ -240,9 +256,10 @@
             <div class="card-body">
                 <form id="DepSearch">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-10">
                             <label class="col-form-label">בחר מחלקה</label>
                         </div>
+                        <div id="printer_ph"></div>
                     </div>
                     <div class="row mb-4">
                         <div class="col-md-4">
