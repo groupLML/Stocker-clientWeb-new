@@ -35,6 +35,7 @@
     <script src="../assets/js/global-functions.js"></script>
     <script src="../assets/js/custom-dropdown-input.js"></script>
     <script src="../assets/js/custom-dropdown-input-meds.js"></script>
+    <script src="../assets/js/custom-dropdown-input-months.js"></script>
 
     <!-- datatables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -43,6 +44,7 @@
     <script>
         var inPooling = false;
         var lastPooling = Date.now();
+        let months = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמר', 'אוקטובר', 'נובמבר', 'דצמבר']
 
         $(document).ready(function () {
 
@@ -63,6 +65,9 @@
             GetMeds();
             createDropDownMedsInput(medNames);
 
+            createDropDownMedsInput(months);
+            renderMonthsOptions(months);
+
             //getData();
 
             $("#Filters").submit(getData);
@@ -73,12 +78,6 @@
             window.onunload = function () {
                 stopThread();
             };
-
-            $("#input").on("change", function () {
-                var selectedValue = $("#input").val();
-                // Handle the change event
-                console.log("Input value changed:", selectedValue);
-            });
         });
 
         function GetDepartments() {
@@ -392,7 +391,8 @@
     <main id="main" class="main">
         <!--<div class="pagetitle">
             <h1>דף בית</h1>
-        </div>--><!-- End Page Title -->
+        </div>-->
+        <!-- End Page Title -->
 
         <section class="section dashboard">
             <div class="row">
@@ -401,7 +401,7 @@
                     <div class="row">
                         <!-- Filter Card -->
                         <div class="col-12">
-                            <div class="card"  style="margin-bottom: 22px">
+                            <div class="card" style="margin-bottom: 22px">
                                 <div class="card-body" style="padding: 15px">
                                     <!--<div class="d-flex align-items-center">-->
                                     <form id="Filters">
@@ -422,7 +422,8 @@
                                             </div>
                                             <div class="col">
                                                 <div class="input-group has-validation">
-                                                    <input type="text" class="form-control" autocomplete="off" placeholder="חודש" required>
+                                                    <input type="text" id="monthInput" class="form-control" autocomplete="off" placeholder="חודש" required>
+                                                    <ul class="dropdown-options" id="months-dropdown-options"></ul>
                                                     <div class="invalid-feedback">אנא בחר חודש רצוי</div>
                                                 </div>
                                             </div>
@@ -561,7 +562,7 @@
                                     </ul>
                                 </div>-->
 
-                                <div class="card-body" style="padding-bottom: 10px"> 
+                                <div class="card-body" style="padding-bottom: 10px">
                                     <h5 class="card-title" style="padding-top: 10px">צריכה מול הנפקה<span> | 2023</span></h5>
 
                                     <!-- Line Chart -->
@@ -596,7 +597,6 @@
                         </div><!-- End Reports -->
                     </div>
                 </div><!-- End Left side columns -->
-
                 <!-- Right side columns -->
                 <div class="col-lg-4">
                     <!-- Recent Activity -->
