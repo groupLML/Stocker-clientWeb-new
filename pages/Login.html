@@ -32,6 +32,8 @@
     <!-- ajaxCalls and JQuery -->
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="../assets/js/global-functions.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
 
@@ -74,7 +76,7 @@
                     window.location.href = `Pharm-PullOrders.html`;
             }
             else
-                alert("Username or password are incorrect");
+                sweetalert("שם המשתמש או הסיסמה שגויים", "", true, false, "");
         }
 
         function errorLoginCBF(err) {

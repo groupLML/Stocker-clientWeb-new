@@ -34,6 +34,7 @@
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script src="../assets/js/custom-dropdown-input.js"></script>
     <script src="../assets/js/global-functions.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <!-- datatable -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -134,17 +135,16 @@
             console.log(data);
 
             if (data == 1) {
-                alert("In Success");
-                window.location.href = 'Admin-Departments.html';
                 sessionStorage.removeItem('Id');
+                sweetalert("העדכון בוצע בהצלחה", "", false, true, 'Admin-Departments.html');
             }
             else {
                 if (data == -1) {
-                    alert("This name is already taken, please choose someting else");
-                    return;
+                    sweetalert("שגיאה", "מחלקה זו כבר קיים במערכת, אנא בחר שם אחר", true, false, "");
                 }
-                else
-                    alert("Error");
+                else {
+                    sweetalert("שגיאה בשרת", "", true, false, "");
+                }
             }
         }
 
@@ -178,12 +178,13 @@
             console.log(data);
 
             if (data == true) {
-                alert("In Success");
-                window.location.href = 'Admin-Departments.html';
                 sessionStorage.removeItem('Id');
+                sweetalert("העדכון בוצע בהצלחה", "", false, true, 'Admin-Departments.html');
+                //window.location.href = 'Admin-Departments.html';
             }
-            else
-                alert("Error");
+            else {
+                sweetalert("שגיאה בשרת", "", true, false,"");
+            }
         }
 
         function errorPutDCBF(err) {
@@ -238,7 +239,6 @@
             </ul>
         </nav><!-- End Icons Navigation -->
     </header><!-- End Header -->
-   
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
@@ -282,7 +282,6 @@
 
         </ul><!-- End Nav -->
     </aside><!-- End Sidebar-->
-
     <!-- ======= Main ======= -->
     <main id="main" class="main">
         <div id="title_ph" class="pagetitle"></div>
@@ -329,7 +328,6 @@
         </section>
 
     </main><!-- End #main -->
-   
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
         <div class="copyright">

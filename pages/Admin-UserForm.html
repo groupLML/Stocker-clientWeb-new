@@ -94,7 +94,6 @@
 
         function successGetUserCBF(data) {
             console.log(data);
-      
             if (data != null) {
                 for (var i = 0; i < data.length; i++) {
                     if (data[i]['userId'] == userId)
@@ -102,16 +101,7 @@
                 }
             }
             else {
-                swal({ // this will open a dialouge
-                    title: "משהו השתבש",
-                    text: "", 
-                    buttons: true,
-                    dangerMode: false
-                })
-                    .then(function (willDelete) {
-                        if (willDelete)
-                            return false;
-                    });
+                sweetalert("שגיאה בשרת", "", true, false, "");
             }
         }
 
@@ -195,8 +185,6 @@
 
                 ajaxCall("POST", apiUser, JSON.stringify(user), successPostUCBF, errorPostUCBF);
 
-
-
                 return false;
             }
         }
@@ -205,19 +193,17 @@
             console.log(data);
 
             if (data == 1) {
-                alert("In Success");
                 sessionStorage.removeItem('Id');
                 newUser = JSON.parse(sessionStorage.getItem("newUser"));
                 ajaxCall("POST", apiUser + '/Email', JSON.stringify(newUser), successPostECBF, errorPostECBF);
-                window.location.href = 'Admin-Users.html';
+                sweetalert("העדכון בוצע בהצלחה", "", false, true, 'Admin-Users.html');
             }
             else {
                 if (data == -1) {
-                    alert("This username is already taken, please choose someting else");
-                    return;
+                    sweetalert("שגיאה", "משתמש זה כבר קיים במערכת, אנא בחר שם אחר", true, false, "");
                 }
                 else
-                    alert("Error");
+                    sweetalert("שגיאה בשרת", "", true, false, "");
             }
         }
 
@@ -272,7 +258,6 @@
                 };
 
                 ajaxCall("PUT", apiUser + "/" + userId, JSON.stringify(user), successPutUCBF, errorPutUCBF);
-
                 return false;
             }
         }
@@ -281,18 +266,16 @@
             console.log(data);
 
             if (data == true) {
-                alert("In Success");
                 sessionStorage.removeItem('Id');
-                window.location.href = 'Admin-Users.html';
+                sweetalert("העדכון בוצע בהצלחה", "", false, true, 'Admin-Users.html');
             }
             else
-                alert("Error");
+                sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function errorPutUCBF(err) {
             console.log(err);
         }
-
 
     </script>
 </head>

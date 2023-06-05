@@ -34,3 +34,20 @@ function areArraysIdentical(arr1, arr2) {
 
     return true; // Arrays are identical
 }
+
+
+function sweetalert(title, text, bool, isGoToPage, page) {
+    swal({ // this will open a dialouge
+        title: title,
+        text: text,
+        buttons: true,
+        dangerMode: bool
+    })
+        .then(function (willDelete) {
+            if (willDelete)
+                if (isGoToPage)
+                    window.location.href = page;
+                else
+                    return false;
+        });
+}
