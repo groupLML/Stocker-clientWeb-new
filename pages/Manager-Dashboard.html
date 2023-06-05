@@ -36,6 +36,7 @@
     <script src="../assets/js/custom-dropdown-input.js"></script>
     <script src="../assets/js/custom-dropdown-input-meds.js"></script>
     <script src="../assets/js/custom-dropdown-input-months.js"></script>
+    <script src="../assets/js/custom-dropdown-input-years.js"></script>
 
     <!-- datatables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -45,6 +46,7 @@
         var inPooling = false;
         var lastPooling = Date.now();
         let months = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמר', 'אוקטובר', 'נובמבר', 'דצמבר']
+        let yearsList = GetYearsList();
 
         $(document).ready(function () {
 
@@ -65,8 +67,11 @@
             GetMeds();
             createDropDownMedsInput(medNames);
 
-            createDropDownMedsInput(months);
+            createDropDownMonthsInput(months);
             renderMonthsOptions(months);
+
+            createDropDownYearsInput(yearsList);
+            renderYearsOptions(yearsList);
 
             //getData();
 
@@ -79,6 +84,19 @@
                 stopThread();
             };
         });
+
+        function GetYearsList() {
+            let currentDate = new Date();
+            let currentYear = currentDate.getFullYear();
+            let startYear = 1990;
+
+            let yearsList = [];
+
+            for (let year = currentYear; year >= startYear; year--) {
+                yearsList.push(year);
+            }
+            return yearsList;
+        }
 
         function GetDepartments() {
             ajaxCall("GET", GetDepsApi, "", GetDepsSCB, GetDepsECB);
@@ -429,8 +447,8 @@
                                             </div>
                                             <div class="col">
                                                 <div class="input-group has-validation">
-                                                    <input type="text" class="form-control" autocomplete="off" placeholder="שנה" required>
-                                                    <ul class="dropdown-options" id=""></ul>
+                                                    <input type="text" id="yearInput" class="form-control" autocomplete="off" placeholder="שנה" required>
+                                                    <ul class="dropdown-options" id="years-dropdown-options"></ul>
                                                     <div class="invalid-feedback">אנא בחר שנה רצויה</div>
                                                 </div>
                                             </div>

@@ -1,6 +1,6 @@
-﻿function createDropDownMonthsInput(months) {
-    var input = $("#monthInput");
-    var dropdownOptions = $("#months-dropdown-options");
+﻿function createDropDownYearsInput(years) {
+    var input = $("#yearInput");
+    var dropdownOptions = $("#years-dropdown-options");
     var isInputClicked = false;
     var hideTimeout; // Declare hideTimeout variable
 
@@ -38,11 +38,11 @@
     input.on("input", function () {
         var text = input.val().toUpperCase();
         if (text === "") {
-            renderMedsOptions(months);
+            renderMedsOptions(years);
             input[0].setCustomValidity(""); // Reset custom validity message
             dropdownOptions.show(); // Show dropdown options when input is empty
         } else {
-            var filteredOptions = months.filter(function (option) {
+            var filteredOptions = years.filter(function (option) {
                 return option.medName.toUpperCase().indexOf(text) > -1;
             });
             renderMedsOptions(filteredOptions);
@@ -56,7 +56,7 @@
     });
 
     // Handle click on any input field to hide the dropdown options
-    $("input").not("#monthInput").click(function () {
+    $("input").not("#yearInput").click(function () {
         clearTimeout(hideTimeout); // Clear the timeout when clicking on another input
         dropdownOptions.hide();
         isInputClicked = false;
@@ -71,10 +71,10 @@
     });
 }
 
-function renderMonthsOptions(months) {
+function renderYearsOptions(years) {
     var str = "";
-    for (var i = 0; i < months.length; i++) {
-        str += `<li id="${months[i + 1]}" data-value="${months[i]}">${months[i]}</li>`;
+    for (var i = 0; i < years.length; i++) {
+        str += `<li id="${years[i]}" data-value="${years[i]}">${years[i]}</li>`;
     }
-    $("#months-dropdown-options").empty().append(str);
+    $("#years-dropdown-options").empty().append(str);
 }
