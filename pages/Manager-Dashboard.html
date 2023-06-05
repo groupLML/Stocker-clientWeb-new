@@ -33,10 +33,10 @@
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script src="../assets/js/global-functions.js"></script>
-    <script src="../assets/js/custom-dropdown-input.js"></script>
-    <script src="../assets/js/custom-dropdown-input-meds.js"></script>
-    <script src="../assets/js/custom-dropdown-input-months.js"></script>
-    <script src="../assets/js/custom-dropdown-input-years.js"></script>
+    <script src="../assets/js/dashboard-input-deps.js"></script>
+    <script src="../assets/js/dashboard-input-meds.js"></script>
+    <script src="../assets/js/dashboard-input-months.js"></script>
+    <script src="../assets/js/dashboard-input-years.js"></script>
 
     <!-- datatables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -60,7 +60,7 @@
             deps = []; // Array to save departments data
             depNames = [];
             GetDepartments();
-            createDropDownInput(depNames);
+            createDropDownDepsInput(depNames);
 
             meds = []; // Array to save meds data
             medNames = [];
@@ -111,7 +111,7 @@
                 if (!depNames.includes(data[i]['depName']) && data[i]['depType'] != "מערכות מידע" && data[i]['depType'] != "בית מרקחת")
                     depNames.push(data[i]['depName']);
             }
-            renderOptions(depNames);
+            renderDepOptions(depNames);
         }
 
         function GetDepsECB(err) {
@@ -426,8 +426,8 @@
                                         <div class="row">
                                             <div class="col">
                                                 <div class="input-group has-validation">
-                                                    <input type="text" id="input" class="form-control" autocomplete="off" placeholder="שם מחלקה" required>
-                                                    <ul class="dropdown-options" id="dropdown-options"></ul>
+                                                    <input type="text" id="depInput" class="form-control" autocomplete="off" placeholder="שם מחלקה" required>
+                                                    <ul class="dropdown-options" id="deps-dropdown-options"></ul>
                                                     <div class="invalid-feedback">אנא בחר את מחלקה מתוך הרשימה</div>
                                                 </div>
                                             </div>

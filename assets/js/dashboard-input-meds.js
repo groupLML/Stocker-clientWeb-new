@@ -72,10 +72,9 @@
 }
 
 function renderMedsOptions(arr) {
-    var limitedArr = arr.slice(0, 4); // Take only the first four elements of the array
     var str = "";
-    for (var i = 0; i < limitedArr.length; i++) {
-        str += `<li id="${limitedArr[i]['medId']}" data-value="${limitedArr[i]['medName']}">${limitedArr[i]['medName']}</li>`;
+    for (var i = 0; i < arr.length; i++) {
+        str += `<li id="${arr[i]['medId']}" data-value="${arr[i]['medName']}">${arr[i]['medName']}</li>`;
     }
     $("#meds-dropdown-options").empty().append(str);
 }
