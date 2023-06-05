@@ -146,37 +146,6 @@ img {
     border-radius: 0.375rem;
 }
 
-/*.custom-dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-options {
-    display: none;
-    position: absolute;
-    z-index: 1;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-top: none;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    max-height: 200px;
-    overflow-y: auto;
-    top: 100%;
-}
-
-.dropdown-options li {
-    padding: 5px;
-    cursor: pointer;
-    min-height: 34px;
-}
-
-    .dropdown-options li:hover {
-        background-color: #F6F9FF;
-    }*/
-
 .custom-dropdown {
     position: relative;
     display: inline-block;
@@ -187,8 +156,7 @@ img {
     position: absolute;
     z-index: 1000; /* Updated z-index value */
     background-color: #fff;
-    border: 1px solid #ccc;
-    border-top: none;
+    border: 1px solid #ced4da;
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -208,6 +176,33 @@ img {
             background-color: #F6F9FF;
         }
 
+/*drop-down scroll bar*/
+.input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+    border-radius: 5px;
+}
+
+ul {
+    overflow: auto; /* Display scrollbars when necessary */
+    overflow-y: scroll; /* Show vertical scrollbar */
+    max-height: 300px; /* Set a maximum height to limit the list size */
+    position: relative; /* Set the position to relative */
+}
+
+
+ul::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+}
+
+ul::-webkit-scrollbar-thumb {
+    background-color: #59acff; /* Color of the scrollbar thumb */
+    border-radius: 5px; /* Rounded corners for the thumb */
+}
+
+#Filters .input-group > ul::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+}
+
 /*orderData style*/
 .orderData {
     color: #012970;
@@ -226,7 +221,7 @@ img {
 tbody, td, tfoot, th, thead, tr {
     border-style: none;
     cursor: pointer;
-    z-index:900;
+    z-index: 900;
 }
 
 .dataTables_wrapper > table.dataTable {
@@ -360,10 +355,12 @@ tbody, td, tfoot, th, thead, tr {
     cursor: pointer;
 }
 
-.printerIcon{
-    position:absolute;
-    left:20px;
+.printerIcon {
+    position: absolute;
+    left: 20px;
 }
+
+
 
 /*element.style {
     font-size: 14px;
