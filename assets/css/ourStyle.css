@@ -44,6 +44,7 @@ img {
 
 .header {
     padding-right: 20px;
+    z-index: 2000;
 }
 
 .header-logo {
@@ -141,28 +142,29 @@ img {
 }
 
 /*datalist input style*/
-.custom-dropdown {
+.input-group.has-validation > .dropdown-toggle:nth-last-child(n+4), .input-group.has-validation > .form-floating:nth-last-child(n+3) > .form-control, .input-group.has-validation > .form-floating:nth-last-child(n+3) > .form-select, .input-group.has-validation > :nth-last-child(n+3):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating) {
+    border-radius: 0.375rem;
+}
+
+/*.custom-dropdown {
     position: relative;
     display: inline-block;
 }
 
-#input {
-    width: 100%;
-    padding: 6px 12px;
-    border-radius: 5px;
-}
-
 .dropdown-options {
     display: none;
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+    position: absolute;
+    z-index: 1;
     background-color: #fff;
     border: 1px solid #ccc;
-}
-
-#dropdown-options {
-    border-radius: 5px 5px 5px 5px;
+    border-top: none;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    top: 100%;
 }
 
 .dropdown-options li {
@@ -172,8 +174,39 @@ img {
 }
 
     .dropdown-options li:hover {
-        background-color: #f1f1f1;
+        background-color: #F6F9FF;
+    }*/
+
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-options {
+    display: none;
+    position: absolute;
+    z-index: 1000; /* Updated z-index value */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    top: calc(100% + 0.25rem);
+}
+
+    .dropdown-options li {
+        padding: 5px;
+        cursor: pointer;
+        min-height: 34px;
     }
+
+        .dropdown-options li:hover {
+            background-color: #F6F9FF;
+        }
 
 /*orderData style*/
 .orderData {
@@ -193,6 +226,7 @@ img {
 tbody, td, tfoot, th, thead, tr {
     border-style: none;
     cursor: pointer;
+    z-index:900;
 }
 
 .dataTables_wrapper > table.dataTable {

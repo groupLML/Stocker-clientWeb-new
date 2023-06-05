@@ -33,7 +33,9 @@
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script src="../assets/js/global-functions.js"></script>
-  
+    <script src="../assets/js/custom-dropdown-input.js"></script>
+    <script src="../assets/js/custom-dropdown-input-meds.js"></script>
+
     <!-- datatables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
@@ -45,21 +47,79 @@
         $(document).ready(function () {
 
             api = "https://proj.ruppin.ac.il/cgroup36/prod/GetDashboard/interval/";
+            GetDepsApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
+            apiGetMeds = "https://proj.ruppin.ac.il/cgroup36/prod/GetActiveMeds";
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
-            getData();
+            deps = []; // Array to save departments data
+            depNames = [];
+            GetDepartments();
+            createDropDownInput(depNames);
+
+            meds = []; // Array to save meds data
+            medNames = [];
+            GetMeds();
+            createDropDownMedsInput(medNames);
+
+            //getData();
 
             $("#Filters").submit(getData);
 
             h = null;
-            goToServer();
+            //goToServer();
 
             window.onunload = function () {
                 stopThread();
             };
+
+            $("#input").on("change", function () {
+                var selectedValue = $("#input").val();
+                // Handle the change event
+                console.log("Input value changed:", selectedValue);
+            });
         });
+
+        function GetDepartments() {
+            ajaxCall("GET", GetDepsApi, "", GetDepsSCB, GetDepsECB);
+            return false;
+        }
+
+        function GetDepsSCB(data) {
+            console.log(data);
+
+            for (var i = 0; i < data.length; i++) {
+                deps.push({ depId: data[i]['depId'], depName: data[i]['depName'] }); // Save department ID and name in the array
+                if (!depNames.includes(data[i]['depName']) && data[i]['depType'] != "מערכות מידע" && data[i]['depType'] != "בית מרקחת")
+                    depNames.push(data[i]['depName']);
+            }
+            renderOptions(depNames);
+        }
+
+        function GetDepsECB(err) {
+            console.log(err);
+        }
+
+        function GetMeds() {
+            ajaxCall("GET", apiGetMeds, "", GetMedsSCB, GetMedsECB);
+        }
+
+        function GetMedsSCB(data) {
+            console.log(data);
+
+            for (var i = 0; i < data.length; i++) {
+                var medId = data[i]['medId'];
+                var medName = data[i]['medName'];
+
+                medNames.push({ "medId": medId, "medName": medName }); // Save med ID as key and med name as value in the array
+            }
+            renderMedsOptions(medNames);
+        }
+
+        function GetMedsECB(err) {
+            console.log(err);
+        }
 
         function goToServer() {
             if (h != null) //בודק האם כבר רץ
@@ -69,7 +129,7 @@
         }
 
         function getData() {
-            if (inPooling == false || (Date.now()-lastPooling) > 30000) {
+            if (inPooling == false || (Date.now() - lastPooling) > 30000) {
                 inPooling = true;
                 lastPooling = Date.now();
                 ajaxCall("GET", api + 7, "", successGetDataCBF, errorGetDataCBF);
@@ -336,11 +396,9 @@
 
         <section class="section dashboard">
             <div class="row">
-
                 <!-- Left side columns -->
                 <div class="col-lg-8">
                     <div class="row">
-
                         <!-- Filter Card -->
                         <div class="col-12">
                             <div class="card"  style="margin-bottom: 22px">
@@ -357,21 +415,21 @@
                                             </div>
                                             <div class="col">
                                                 <div class="input-group has-validation">
-                                                    <input type="text" id="input" class="form-control" autocomplete="off" placeholder="שם תרופה" required>
-                                                    <ul class="dropdown-options" id="dropdown-options"></ul>
+                                                    <input type="text" id="medInput" class="form-control" autocomplete="off" placeholder="שם תרופה" required>
+                                                    <ul class="dropdown-options" id="meds-dropdown-options"></ul>
                                                     <div class="invalid-feedback">אנא בחר את תרופה מתוך הרשימה</div>
                                                 </div>
                                             </div>
                                             <div class="col">
                                                 <div class="input-group has-validation">
-                                                    <input type="text" id="input" class="form-control" autocomplete="off" placeholder="חודש" required>
+                                                    <input type="text" class="form-control" autocomplete="off" placeholder="חודש" required>
                                                     <div class="invalid-feedback">אנא בחר חודש רצוי</div>
                                                 </div>
                                             </div>
                                             <div class="col">
                                                 <div class="input-group has-validation">
-                                                    <input type="text" id="input" class="form-control" autocomplete="off" placeholder="שנה" required>
-                                                    <ul class="dropdown-options" id="dropdown-options"></ul>
+                                                    <input type="text" class="form-control" autocomplete="off" placeholder="שנה" required>
+                                                    <ul class="dropdown-options" id=""></ul>
                                                     <div class="invalid-feedback">אנא בחר שנה רצויה</div>
                                                 </div>
                                             </div>
@@ -536,13 +594,11 @@
                             </div>
 
                         </div><!-- End Reports -->
-
                     </div>
                 </div><!-- End Left side columns -->
 
                 <!-- Right side columns -->
                 <div class="col-lg-4">
-
                     <!-- Recent Activity -->
                     <div class="card">
                         <div class="card-body" style="padding-bottom: 32px">
