@@ -150,7 +150,11 @@ img {
     border-radius: 0.375rem;
 }
 
-#deps-dropdown-options, #meds-dropdown-options, #months-dropdown-options, #years-dropdown-options, .dropdown-options {
+#deps-dropdown-options,
+#meds-dropdown-options, 
+#months-dropdown-options, 
+#years-dropdown-options, 
+.dropdown-options {
     display: none;
     position: absolute;
     z-index: 1000; /* Updated z-index value */
@@ -165,7 +169,11 @@ img {
     top: calc(100% + 0.25rem);
 }
 
-td > .dropdown-options li {
+.dropdown-options .depTypesDD {
+
+}
+
+    td > .dropdown-options li {
     position: relative;
 }
 
@@ -200,10 +208,13 @@ td > .dropdown-options li {
         border-radius: 5px; /* Rounded corners for the thumb */
     }
 
-    .input-group > ul::-webkit-scrollbar-track {
-        background-color: #f1f1f1;
-        border-radius: 5px;
+    .input-group > ul.depTypesDD {
+        scrollbar-width: none; /* Remove scrollbar */
     }
+
+        .input-group > ul.depTypesDD::-webkit-scrollbar {
+            display: none; /* Remove scrollbar for WebKit browsers */
+        }
 
 /*orderData style*/
 .orderData {
