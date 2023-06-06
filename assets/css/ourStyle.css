@@ -374,6 +374,10 @@ tbody, td, tfoot, th, thead, tr {
     transform: scale(1.5);
 }
 
-.btn{
+#buttons_ph > .btn{
     margin:10px;
+}
+
+.ModalButtons > .btn {
+    margin: 10px;
 }
