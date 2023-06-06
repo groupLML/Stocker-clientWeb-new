@@ -118,7 +118,7 @@
 
             for (var i = 0; i < data.length; i++) {
                 deps.push({ depId: data[i]['depId'], depName: data[i]['depName'] }); // Save department ID and name in the array
-                if (!depNames.includes(data[i]['depName']) && data[i]['depType'] != "מערכות מידע" && data[i]['depType'] != "בית מרקחת")
+                if (!depNames.includes(data[i]['depName']) && data[i]['depType'] != "מערכות מידע" && data[i]['depType'] != "בית מרקחת" && data[i]['depName'] != "")
                     depNames.push(data[i]['depName']);
             }
             renderOptions(depNames);
