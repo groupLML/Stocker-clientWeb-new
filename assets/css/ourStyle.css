@@ -374,6 +374,6 @@ tbody, td, tfoot, th, thead, tr {
     transform: scale(1.5);
 }
 
-#buttons_ph > .btn{
+.btn{
     margin:10px;
 }
