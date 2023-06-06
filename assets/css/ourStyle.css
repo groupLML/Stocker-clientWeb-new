@@ -360,5 +360,9 @@ tbody, td, tfoot, th, thead, tr {
 .printerIcon {
     position: absolute;
     left: 20px;
-    transform: scale(1.5); /* Adjust the scale value as needed */
+    transform: scale(1.5);
+}
+
+#buttons_ph > .btn{
+    margin:10px;
 }
