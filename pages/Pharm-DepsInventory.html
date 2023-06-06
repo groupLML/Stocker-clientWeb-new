@@ -34,6 +34,7 @@
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script src="../assets/js/custom-dropdown-input.js"></script>
     <script src="../assets/js/global-functions.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <!-- datatables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -77,7 +78,7 @@
 
         function GetDepsECB(err) {
             console.log(err);
-
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function GetDepStock() {
@@ -98,6 +99,7 @@
 
         function GetStockECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function DataTableRender(stockData) {
@@ -136,7 +138,7 @@
                 alert(err);
             }
         }
-        
+
         function exportPFD() {
             // Assuming you have initialized DataTable on your HTML table
             var dataTable = $('#Table').DataTable();

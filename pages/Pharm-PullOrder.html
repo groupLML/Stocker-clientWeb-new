@@ -33,6 +33,7 @@
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script src="../assets/js/global-functions.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
@@ -101,7 +102,7 @@
             }
             else if (order.status === "נופק") {
                 str += `<p>רוקח שהנפיק: ${order.pharmName}</p>`
-            } 
+            }
             str += ``;
             str += `<p>פירוט הזמנה: </p>`;
             document.getElementById("orderData_ph").innerHTML = str;
@@ -115,7 +116,7 @@
             dataTable.page.len(1000).draw();
 
             window.print();
-           
+
             dataTable.page.len(pageLength).draw();
         }
 
@@ -212,6 +213,7 @@
 
         function getOrderDetailsECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function DataTableRender(medsData) {
@@ -274,6 +276,7 @@
             }
             catch (err) {
                 console.log(err);
+                sweetalert("שגיאה בשרת", "", true, false, "");
             }
         }
 
@@ -294,7 +297,7 @@
                     ajaxCall("PUT", apiUpdateIssued + "pullId/" + order.orderId, JSON.stringify(DataToSend), updateStatusSCB, updateStatusECB);
                 }
                 else {//התנאים של הכפתורים מונעים את האפשרות שזה יקרה
-                    console.log("only the user who has taken the order can check that the order was issued!")
+                    console.log("אין באפשרותך להנפיק הזמנה שאינה בטיפולך");
                 }
             }
         }
@@ -319,6 +322,7 @@
 
         function updateStatusECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function updateMedsListFromDataTable() {// Update medsList with new supQty values from tbl inputs

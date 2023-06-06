@@ -36,6 +36,7 @@
     <script src="../assets/js/custom-dropdown-input.js"></script>
     <script src="../assets/js/custom-dropdown-input-meds.js"></script>
     <script src="../assets/js/global-functions.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <!-- datatables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -103,6 +104,7 @@
 
         function GetMedsECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function GetDepartments() {
@@ -123,6 +125,7 @@
 
         function GetDepsECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function GetDepNorm() {
@@ -143,6 +146,7 @@
 
         function GetNormECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function DataTableRender(normData) {
@@ -346,6 +350,7 @@
             }
             catch (err) {
                 console.log(err);
+                sweetalert("שגיאה בשרת", "", true, false, "");
             }
         }
 
@@ -392,12 +397,13 @@
         }
 
         function PostNormRequestSCB() {
-            $('#verticalycentered').modal('show');
+            sweetalert("העדכון בוצע בהצלחה", "", false, false, '');
             renderUpdateButton(false);
         }
 
         function PostNormRequestECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
     </script>
@@ -540,22 +546,6 @@
                 </div>
                 <!-- End Table with stripped rows -->
                 <div id="button_ph" class="d-flex justify-content-center"></div>
-                <!-- Vertically centered Modal -->
-                <div class="modal fade" id="verticalycentered" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div>בקשה נשלחה בהצלחה</div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">סגור</button>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- End Vertically centered Modal-->
             </div>
         </div>
     </main><!-- End #main -->
