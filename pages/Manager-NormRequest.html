@@ -36,6 +36,7 @@
     <script src="../assets/js/custom-dropdown-input.js"></script>
     <script src="../assets/js/custom-dropdown-input-meds.js"></script>
     <script src="../assets/js/global-functions.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <!-- datatables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -97,6 +98,7 @@
 
         function GetNormECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function DataTableRender() {
@@ -170,19 +172,19 @@
                     mazNum: "",
                 };
             });
-            console.log()
 
             ajaxCall("PUT", apiPutNorm + normReq.reqId + "/normId/" + norm[0].normId, JSON.stringify(PutArray), PutNormSCB, PutNormECB);
             return false;
         }
 
         function PutNormSCB() {
-            $('#verticalycentered').modal('show');
+            sweetalert("העדכון בוצע בהצלחה", "", false, true, 'Manager-NormRequests.html');
             renderUpdateButton(false);
         }
 
         function PutNormECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function MovePage() {
@@ -337,22 +339,6 @@
                 </div>
                 <!-- End Table with stripped rows -->
                 <div id="button_ph" class="d-flex justify-content-center"></div>
-                <!-- Vertically centered Modal -->
-                <div class="modal fade" id="verticalycentered" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div>עדכון התקן בוצע בהצלחה</div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"  onclick="MovePage()">סגור</button>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- End Vertically centered Modal-->
             </div>
         </div>
     </main><!-- End #main -->
