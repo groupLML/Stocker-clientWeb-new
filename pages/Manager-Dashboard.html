@@ -29,6 +29,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/ourStyle.css" rel="stylesheet" />
 
+
     <!-- ajaxCalls and JQuery -->
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
@@ -37,6 +38,7 @@
     <script src="../assets/js/dashboard-input-meds.js"></script>
     <script src="../assets/js/dashboard-input-months.js"></script>
     <script src="../assets/js/dashboard-input-years.js"></script>
+    <script src="../assets/vendor/apexcharts/apexcharts.js"></script>
 
     <!-- datatables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -50,7 +52,7 @@
 
         $(document).ready(function () {
 
-            api = "https://proj.ruppin.ac.il/cgroup36/prod/GetDashboard/interval/";
+            api = "https://proj.ruppin.ac.il/cgroup36/prod/GetDashboard";
             GetDepsApi = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
             apiGetMeds = "https://proj.ruppin.ac.il/cgroup36/prod/GetActiveMeds";
 
@@ -73,7 +75,7 @@
             createDropDownYearsInput(yearsList);
             renderYearsOptions(yearsList);
 
-            //getData();
+            getData();
 
             $("#Filters").submit(getData);
 
@@ -85,6 +87,7 @@
             };
         });
 
+        /******************* filters *******************/
         function GetYearsList() {
             let currentDate = new Date();
             let currentYear = currentDate.getFullYear();
@@ -138,6 +141,8 @@
             console.log(err);
         }
 
+        /******************* getData and polling *******************/
+
         function goToServer() {
             if (h != null) //בודק האם כבר רץ
                 return;
@@ -149,7 +154,7 @@
             if (inPooling == false || (Date.now() - lastPooling) > 30000) {
                 inPooling = true;
                 lastPooling = Date.now();
-                ajaxCall("GET", api + 7, "", successGetDataCBF, errorGetDataCBF);
+                ajaxCall("GET", api + "/dep/" + 3 + "/med/" + 1 + "/month/" + 4 + "/year/" + 2023, "", successGetDataCBF, errorGetDataCBF);
             }
             /*    return false;*/
         }
@@ -157,31 +162,169 @@
         function successGetDataCBF(data) {
             console.log(data);
 
-            renderBoxs(data);
+            renderBoxs(data.boxs);
+            renderUpdates(data.updates);
+            renderLineChart(data.lineChart)
+            renderBarChart(data.barChart)
+            renderPieChart(data.pieChart)
+            inPooling = false;
         }
 
         function renderBoxs(data) { ///לבדוק חילוק באפס + שווה
             str = `<h6>${data.currentPO}</h6>`;
             if (data.currentPO >= data.prevPO)
-                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt((data.currentPO / data.prevPO) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
+                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${/*parseInt((data.currentPO / data.prevPO) * 100)*/10}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
             else
-                str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt((data.currentPO / data.prevPO) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
+                str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${/*parseInt((data.currentPO / data.prevPO) * 100)*/ 10}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
             document.getElementById("PO").innerHTML = str;
 
             str = `<h6>${data.currentMR}</h6>`;
             if (data.currentMR >= data.prevMR)
-                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt((data.currentMR / data.prevMR) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
+                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${/*parseInt((data.currentMR / data.prevMR) * 100)*/10}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
             else
-                str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt((data.currentMR / data.prevMR) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
+                str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${/*parseInt((data.currentMR / data.prevMR) * 100)*/10}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
             document.getElementById("MR").innerHTML = str;
 
             str = `<h6>${data.currentMRD}</h6>`;
             if (data.currentMRD >= data.prevMRD)
-                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt((data.currentMRD / data.prevMRD) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
+                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${/*parseInt((data.currentMRD / data.prevMRD) * 100)*/10}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
             else
-                str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt((data.currentMRD / data.prevMRD) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
+                str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${/*parseInt((data.currentMRD / data.prevMRD) * 100)*/10}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
             document.getElementById("MRD").innerHTML = str;
-            inPooling = false;
+        }
+
+        function renderUpdates(data) {
+            if (data != null) {
+                $("#updates_error").hide();
+                str = "";
+
+                for (var i = 0; i < data.length; i++) {
+                    str += `<div class="activity-item d-flex">`;
+                    str += `<div class="activite-label">${data[i].date}</div>`;
+
+                    if (data[i].type == 1) {
+                        str += `<i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i><div class="activity-content">`;
+                        str += `<a href="Manager-Messages.html" class="fw-bold text-dark">${data[i].title}</a><br />`;
+                    }
+                    else if (data[i].type == 2) {
+                        str += `<i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i><div class="activity-content">`;
+                        str += `<a href="Manager-NormRequests.html" class="fw-bold text-dark">${data[i].title}</a><br />`;
+                    }
+                    else {
+                        str += `<i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i><div class="activity-content">`;
+                        str += `<a href="Manager-DepsInventory.html" class="fw-bold text-dark">${data[i].title}</a><br />`;
+                    }
+                    str += `<span>${data[i].text}</span></div></div>`;
+                }
+                document.getElementById("updates").innerHTML = str;
+            }
+            else
+                $("#updates_error").show();
+        }
+
+        function renderLineChart(data) {
+            new ApexCharts(document.querySelector("#reportsChart"), {
+                series: data,
+                chart: {
+                    height: 350,
+                    type: 'area',
+                    toolbar: {
+                        show: false
+                    },
+                },
+                markers: {
+                    size: 4
+                },
+                colors: ['#4154f1', '#2eca6a'],
+                fill: {
+                    type: "gradient",
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.3,
+                        opacityTo: 0.4,
+                        stops: [0, 90, 100]
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 2
+                },
+                xaxis: {
+                    type: 'string',
+                    categories: months
+                }
+            }).render();
+        }
+
+        function renderBarChart(data) {
+            new ApexCharts(document.querySelector("#barChart"), {
+                annotations: {
+                    position: 'back'
+                },
+                locale: 'he',
+                series: [{
+                    data: data
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        horizontal: true,
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                xaxis: {
+                    labels: {
+                        align: 'left',
+                        //formatter: function (value) {
+                        //    return value +  "תרופות";
+                        //}
+                    },
+                    categories: ['הזמנות משיכה שסופקו', 'הזמנות משיכה שלא סופקו', 'הזמנות דחיפה שסופקו', 'הזמנות דחיפה שלא סופקו',
+                        'העברות שבוצעו', 'שימוש בפועל']
+                }
+            }).render();
+        }
+
+        function renderPieChart(data) {
+            echarts.init(document.querySelector("#pieChart")).setOption({
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    top: '5%',
+                    left: 'center'
+                },
+                series: [{
+                    name: 'Access From',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '18',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: data
+                }]
+            });
         }
 
         function errorGetDataCBF(err) {
@@ -199,7 +342,7 @@
     </script>
 
     <!--line chart-->
-    <script>
+    <!--<script>
         document.addEventListener("DOMContentLoaded", () => {
             new ApexCharts(document.querySelector("#reportsChart"), {
                 series: [{
@@ -238,7 +381,7 @@
                 },
                 xaxis: {
                     type: 'string',
-                    categories: ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"]
+                    categories: months
                     //type: 'datetime',
                     //categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
                 },
@@ -249,10 +392,9 @@
                 //}
             }).render();
         });
-    </script>
-
+    </script>-->
     <!--bar chart-->
-    <script>
+    <!--<script>
         document.addEventListener("DOMContentLoaded", () => {
             new ApexCharts(document.querySelector("#barChart"), {
                 series: [{
@@ -280,7 +422,62 @@
                 }
             }).render();
         });
-    </script>
+    </script>-->
+    <!--pie chart-->
+    <!--<script>
+        document.addEventListener("DOMContentLoaded", () => {
+            echarts.init(document.querySelector("#pieChart")).setOption({
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    top: '5%',
+                    left: 'center'
+                },
+                series: [{
+                    name: 'Access From',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '18',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: [{
+                        value: 1048,
+                        name: 'Search Engine'
+                    },
+                    {
+                        value: 735,
+                        name: 'Direct'
+                    },
+                    {
+                        value: 580,
+                        name: 'Email'
+                    },
+                    {
+                        value: 484,
+                        name: 'Union Ads'
+                    },
+                    {
+                        value: 300,
+                        name: 'Video Ads'
+                    }
+                    ]
+                }]
+            });
+        });
+    </script>-->
 
 </head>
 
@@ -620,11 +817,12 @@
                     <!-- Recent Activity -->
                     <div class="card">
                         <div class="card-body" style="padding-bottom: 32px">
-                            <h5 class="card-title">הודעות ועדכונים</h5>
+                            <h5 class="card-title">הודעות ועדכונים <span>| השבוע</span></h5>
 
                             <div class="activity">
-
-                                <div class="activity-item d-flex">
+                                <div id="updates_error" hidden><span>משהו השתבש</span></div>
+                                <div id="updates"></div>
+                                <!--<div class="activity-item d-flex">
                                     <div class="activite-label">2 min</div>
                                     <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
                                     <div class="activity-content">
@@ -632,9 +830,9 @@
                                         <br />
                                         <span>עבור מחלקה 4 מאת מיטב מקבריט</span>
                                     </div>
-                                </div> <!--End activity item-->
-
-                                <div class="activity-item d-flex">
+                                </div>-->
+                                <!--End activity item-->
+                                <!--<div class="activity-item d-flex">
                                     <div class="activite-label">36 min</div>
                                     <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
                                     <div class="activity-content">
@@ -642,9 +840,9 @@
                                         <br />
                                         <span>מחלקה 3</span>
                                     </div>
-                                </div><!-- End activity item-->
-
-                                <div class="activity-item d-flex">
+                                </div>-->
+                                <!-- End activity item-->
+                                <!--<div class="activity-item d-flex">
                                     <div class="activite-label">53 min</div>
                                     <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
                                     <div class="activity-content">
@@ -652,9 +850,9 @@
                                         <br />
                                         <span>מחלקה 4 העבירה Acamol 20mg למחלקה 3</span>
                                     </div>
-                                </div><!-- End activity item-->
-
-                                <div class="activity-item d-flex">
+                                </div>-->
+                                <!-- End activity item-->
+                                <!--<div class="activity-item d-flex">
                                     <div class="activite-label">56 min</div>
                                     <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
                                     <div class="activity-content">
@@ -662,9 +860,9 @@
                                         <br />
                                         <span>מאת לין בן מאיר</span>
                                     </div>
-                                </div><!-- End activity item-->
-
-                                <div class="activity-item d-flex">
+                                </div>-->
+                                <!-- End activity item-->
+                                <!--<div class="activity-item d-flex">
                                     <div class="activite-label">1 hr</div>
                                     <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
                                     <div class="activity-content">
@@ -672,9 +870,9 @@
                                         <br />
                                         <span>עבור מחלקה 3 מאת ליטל יהודה</span>
                                     </div>
-                                </div><!-- End activity item-->
-
-                                <div class="activity-item d-flex">
+                                </div>-->
+                                <!-- End activity item-->
+                                <!--<div class="activity-item d-flex">
                                     <div class="activite-label">2 hrs</div>
                                     <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
                                     <div class="activity-content">
@@ -682,9 +880,9 @@
                                         <br />
                                         <span>מאת בן מכלוף</span>
                                     </div>
-                                </div><!-- End activity item-->
-
-                                <div class="activity-item d-flex">
+                                </div>-->
+                                <!-- End activity item-->
+                                <!--<div class="activity-item d-flex">
                                     <div class="activite-label">2 hrs</div>
                                     <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
                                     <div class="activity-content">
@@ -692,9 +890,9 @@
                                         <br />
                                         <span>מחלקה 4</span>
                                     </div>
-                                </div><!-- End activity item-->
-
-                                <div class="activity-item d-flex">
+                                </div>-->
+                                <!-- End activity item-->
+                                <!--<div class="activity-item d-flex">
                                     <div class="activite-label">4 hrs</div>
                                     <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
                                     <div class="activity-content">
@@ -702,8 +900,9 @@
                                         <br />
                                         <span>מחלקה 4 העבירה Acamol 20mg למחלקה 5</span>
                                     </div>
-                                </div><!-- End activity item-->
-                                <div class="activity-item d-flex">
+                                </div>-->
+                                <!-- End activity item-->
+                                <!--<div class="activity-item d-flex">
                                     <div class="activite-label">1 week</div>
                                     <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
                                     <div class="activity-content">
@@ -711,14 +910,15 @@
                                         <br />
                                         <span>מחלקה 4 העבירה Acamol 100mg למחלקה 3</span>
                                     </div>
-                                </div><!-- End activity item-->
+                                </div>-->
+                                <!-- End activity item-->
 
                             </div>
                         </div>
                     </div><!-- End Recent Activity -->
-                    <!-- Website Traffic -->
+                    <!-- TOP 5 Usages Per Med -->
                     <div class="card">
-                        <div class="filter">
+                        <!--<div class="filter">
                             <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                                 <li class="dropdown-header text-start">
@@ -729,67 +929,12 @@
                                 <li><a class="dropdown-item" href="#">This Month</a></li>
                                 <li><a class="dropdown-item" href="#">This Year</a></li>
                             </ul>
-                        </div>
+                        </div>-->
 
                         <div class="card-body pb-0">
-                            <h5 class="card-title">Website Traffic <span>| Today</span></h5>
+                            <h5 class="card-title">5 הצרכניות הגדולות פר תרופה <span>| 05/23</span></h5>
 
-                            <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
-
-                            <script>
-                                document.addEventListener("DOMContentLoaded", () => {
-                                    echarts.init(document.querySelector("#trafficChart")).setOption({
-                                        tooltip: {
-                                            trigger: 'item'
-                                        },
-                                        legend: {
-                                            top: '5%',
-                                            left: 'center'
-                                        },
-                                        series: [{
-                                            name: 'Access From',
-                                            type: 'pie',
-                                            radius: ['40%', '70%'],
-                                            avoidLabelOverlap: false,
-                                            label: {
-                                                show: false,
-                                                position: 'center'
-                                            },
-                                            emphasis: {
-                                                label: {
-                                                    show: true,
-                                                    fontSize: '18',
-                                                    fontWeight: 'bold'
-                                                }
-                                            },
-                                            labelLine: {
-                                                show: false
-                                            },
-                                            data: [{
-                                                value: 1048,
-                                                name: 'Search Engine'
-                                            },
-                                            {
-                                                value: 735,
-                                                name: 'Direct'
-                                            },
-                                            {
-                                                value: 580,
-                                                name: 'Email'
-                                            },
-                                            {
-                                                value: 484,
-                                                name: 'Union Ads'
-                                            },
-                                            {
-                                                value: 300,
-                                                name: 'Video Ads'
-                                            }
-                                            ]
-                                        }]
-                                    });
-                                });
-                            </script>
+                            <div id="pieChart" style="min-height: 400px;" class="echart"></div>
 
                         </div>
                     </div><!-- End Website Traffic -->

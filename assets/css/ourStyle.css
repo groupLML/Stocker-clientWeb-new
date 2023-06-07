@@ -361,3 +361,12 @@ tbody, td, tfoot, th, thead, tr {
     position: absolute;
     left: 20px;
 }
+
+tspan {
+    direction: ltr
+}
+
+/*.apexcharts-toolbar {
+    top: 0px; 
+    left: 3px;
+}*/
