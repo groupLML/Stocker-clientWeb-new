@@ -36,6 +36,7 @@
     <script src="../assets/js/custom-dropdown-input.js"></script>
     <script src="../assets/js/custom-dropdown-input-meds.js"></script>
     <script src="../assets/js/global-functions.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <!-- datatables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -106,6 +107,7 @@
 
         function GetMedsECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function GetDepartments() {
@@ -118,7 +120,7 @@
 
             for (var i = 0; i < data.length; i++) {
                 deps.push({ depId: data[i]['depId'], depName: data[i]['depName'] }); // Save department ID and name in the array
-                if (!depNames.includes(data[i]['depName']) && data[i]['depType'] != "מערכות מידע" && data[i]['depType'] != "בית מרקחת")
+                if (!depNames.includes(data[i]['depName']) && data[i]['depType'] != "מערכות מידע" && data[i]['depType'] != "בית מרקחת" && data[i]['depName'] != "")
                     depNames.push(data[i]['depName']);
             }
             renderOptions(depNames);
@@ -126,6 +128,7 @@
 
         function GetDepsECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function GetDepNorm() {
@@ -151,6 +154,7 @@
 
         function GetNormECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function DataTableRender(normData) {
@@ -381,6 +385,7 @@
 
         function GetMedPredQtyECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function checkTableRendered() {
@@ -427,12 +432,13 @@
         }
 
         function PutNormSCB() {
-            $('#verticalycentered').modal('show');
+            sweetalert("העדכון בוצע בהצלחה", "", false, false, "");
             renderUpdateButton(false);
         }
 
         function PutNormECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
     </script>
@@ -460,13 +466,6 @@
 
         <nav class="profil-nav header-nav ms-auto">
             <ul class="d-flex align-items-center">
-
-                <li class="nav-item d-block d-lg-none">
-                    <a class="nav-link nav-icon search-bar-toggle " href="#">
-                        <i class="bi bi-search"></i>
-                    </a>
-                </li><!-- End Search Icon-->
-
                 <li class="nav-item dropdown">
                     <a class="nav-link nav-icon" href="Manager-messages.html">
                         <i class="bi bi-bell"></i>
@@ -608,22 +607,6 @@
                 </div>
                 <!-- End Table with stripped rows -->
                 <div id="button_ph" class="d-flex justify-content-center"></div>
-                <!-- Vertically centered Modal -->
-                <div class="modal fade" id="verticalycentered" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div>עדכון התקן בוצע בהצלחה</div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">סגור</button>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- End Vertically centered Modal-->
             </div>
         </div>
     </main><!-- End #main -->

@@ -33,6 +33,7 @@
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script src="../assets/js/global-functions.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <!-- datatable -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -85,12 +86,14 @@
                 });
             }
             catch (err) {
-                alert(err);
+                console.log(err);
+                sweetalert("שגיאה בשרת", "", true, false, "");
             }
         }
 
         function errorGetDepsCBF(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
     </script>
@@ -111,13 +114,6 @@
 
         <nav class="profil-nav header-nav ms-auto">
             <ul class="d-flex align-items-center">
-
-                <li class="nav-item d-block d-lg-none">
-                    <a class="nav-link nav-icon search-bar-toggle " href="#">
-                        <i class="bi bi-search"></i>
-                    </a>
-                </li><!-- End Search Icon-->
-
                 <li class="nav-item dropdown pe-3">
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown" id="user_ph2">
                         <span class="d-none d-md-block dropdown-toggle ps-2"></span>

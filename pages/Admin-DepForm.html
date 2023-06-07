@@ -107,6 +107,7 @@
 
         function errorGetDepsCBF(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
 
@@ -150,6 +151,7 @@
 
         function errorPostDCBF(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
 
@@ -189,6 +191,7 @@
 
         function errorPutDCBF(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
     </script>
@@ -209,13 +212,6 @@
 
         <nav class="profil-nav header-nav ms-auto">
             <ul class="d-flex align-items-center">
-
-                <li class="nav-item d-block d-lg-none">
-                    <a class="nav-link nav-icon search-bar-toggle " href="#">
-                        <i class="bi bi-search"></i>
-                    </a>
-                </li><!-- End Search Icon-->
-
                 <li class="nav-item dropdown pe-3">
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown" id="user_ph2">
                         <span class="d-none d-md-block dropdown-toggle ps-2"></span>
@@ -311,7 +307,7 @@
                                     <label class="col-form-label">סוג המחלקה <i class="bi bi-asterisk"></i></label>
                                     <div class="custom-dropdown input-group has-validation">
                                         <input type="text" id="input" class="form-control" autocomplete="off" required>
-                                        <ul class="dropdown-options" id="dropdown-options"></ul>
+                                        <ul class="dropdown-options depTypesDD" id="dropdown-options"></ul>
                                         <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
                                     </div>
                                 </div>

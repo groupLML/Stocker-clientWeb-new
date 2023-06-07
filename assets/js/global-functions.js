@@ -6,11 +6,9 @@
     document.getElementById("user_ph2").innerHTML += str;
 }
 
-
 function clearStorage() {
     sessionStorage.clear();
 }
-
 
 function reload() {
     var item = sessionStorage.getItem('Id');
@@ -31,23 +29,24 @@ function areArraysIdentical(arr1, arr2) {
             return false; // Arrays have different values at index i, not identical
         }
     }
-
     return true; // Arrays are identical
 }
 
-
 function sweetalert(title, text, bool, isGoToPage, page) {
-    swal({ // this will open a dialouge
+    swal({
         title: title,
         text: text,
         buttons: true,
-        dangerMode: bool
+        dangerMode: bool,
+        closeOnClickOutside: false
     })
         .then(function (willDelete) {
-            if (willDelete)
-                if (isGoToPage)
+            if (willDelete) {
+                if (isGoToPage) {
                     window.location.href = page;
-                else
+                } else {
                     return false;
+                }
+            }
         });
 }

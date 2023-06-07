@@ -33,6 +33,7 @@
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script src="../assets/js/global-functions.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <!-- datatables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -92,6 +93,7 @@
 
         function getPOECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function DataTableRender(ordersData) {
@@ -134,6 +136,7 @@
 
             catch (err) {
                 console.log(err);
+                sweetalert("שגיאה בשרת", "", true, false, "");
             }
         }
 
@@ -163,13 +166,6 @@
 
         <nav class="profil-nav header-nav ms-auto">
             <ul class="d-flex align-items-center">
-
-                <li class="nav-item d-block d-lg-none">
-                    <a class="nav-link nav-icon search-bar-toggle " href="#">
-                        <i class="bi bi-search"></i>
-                    </a>
-                </li><!-- End Search Icon-->
-
                 <li class="nav-item dropdown">
                     <a class="nav-link nav-icon" href="Manager-Messages.html">
                         <i class="bi bi-bell"></i>

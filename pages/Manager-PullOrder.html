@@ -33,6 +33,7 @@
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script src="../assets/js/global-functions.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <!-- datatables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -139,7 +140,7 @@
                 str += `<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div >`;
                 str += `<div class="modal-body">`;
                 str += `<div><h6>האם אתה אחראי להנפקת ההזמנה?</h6></div>`;
-                str += `<div class="d-flex justify-content-center">`;
+                str += `<div class="ModalButtons d-flex justify-content-center">`;
                 str += `<button type="button" class="btn btn-success" id="takeOrderBTN" onclick="StatusUpdate()">טיפול בהזמנה</button>`;
                 str += `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">סגור</button></div></div>`;
             }
@@ -149,7 +150,7 @@
                 str += `<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div >`;
                 str += `<div class="modal-body">`;
                 str += `<div><h6>האם ההזמנה הונפקה?</h6></div>`;
-                str += `<div class="d-flex justify-content-center">`;
+                str += `<div class="ModalButtons d-flex justify-content-center">`;
                 str += `<button type="button" class="btn btn-success" id="takeOrderBTN" onclick="StatusUpdate()">אישור הנפקה</button>`;
                 str += `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">סגור</button></div></div>`;
             }
@@ -185,6 +186,7 @@
 
         function getOrderDetailsECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function DataTableRender(medsData) {
@@ -247,6 +249,7 @@
             }
             catch (err) {
                 console.log(err);
+                sweetalert("שגיאה בשרת", "", true, false, "");
             }
         }
 
@@ -287,6 +290,7 @@
 
         function updateStatusECB(err) {
             console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         //function updateMedsListFromDataTable() {// Update medsList with new supQty values from tbl inputs
@@ -341,13 +345,6 @@
 
         <nav class="profil-nav header-nav ms-auto">
             <ul class="d-flex align-items-center">
-
-                <li class="nav-item d-block d-lg-none">
-                    <a class="nav-link nav-icon search-bar-toggle " href="#">
-                        <i class="bi bi-search"></i>
-                    </a>
-                </li><!-- End Search Icon-->
-
                 <li class="nav-item dropdown">
 
                     <a class="nav-link nav-icon" href="Manager-Messages.html">
