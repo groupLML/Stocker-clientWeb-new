@@ -150,8 +150,8 @@ img {
     border-radius: 0.375rem;
 }
 
-div .not-preceded-by-td{
-    width:100%
+div .not-preceded-by-td {
+    width: 100%
 }
 
 .not-preceded-by-td #deps-dropdown-options,
@@ -184,25 +184,28 @@ div .not-preceded-by-td{
         }
 
 /*drop-down scroll bar*/
+
 .not-preceded-by-td > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
     border-radius: 5px;
 }
 
 .not-preceded-by-td > ul {
     overflow: auto; /* Display scrollbars when necessary */
+
     overflow-y: scroll; /* Show vertical scrollbar */
+
     max-height: 300px;
 }
-
 
     .not-preceded-by-td > ul::-webkit-scrollbar {
         width: 8px; /* Width of the scrollbar */
     }
 
-.not-preceded-by-td > ul::-webkit-scrollbar-thumb {
-    background-color: #59acff; /* Color of the scrollbar thumb */
-    border-radius: 5px; /* Rounded corners for the thumb */
-}
+    .not-preceded-by-td > ul::-webkit-scrollbar-thumb {
+        background-color: #59acff; /* Color of the scrollbar thumb */
+
+        border-radius: 5px; /* Rounded corners for the thumb */
+    }
 
     .not-preceded-by-td > ul.depTypesDD {
         scrollbar-width: none; /* Remove scrollbar */
@@ -212,7 +215,9 @@ div .not-preceded-by-td{
             display: none; /* Remove scrollbar for WebKit browsers */
         }
 
+
 /*drop-down inside a table*/
+
 td #meds-dropdown-options {
     display: none;
     background-color: #fff;
@@ -223,6 +228,7 @@ td #meds-dropdown-options {
     width: 100%;
     border-radius: 5px;
 }
+
 
     td #meds-dropdown-options li {
         padding: 5px;
