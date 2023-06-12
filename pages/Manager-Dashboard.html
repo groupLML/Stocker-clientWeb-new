@@ -239,7 +239,7 @@
             strDate = `${pickedMonth}/${pickedYear.substring(2)}`;
 
             str = `<h5 class="card-title" style="padding: 10px">הזמנות משיכה<span>| ${strDate}</span></h5>`;
-            document.getElementById("titlePO").innerHTML = str; 
+            document.getElementById("titlePO").innerHTML = str;
 
             str = `<h5 class="card-title" style="padding: 10px" > העברות שבוצעו <span>| ${strDate}</span ></h5>`;
             document.getElementById("titleMR").innerHTML = str;
@@ -255,7 +255,7 @@
 
             str = `<h5 class="card-title">5 הצרכניות הגדולות <span>| ${strDate}</span></h5>`;
             document.getElementById("titlePie").innerHTML = str;
-            
+
         }
 
         function renderBoxs(data) {
@@ -728,7 +728,7 @@
                             <div class="card" style="margin-bottom: 22px">
                                 <div class="card-body" style="padding: 15px">
                                     <!--<div class="d-flex align-items-center">-->
-                                    <form id="Filters">
+                                    <!--<form id="Filters">
                                         <div class="row">
                                             <div class="col">
                                                 <div class="input-group has-validation">
@@ -762,6 +762,49 @@
                                                 <button type="submit" class="btn btn-primary">הצג</button>
                                             </div>
                                         </div>
+                                    </form>-->
+                                    <form id="Filters">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="input-group has-validation">
+                                                    <div class="not-preceded-by-td">
+                                                        <input type="text" id="depInput" class="form-control" autocomplete="off" placeholder="שם מחלקה" required style="width: 120px;">
+                                                        <ul class="dropdown-options" id="deps-dropdown-options"></ul>
+                                                        <div class="invalid-feedback">אנא בחר את מחלקה מתוך הרשימה</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="input-group has-validation">
+                                                    <div class="not-preceded-by-td">
+                                                        <input type="text" id="medInput" class="form-control" autocomplete="off" placeholder="שם תרופה" required style="width: 280px;">
+                                                        <ul class="dropdown-options" id="meds-dropdown-options"></ul>
+                                                        <div class="invalid-feedback">אנא בחר את תרופה מתוך הרשימה</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="input-group has-validation">
+                                                    <div class="not-preceded-by-td">
+                                                        <input type="text" id="monthInput" class="form-control" autocomplete="off" placeholder="חודש" required>
+                                                        <ul class="dropdown-options" id="months-dropdown-options"></ul>
+                                                        <div class="invalid-feedback">אנא בחר חודש רצוי</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="input-group has-validation">
+                                                    <div class="not-preceded-by-td">
+                                                        <input type="text" id="yearInput" class="form-control" autocomplete="off" placeholder="שנה" required>
+                                                        <ul class="dropdown-options" id="years-dropdown-options"></ul>
+                                                        <div class="invalid-feedback">אנא בחר שנה רצויה</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <button type="submit" class="btn btn-primary">הצג</button>
+                                            </div>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
@@ -786,18 +829,18 @@
                                 <div class="card-body" style="padding: 10px">
                                     <div id="titlePO"></div>
 
-                                        <div class="d-flex align-items-center">
-                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                                <i class="bi bi-cart"></i>
-                                            </div>
-                                            <div class="ps-3" id="PO">
-                                                <h6>15</h6>
-                                                <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">עלייה</span>
-                                            </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-cart"></i>
+                                        </div>
+                                        <div class="ps-3" id="PO">
+                                            <h6>15</h6>
+                                            <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">עלייה</span>
                                         </div>
                                     </div>
-
                                 </div>
+
+                            </div>
                         </div><!-- End Orders Card -->
                         <!-- Tranport Card -->
                         <div class="col-xxl-4 col-md-4">
@@ -875,7 +918,7 @@
                             <div class="card" style="margin-bottom: 22px">
 
                                 <div class="card-body" style="padding-bottom: 10px">
-                                    <div id="titleLine"></div>   
+                                    <div id="titleLine"></div>
                                     <div id="lineChart"></div>
                                 </div>  <!-- End Line Chart -->
                             </div>
