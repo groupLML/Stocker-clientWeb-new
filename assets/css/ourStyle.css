@@ -419,3 +419,7 @@ tspan {
 .ModalButtons > .btn {
     margin: 10px;
 }
+
+#Filters .row > div {
+    padding: 2px;
+}
