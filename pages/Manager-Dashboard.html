@@ -261,41 +261,41 @@
         function renderBoxs(data) {
             str = `<h6>${data.currentPO}</h6>`;
             if (data.currentPO > data.prevPO && data.prevPO != 0)
-                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentPO - data.prevPO) / data.prevPO) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה מחודש קודם</span>`;
+                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentPO - data.prevPO) / data.prevPO) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
             else
                 if (data.currentPO > data.prevPO && data.prevPO == 0)
-                    str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt((data.currentPO - data.prevPO) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה מחודש קודם</span>`;
+                    str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt((data.currentPO - data.prevPO) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
                 else
                     if (data.currentPO == data.prevPO)
                         str += `<span class="small pt-1 fw-bold" style="flex-direction: row-reverse; color: #918d8d;">${0}<span class="percentage-symbol" style="color: #918d8d">% </span></span> <span class="text-muted small pt-2 ps-1">ללא שינוי</span>`;
                     else
-                        str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentPO - data.prevPO) / data.prevPO) * (-100))}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה מחודש קודם</span>`;
+                        str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentPO - data.prevPO) / data.prevPO) * (-100))}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
             document.getElementById("PO").innerHTML = str;
 
             str = `<h6>${data.currentMR}</h6>`;
             if (data.currentMR > data.prevMR && data.prevMR != 0)
-                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentMR - data.prevMR) / data.prevMR) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה מחודש קודם</span>`;
+                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentMR - data.prevMR) / data.prevMR) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
             else
                 if (data.currentMR > data.prevMR && data.prevMR == 0)
-                    str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt((data.currentMR - data.prevMR) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה מחודש קודם</span>`;
+                    str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt((data.currentMR - data.prevMR) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
                 else
                     if (data.currentMR == data.prevMR)
                         str += `<span class="small pt-1 fw-bold" style="flex-direction: row-reverse; color: #918d8d;">${0}<span class="percentage-symbol" style="color: #918d8d">% </span></span> <span class="text-muted small pt-2 ps-1">ללא שינוי</span>`;
                     else
-                        str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentMR - data.prevMR) / data.prevMR) * (-100))}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה מחודש קודם</span>`;
+                        str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentMR - data.prevMR) / data.prevMR) * (-100))}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
             document.getElementById("MR").innerHTML = str;
 
             str = `<h6>${data.currentMRD}</h6>`;
             if (data.currentMRD > data.prevMRD && data.prevMRD != 0)
-                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentMRD - data.prevMRD) / data.prevMRD) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה מחודש קודם</span>`;
+                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentMRD - data.prevMRD) / data.prevMRD) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
             else
                 if (data.currentMRD > data.prevMRD && data.prevMRD == 0)
-                    str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt((data.currentMRD - data.prevMRD) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה מחודש קודם</span>`;
+                    str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt((data.currentMRD - data.prevMRD) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
                 else
                     if (data.currentMRD == data.prevMRD)
                         str += `<span class="small pt-1 fw-bold" style="flex-direction: row-reverse; color: #918d8d;">${0}<span class="percentage-symbol" style="color: #918d8d">% </span></span> <span class="text-muted small pt-2 ps-1">ללא שינוי</span>`;
                     else
-                        str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentMRD - data.prevMRD) / data.prevMRD) * (-100))}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה מחודש קודם</span>`;
+                        str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentMRD - data.prevMRD) / data.prevMRD) * (-100))}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
             document.getElementById("MRD").innerHTML = str;
         }
 
