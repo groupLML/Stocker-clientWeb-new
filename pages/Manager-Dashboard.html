@@ -39,6 +39,7 @@
     <script src="../assets/js/dashboard-input-months.js"></script>
     <script src="../assets/js/dashboard-input-years.js"></script>
     <script src="../assets/vendor/apexcharts/apexcharts.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <!-- datatables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
@@ -169,7 +170,6 @@
                 });
 
                 monthName = $("#monthInput").val();
-                /*                month = $("#months-dropdown-options li").attr("id");*/
                 for (var i = 0; i < months.length; i++) {
                     if (monthName == months[i])
                         month = i + 1;
@@ -207,6 +207,17 @@
 
                 console.log("/dep/" + dep.depId + "/med/" + med.medId + "/month/" + month + "/year/" + year)
 
+                var dateCheck = new Date();
+                var monthCheck = dateCheck.getMonth() + 1;
+                var yearCheck = date.getFullYear().toString();
+
+                if (year == yearCheck && month > monthCheck) { /*When the user entered a future date*/
+                    sweetalert("", "לא ניתן לבחור תאריך עתידי", true, false, "");
+                    month = monthCheck;
+                    $("#monthInput").val(months[month - 1]);
+                    pickedMonth = month;
+                }
+
                 ajaxCall("GET", api + "/dep/" + dep.depId + "/med/" + med.medId + "/month/" + month + "/year/" + year, "", successGetDataCBF, errorGetDataCBF);
             }
             return false;
@@ -215,12 +226,36 @@
         function successGetDataCBF(data) {
             console.log(data);
 
+            renderTitles();
             renderBoxs(data.boxs);
             renderUpdates(data.updates);
             renderLineChart(data.lineChart)
             renderBarChart(data.barChart)
             renderPieChart(data.pieChart)
             inPooling = false;
+        }
+
+        function renderTitles() {
+            strDate = `${pickedMonth}/${pickedYear.substring(2)}`;
+
+            str = `<h5 class="card-title" style="padding: 10px">הזמנות משיכה<span>| ${strDate}</span></h5>`;
+            document.getElementById("titlePO").innerHTML = str; 
+
+            str = `<h5 class="card-title" style="padding: 10px" > העברות שבוצעו <span>| ${strDate}</span ></h5>`;
+            document.getElementById("titleMR").innerHTML = str;
+
+            str = `<h5 class="card-title" style="padding: 10px">בקשות שלא מומשו <span>| ${strDate}</span></h5>`;
+            document.getElementById("titleMRD").innerHTML = str;
+
+            str = `<h5 class="card-title" style="padding-top: 10px">צריכה מול הנפקה<span> | ${pickedYear}</span></h5>`;
+            document.getElementById("titleLine").innerHTML = str;
+
+            str = `<h5 class="card-title" style="padding-top: 10px">נתוני צריכה <span> | ${strDate}</span></h5>`;
+            document.getElementById("titleBar").innerHTML = str;
+
+            str = `<h5 class="card-title">5 הצרכניות הגדולות <span>| ${strDate}</span></h5>`;
+            document.getElementById("titlePie").innerHTML = str;
+            
         }
 
         function renderBoxs(data) {
@@ -336,10 +371,10 @@
 
             document.getElementById("barChart").innerHTML = "";
             new ApexCharts(document.querySelector("#barChart"), {
-                //annotations: {
-                //    position: 'back'
-                //},
-                //locale: 'he',
+                annotations: {
+                    position: 'back'
+                },
+                locale: 'he',
                 series: [{
                     data: data
                 }],
@@ -749,20 +784,20 @@
                                 </div>-->
 
                                 <div class="card-body" style="padding: 10px">
-                                    <h5 class="card-title" style="padding: 10px">הזמנות משיכה<span>| 05/23</span></h5>
+                                    <div id="titlePO"></div>
 
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-cart"></i>
-                                        </div>
-                                        <div class="ps-3" id="PO">
-                                            <h6>15</h6>
-                                            <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">עלייה</span>
+                                        <div class="d-flex align-items-center">
+                                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-cart"></i>
+                                            </div>
+                                            <div class="ps-3" id="PO">
+                                                <h6>15</h6>
+                                                <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">עלייה</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                            </div>
+                                </div>
                         </div><!-- End Orders Card -->
                         <!-- Tranport Card -->
                         <div class="col-xxl-4 col-md-4">
@@ -782,7 +817,7 @@
                                 </div>-->
 
                                 <div class="card-body" style="padding: 10px">
-                                    <h5 class="card-title" style="padding: 10px">העברות שבוצעו <span>| 05/23</span></h5>
+                                    <div id="titleMR"></div>
 
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -817,7 +852,7 @@
                                 </div>-->
 
                                 <div class="card-body" style="padding: 10px">
-                                    <h5 class="card-title" style="padding: 10px">בקשות שלא מומשו <span>| 05/23</span></h5>
+                                    <div id="titleMRD"></div>
 
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -840,10 +875,8 @@
                             <div class="card" style="margin-bottom: 22px">
 
                                 <div class="card-body" style="padding-bottom: 10px">
-                                    <h5 class="card-title" style="padding-top: 10px">צריכה מול הנפקה<span> | 2023</span></h5>
-
+                                    <div id="titleLine"></div>   
                                     <div id="lineChart"></div>
-
                                 </div>  <!-- End Line Chart -->
                             </div>
 
@@ -851,10 +884,8 @@
                             <div class="card" style="margin-bottom: 22px">
 
                                 <div class="card-body">
-                                    <h5 class="card-title" style="padding-top: 10px">נתוני צריכה <span> | 2023</span></h5>
-
+                                    <div id="titleBar"></div>
                                     <div id="barChart"></div>
-
                                 </div> <!--End Bar Chart-->
                             </div>
 
@@ -981,12 +1012,12 @@
                         </div>-->
 
                         <div class="card-body pb-0">
-                            <h5 class="card-title">5 הצרכניות הגדולות <span>| 05/23</span></h5>
+                            <div id="titlePie"></div>
 
                             <div id="pieChart" style="min-height: 400px;" class="echart"></div>
 
                         </div>
-                    </div><!-- End Website Traffic -->
+                    </div><!-- End Top5 -->
 
                 </div><!-- End Right side columns -->
             </div>

@@ -36,7 +36,13 @@ function sweetalert(title, text, bool, isGoToPage, page) {
     swal({
         title: title,
         text: text,
-        buttons: true,
+        buttons: {
+            confirm: {
+                text: "OK",
+                value: true,
+                visible: true
+            }
+        },
         dangerMode: bool,
         closeOnClickOutside: false
     })
@@ -50,3 +56,26 @@ function sweetalert(title, text, bool, isGoToPage, page) {
             }
         });
 }
+
+
+//function sweetalert(title, text, bool, isGoToPage, page) {
+//    swal({
+//        title: title,
+//        text: text,
+//        buttons: {
+//            confirm: {
+//                text: "OK",
+//                value: true,
+//                visible: true
+//            }
+//        },
+//        dangerMode: bool,
+//        closeOnClickOutside: false
+//    })
+//        .then(() => {
+//            if (isGoToPage) 
+//                window.location.href = page;
+//            else 
+//                return false;
+//        });
+//}
