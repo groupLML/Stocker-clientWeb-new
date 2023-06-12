@@ -322,7 +322,6 @@
             </ul>
         </nav><!-- End Icons Navigation -->
     </header><!-- End Header -->
-  
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
@@ -352,7 +351,7 @@
                 </a>
                 <ul id="users-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="Admin-Users.html" onclick="reload()" >
+                        <a href="Admin-Users.html" onclick="reload()">
                             <i class="bi bi-circle"></i><span>צפייה במשתמשים</span>
                         </a>
                     </li>
@@ -366,7 +365,6 @@
 
         </ul><!-- End Nav -->
     </aside><!-- End Sidebar-->
-    
     <!-- ======= Main ======= -->
     <main id="main" class="main">
         <div id="title_ph" class="pagetitle"></div>
@@ -410,9 +408,11 @@
                             <div class="col-md-6">
                                 <label for="input" class="form-label">שם המחלקה <i class="bi bi-asterisk"></i></label>
                                 <div class="custom-dropdown input-group has-validation">
-                                    <input type="text" id="input" class="form-control" autocomplete="off" required>
-                                    <ul class="dropdown-options" id="dropdown-options"></ul>
-                                    <div class="invalid-feedback">אנא בחר את שם המחלקה מתוך הרשימה</div>
+                                    <div class="not-preceded-by-td">
+                                        <input type="text" id="input" class="form-control" autocomplete="off" required>
+                                        <ul class="dropdown-options" id="dropdown-options"></ul>
+                                        <div class="invalid-feedback">אנא בחר את שם המחלקה מתוך הרשימה</div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -468,7 +468,6 @@
         </section>
 
     </main><!-- End #main -->
-   
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
         <div class="copyright">

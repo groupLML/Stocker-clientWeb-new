@@ -185,7 +185,7 @@
                 //window.location.href = 'Admin-Departments.html';
             }
             else {
-                sweetalert("שגיאה בשרת", "", true, false,"");
+                sweetalert("שגיאה בשרת", "", true, false, "");
             }
         }
 
@@ -306,9 +306,11 @@
                                 <div class="row mb-4">
                                     <label class="col-form-label">סוג המחלקה <i class="bi bi-asterisk"></i></label>
                                     <div class="custom-dropdown input-group has-validation">
-                                        <input type="text" id="input" class="form-control" autocomplete="off" required>
-                                        <ul class="dropdown-options depTypesDD" id="dropdown-options"></ul>
-                                        <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
+                                        <div class="not-preceded-by-td">
+                                            <input type="text" id="input" class="form-control" autocomplete="off" required>
+                                            <ul class="dropdown-options depTypesDD" id="dropdown-options"></ul>
+                                            <div class="invalid-feedback">אנא בחר את סוג המחלקה מתוך הרשימה</div>
+                                        </div>
                                     </div>
                                 </div>
                                 <br />
