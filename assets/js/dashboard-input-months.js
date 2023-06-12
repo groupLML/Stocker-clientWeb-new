@@ -74,7 +74,7 @@
 function renderMonthsOptions(months) {
     var str = "";
     for (var i = 0; i < months.length; i++) {
-        str += `<li id="${months[i + 1]}" data-value="${months[i]}">${months[i]}</li>`;
+        str += `<li id="${i + 1}" data-value="${months[i]}">${months[i]}</li>`;
     }
     $("#months-dropdown-options").empty().append(str);
 }

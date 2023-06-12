@@ -375,13 +375,23 @@ tbody, td, tfoot, th, thead, tr {
 }
 
 tspan {
-    direction: ltr
+    direction: ltr;
+    font-family: Open Sans;
 }
+
 
 /*.apexcharts-toolbar {
     top: 0px; 
     left: 3px;
 }*/
+
+#barChart .apexcharts-xaxis-label {
+    font-family: Open Sans;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+
 
 #buttons_ph > .btn{
     margin:10px;

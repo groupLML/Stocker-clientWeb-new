@@ -71,10 +71,10 @@
     });
 }
 
-function renderMedsOptions(arr) {
-    var str = "";
-    for (var i = 0; i < arr.length; i++) {
-        str += `<li id="${arr[i]['medId']}" data-value="${arr[i]['medName']}">${arr[i]['medName']}</li>`;
+function renderMedsOptions(Arr) {
+    let str = "";
+    for (var i = 0; i < Arr.length; i++) {
+        str += `<li data-value="${Arr[i]}">${Arr[i]}</li>`;
     }
     $("#meds-dropdown-options").empty().append(str);
 }

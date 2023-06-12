@@ -48,7 +48,11 @@
         var inPooling = false;
         var lastPooling = Date.now();
         let months = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר']
+
         let yearsList = GetYearsList();
+        var date = new Date();
+        var pickedMonth = date.getMonth() + 1;
+        var pickedYear = date.getFullYear().toString();
 
         $(document).ready(function () {
 
@@ -80,7 +84,7 @@
             $("#Filters").submit(getData);
 
             h = null;
-            //goToServer();
+            /*goToServer();*/
 
             window.onunload = function () {
                 stopThread();
@@ -88,6 +92,7 @@
         });
 
         /******************* filters *******************/
+
         function GetYearsList() {
             let currentDate = new Date();
             let currentYear = currentDate.getFullYear();
@@ -129,10 +134,8 @@
             console.log(data);
 
             for (var i = 0; i < data.length; i++) {
-                var medId = data[i]['medId'];
-                var medName = data[i]['medName'];
-
-                medNames.push({ "medId": medId, "medName": medName }); // Save med ID as key and med name as value in the array
+                meds.push({ medId: data[i]['medId'], medName: data[i]['medName'] }); // Save department ID and name in the array
+                medNames.push(data[i]['medName']); // Save med ID as key and med name as value in the array
             }
             renderMedsOptions(medNames);
         }
@@ -146,7 +149,7 @@
         function goToServer() {
             if (h != null) //בודק האם כבר רץ
                 return;
-            let timeInterval = 10000; //כל 80 שניות
+            let timeInterval = 10000; //כל 10 שניות
             h = setInterval(getData, timeInterval);
         }
 
@@ -154,9 +157,59 @@
             if (inPooling == false || (Date.now() - lastPooling) > 30000) {
                 inPooling = true;
                 lastPooling = Date.now();
-                ajaxCall("GET", api + "/dep/" + 3 + "/med/" + 1 + "/month/" + 4 + "/year/" + 2023, "", successGetDataCBF, errorGetDataCBF);
+
+                depName = $("#depInput").val();
+                dep = deps.find(function (dep) {
+                    return dep.depName === depName;
+                });
+
+                medName = $("#medInput").val();
+                med = meds.find(function (med) {
+                    return med.medName === medName;
+                });
+
+                monthName = $("#monthInput").val();
+                /*                month = $("#months-dropdown-options li").attr("id");*/
+                for (var i = 0; i < months.length; i++) {
+                    if (monthName == months[i])
+                        month = i + 1;
+                }
+
+                year = $("#yearInput").val();
+
+                if (depName == "" && medName == "" && monthName == "" && year == "") { /*the first time the inputs are empty*/
+                    var depFirstText = $("#deps-dropdown-options li:first").text();
+                    $("#depInput").val(depFirstText);
+                    dep = deps.find(function (dep) {
+                        return dep.depName === depFirstText;
+                    });
+
+                    var medFirstText = $("#meds-dropdown-options li:first").text();
+                    $("#medInput").val(medFirstText);
+                    med = meds.find(function (med) {
+                        return med.medName === medFirstText;
+                    });
+
+                    for (var i = 0; i < months.length; i++) {
+                        if (pickedMonth - 1 == i) {
+                            $("#monthInput").val(months[i]);
+                            month = pickedMonth;
+                        }
+                    }
+
+                    $("#yearInput").val(pickedYear);
+                    year = pickedYear;
+                }
+                else {
+                    pickedMonth = month;
+                    pickedYear = year;
+                }
+
+                console.log("/dep/" + dep.depId + "/med/" + med.medId + "/month/" + month + "/year/" + year)
+
+                ajaxCall("GET", api + "/dep/" + dep.depId + "/med/" + med.medId + "/month/" + month + "/year/" + year, "", successGetDataCBF, errorGetDataCBF);
             }
-            /*    return false;*/
+            return false;
         }
 
         function successGetDataCBF(data) {
@@ -170,26 +223,44 @@
             inPooling = false;
         }
 
-        function renderBoxs(data) { ///לבדוק חילוק באפס + שווה
+        function renderBoxs(data) {
             str = `<h6>${data.currentPO}</h6>`;
-            if (data.currentPO >= data.prevPO)
-                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${/*parseInt((data.currentPO / data.prevPO) * 100)*/10}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
+            if (data.currentPO > data.prevPO && data.prevPO != 0)
+                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentPO - data.prevPO) / data.prevPO) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
             else
-                str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${/*parseInt((data.currentPO / data.prevPO) * 100)*/ 10}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
+                if (data.currentPO > data.prevPO && data.prevPO == 0)
+                    str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt((data.currentPO - data.prevPO) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
+                else
+                    if (data.currentPO == data.prevPO)
+                        str += `<span class="small pt-1 fw-bold" style="flex-direction: row-reverse; color: #918d8d;">${parseInt(((data.currentPO - data.prevPO) / data.prevPO) * 100)}<span class="percentage-symbol" style="color: #918d8d">% </span></span> <span class="text-muted small pt-2 ps-1">ללא שינוי</span>`;
+                    else
+                        str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentPO - data.prevPO) / data.prevPO) * (-100))}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
             document.getElementById("PO").innerHTML = str;
 
             str = `<h6>${data.currentMR}</h6>`;
-            if (data.currentMR >= data.prevMR)
-                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${/*parseInt((data.currentMR / data.prevMR) * 100)*/10}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
+            if (data.currentMR > data.prevMR && data.prevMR != 0)
+                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentMR - data.prevMR) / data.prevMR) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
             else
-                str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${/*parseInt((data.currentMR / data.prevMR) * 100)*/10}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
+                if (data.currentMR > data.prevMR && data.prevMR == 0)
+                    str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt((data.currentMR - data.prevMR) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
+                else
+                    if (data.currentMR == data.prevMR)
+                        str += `<span class="small pt-1 fw-bold" style="flex-direction: row-reverse; color: #918d8d;">${parseInt(((data.currentMR - data.prevMR) / data.prevMR) * 100)}<span class="percentage-symbol" style="color: #918d8d">% </span></span> <span class="text-muted small pt-2 ps-1">ללא שינוי</span>`;
+                    else
+                        str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentMR - data.prevMR) / data.prevMR) * (-100))}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
             document.getElementById("MR").innerHTML = str;
 
             str = `<h6>${data.currentMRD}</h6>`;
-            if (data.currentMRD >= data.prevMRD)
-                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${/*parseInt((data.currentMRD / data.prevMRD) * 100)*/10}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
+            if (data.currentMRD > data.prevMRD && data.prevMRD != 0)
+                str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentMRD - data.prevMRD) / data.prevMRD) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
             else
-                str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${/*parseInt((data.currentMRD / data.prevMRD) * 100)*/10}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
+                if (data.currentMRD > data.prevMRD && data.prevMRD == 0)
+                    str += `<span class="text-success small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt((data.currentMRD - data.prevMRD) * 100)}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">עלייה</span>`;
+                else
+                    if (data.currentMRD == data.prevMRD)
+                        str += `<span class="small pt-1 fw-bold" style="flex-direction: row-reverse; color: #918d8d;">${parseInt(((data.currentMRD - data.prevMRD) / data.prevMRD) * 100)}<span class="percentage-symbol" style="color: #918d8d">% </span></span> <span class="text-muted small pt-2 ps-1">ללא שינוי</span>`;
+                    else
+                        str += `<span class="text-danger small pt-1 fw-bold" style="flex-direction: row-reverse">${parseInt(((data.currentMRD - data.prevMRD) / data.prevMRD) * (-100))}<span class="percentage-symbol">% </span></span> <span class="text-muted small pt-2 ps-1">ירידה</span>`;
             document.getElementById("MRD").innerHTML = str;
         }
 
@@ -223,7 +294,8 @@
         }
 
         function renderLineChart(data) {
-            new ApexCharts(document.querySelector("#reportsChart"), {
+            document.getElementById("lineChart").innerHTML = "";
+            new ApexCharts(document.querySelector("#lineChart"), {
                 series: data,
                 chart: {
                     height: 350,
@@ -260,11 +332,14 @@
         }
 
         function renderBarChart(data) {
+            console.log("bar:" + data)
+
+            document.getElementById("barChart").innerHTML = "";
             new ApexCharts(document.querySelector("#barChart"), {
-                annotations: {
-                    position: 'back'
-                },
-                locale: 'he',
+                //annotations: {
+                //    position: 'back'
+                //},
+                //locale: 'he',
                 series: [{
                     data: data
                 }],
@@ -301,7 +376,12 @@
                 },
                 legend: {
                     top: '5%',
-                    left: 'center'
+                    left: 'center',
+                    textStyle: {
+                        fontSize: 14,
+                        fontWeight: 'normal',
+                        fontFamily: 'Open Sans'
+                    }
                 },
                 series: [{
                     name: 'Access From',
@@ -315,8 +395,9 @@
                     emphasis: {
                         label: {
                             show: true,
-                            fontSize: '18',
-                            fontWeight: 'bold'
+                            fontSize: '20',
+                            fontWeight: 'bold',
+                            fontFamily: 'Open Sans'
                         }
                     },
                     labelLine: {
@@ -616,14 +697,14 @@
                                         <div class="row">
                                             <div class="col">
                                                 <div class="input-group has-validation">
-                                                    <input type="text" id="depInput" class="form-control" autocomplete="off" placeholder="שם מחלקה" required>
+                                                    <input type="text" id="depInput" class="form-control" autocomplete="off" placeholder="שם מחלקה" required style="width: 120px;">
                                                     <ul class="dropdown-options" id="deps-dropdown-options"></ul>
                                                     <div class="invalid-feedback">אנא בחר את מחלקה מתוך הרשימה</div>
                                                 </div>
                                             </div>
                                             <div class="col">
                                                 <div class="input-group has-validation">
-                                                    <input type="text" id="medInput" class="form-control" autocomplete="off" placeholder="שם תרופה" required>
+                                                    <input type="text" id="medInput" class="form-control" autocomplete="off" placeholder="שם תרופה" required style="width: 280px;">
                                                     <ul class="dropdown-options" id="meds-dropdown-options"></ul>
                                                     <div class="invalid-feedback">אנא בחר את תרופה מתוך הרשימה</div>
                                                 </div>
@@ -755,51 +836,26 @@
                         </div><!-- End Requests Card -->
                         <!-- Reports -->
                         <div class="col-12">
+                            <!-- Line Chart -->
                             <div class="card" style="margin-bottom: 22px">
-
-                                <!--<div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>סינון</h6>
-                                        </li>
-
-                                        <li><a class="dropdown-item" href="#">שבוע</a></li>
-                                        <li><a class="dropdown-item" href="#">חודש</a></li>
-                                        <li><a class="dropdown-item" href="#">שנה</a></li>
-                                    </ul>
-                                </div>-->
 
                                 <div class="card-body" style="padding-bottom: 10px">
                                     <h5 class="card-title" style="padding-top: 10px">צריכה מול הנפקה<span> | 2023</span></h5>
 
-                                    <!-- Line Chart -->
-                                    <div id="reportsChart"></div>
-                                    <!-- End Line Chart -->
-                                </div>
+                                    <div id="lineChart"></div>
+
+                                </div>  <!-- End Line Chart -->
                             </div>
 
+                            <!--Bar Chart-->
                             <div class="card" style="margin-bottom: 22px">
 
-                                <!--<div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>סינון</h6>
-                                        </li>
-
-                                        <li><a class="dropdown-item" href="#">שבוע</a></li>
-                                        <li><a class="dropdown-item" href="#">חודש</a></li>
-                                        <li><a class="dropdown-item" href="#">שנה</a></li>
-                                    </ul>
-                                </div>-->
                                 <div class="card-body">
                                     <h5 class="card-title" style="padding-top: 10px">נתוני צריכה <span> | 2023</span></h5>
 
-                                    <!--Bar Chart-->
                                     <div id="barChart"></div>
-                                    <!--End Bar Chart-->
-                                </div>
+
+                                </div> <!--End Bar Chart-->
                             </div>
 
                         </div><!-- End Reports -->
@@ -925,7 +981,7 @@
                         </div>-->
 
                         <div class="card-body pb-0">
-                            <h5 class="card-title">5 הצרכניות הגדולות פר תרופה <span>| 05/23</span></h5>
+                            <h5 class="card-title">5 הצרכניות הגדולות <span>| 05/23</span></h5>
 
                             <div id="pieChart" style="min-height: 400px;" class="echart"></div>
 
