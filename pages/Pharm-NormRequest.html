@@ -271,7 +271,8 @@
                                             medId: parseInt(chosenMedId),
                                             mazNum: '',
                                             normQty: normQtyInputValue,
-                                            medName: medInputValue
+                                            medName: medInputValue,
+                                            reqQty: normQtyInputValue
                                         };
 
                                         // Add the new data object to the medsToUpdate
@@ -327,7 +328,7 @@
                         var newValue = parseInt($(this).val(), 10);
                         var rowIndex = dataTable.row($(this).closest('tr')).index();
                         var med = medsToUpdate[rowIndex];
-                        med.normQty = newValue;
+                        med.reqQty = newValue;
                         console.log("medsNormArray", medsNormArray);
                         console.log("medsToUpdate", medsToUpdate);
                         if (!areArraysIdentical(medsToUpdate, medsNormArray)) {
@@ -379,6 +380,7 @@
         function PostNormRequest() {
             const slicedMedsToUpdate = medsToUpdate.slice(1);//remove empty row data from array
             const date = new Date;
+
             const NewNormReq = {
                 reqId: 0,
                 normId: norm.normId,
@@ -393,6 +395,7 @@
             }
 
             ajaxCall("POST", apiPostNormReq, JSON.stringify(NewNormReq), PostNormRequestSCB, PostNormRequestECB);
+
             return false;
         }
 
