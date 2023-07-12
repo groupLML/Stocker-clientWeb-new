@@ -81,6 +81,7 @@
             sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
+
         function GetRequests() {
             ajaxCall("GET", apiRequests, "", getReqsSCB, getReqsECB);
         }
@@ -267,6 +268,13 @@
         </div><!-- End Page Title -->
         <div class="card">
             <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="printerIcon">
+                            <i class="bi bi-printer" onclick="exportPFD()"></i>
+                        </div>
+                    </div>
+                </div>
                 <form id="DepSearch">
                     <div class="row">
                         <div class="col-md-10">
@@ -288,14 +296,9 @@
                             <button type="submit" class="btn btn-primary">הצג</button>
                         </div>
                     </div>
+
                 </form>
-                <!--<div class="row">
-        <div class="col-10">
-            <div class="printerIcon">
-                <i class="bi bi-printer" onclick="exportPFD()"></i>
-            </div>
-        </div>
-    </div>-->
+
                 <!-- Table with stripped rows table-striped-->
                 <div class="table-container">
                     <table class="table hover table-striped-custom " id="Table" style="width:100%">
