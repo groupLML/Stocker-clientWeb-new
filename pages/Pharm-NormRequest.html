@@ -329,6 +329,14 @@
                         var rowIndex = dataTable.row($(this).closest('tr')).index();
                         var med = medsToUpdate[rowIndex];
                         med.reqQty = newValue;
+
+                         // Loop through all the other rows in the medsToUpdate array
+                        for (var i = 0; i < medsToUpdate.length; i++) {
+                            if (i !== rowIndex && medsToUpdate[i].reqQty === undefined) {
+                                medsToUpdate[i].reqQty = medsToUpdate[i].normQty;
+                            }
+                        }
+
                         console.log("medsNormArray", medsNormArray);
                         console.log("medsToUpdate", medsToUpdate);
                         if (!areArraysIdentical(medsToUpdate, medsNormArray)) {

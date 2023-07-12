@@ -51,6 +51,7 @@
         $(document).ready(function () {
             apiGetDepNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
             apiPutNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/NormRequest/reqId/";
+            apiPutStatusNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/NormRequest/UpdateComplete/reqId/";
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             normReq = JSON.parse(sessionStorage.getItem("NormRequest")); //get user from storage
@@ -156,7 +157,7 @@
             if (doRender) {
                 str += `<button type="button" class="btn btn-success" onclick="UpdateNorm()">עדכון</button>`;
             } else {
-                str += ``;
+                str += `<button type="button" class="btn btn-success" onclick="UpdateStatusNorm()">מחיקת בקשה</button>`;
             }
             document.getElementById("button_ph").innerHTML = str;
         }
@@ -183,6 +184,21 @@
         }
 
         function PutNormECB(err) {
+            console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
+        }
+
+        function UpdateStatusNorm() {
+            ajaxCall("PUT", apiPutStatusNorm + normReq.reqId,'', PutStatusNormSCB, PutStatusNormECB);
+            return false;
+        }
+
+        function PutStatusNormSCB() {
+            sweetalert("מחיקת הבקשה בוצעה בהצלחה", "", false, true, 'Manager-NormRequests.html');
+            renderUpdateButton(false);
+        }
+
+        function PutStatusNormECB(err) {
             console.log(err);
             sweetalert("שגיאה בשרת", "", true, false, "");
         }
@@ -331,7 +347,9 @@
                     </table>
                 </div>
                 <!-- End Table with stripped rows -->
-                <div id="button_ph" class="d-flex justify-content-center"></div>
+                <div id="button_ph" class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-success" onclick="UpdateStatusNorm()">מחיקת הבקשה</button>
+                </div>
             </div>
         </div>
     </main><!-- End #main -->
