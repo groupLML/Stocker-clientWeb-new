@@ -55,7 +55,7 @@
 
             $('#Table').on('click', 'tbody tr', function () {// This function will be called when a row is clicked
                 // Create an array for the column names of the table
-                var columnNames = ["orderId", "orderDate", "orderTime", "depName", "nurseName", "status"];
+                var columnNames = ["orderId", "orderDate", "orderTime", "depName", "nurseName", "pharmName", "status"];
 
                 var orderData = {};// Create an empty object to store the row data
 
@@ -74,6 +74,8 @@
                 orderData.pUser = order.pharmId;
                 // Add the pharmName to the orderData object
                 orderData.pharmName = order.pharmName;
+                // Add the status to the orderData object
+                orderData.status = order.status;
 
                 var orderDataJson = JSON.stringify(orderData);// Convert the orderData object to a JSON string
 
