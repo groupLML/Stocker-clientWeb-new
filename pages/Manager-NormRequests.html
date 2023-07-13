@@ -55,7 +55,7 @@
             GetNormReqs();
 
             reqId = JSON.parse(sessionStorage.getItem("GOTO")); //get user from storage
-            if (reqId != "") {
+            if (reqId != null) {
                 var columnNames = ["reqId", "reqDate", "depName", "fullName", "position"];
 
                 var reqData = {};// Create an empty object to store the row data
