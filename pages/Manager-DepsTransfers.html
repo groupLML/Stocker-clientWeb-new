@@ -42,6 +42,10 @@
 
     <script>
 
+        //let months = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר']
+        //var date = new Date();
+        //var pickedMonth = date.getMonth() + 1;
+
         $(document).ready(function () {
 
             apiRequests = "https://proj.ruppin.ac.il/cgroup36/prod/api/MedRequest/RequestsManager";
@@ -55,7 +59,7 @@
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
-            //$("#DepSearch").submit(); //form validation
+            $("#DepSearch").submit(GetReport); //form validation
 
             GetRequests();
             RequestsList = [];
@@ -77,6 +81,108 @@
         }
 
         function GetDepsECB(err) {
+            console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
+        }
+
+
+        //function GetFiltered() {
+        //    DepName = $("#input").val();
+        //    Status = $("#status").val();
+        //    monthName = $("#monthInput").val();
+        //    for (var i = 0; i < months.length; i++) {
+        //        if (monthName == months[i])
+        //            month = i + 1;
+        //    }
+
+
+
+
+        //    if (depName == "" && monthName == "") { /*the first time the inputs are empty*/
+        //        var depFirstText = $("#deps-dropdown-options li:first").text();
+        //        $("#depInput").val(depFirstText);
+        //        dep = deps.find(function (dep) {
+        //            return dep.depName === depFirstText;
+        //        });
+
+        //        for (var i = 0; i < months.length; i++) {
+        //            if (pickedMonth - 1 == i) {
+        //                $("#monthInput").val(months[i]);
+        //                month = pickedMonth;
+        //            }
+        //        }
+        //    }
+        //    else {
+        //        pickedMonth = month;
+        //    }
+
+        //    var dateCheck = new Date();
+        //    var monthCheck = dateCheck.getMonth() + 1;
+        //    var yearCheck = date.getFullYear().toString();
+
+        //    if (year == yearCheck && month > monthCheck) { /*When the user entered a future date*/
+        //        sweetalert("", "לא ניתן לבחור תאריך עתידי", true, false, "");
+        //        month = monthCheck;
+        //        $("#monthInput").val(months[month - 1]);
+        //        pickedMonth = month;
+        //    }
+
+        //    ajaxCall("GET", api + "/dep/" + dep.depId + "/med/" + med.medId + "/month/" + month + "/year/" + year, "", successGetDataCBF, errorGetDataCBF);
+
+
+
+
+
+
+        //    Dep = deps.find(function (dep) {
+        //        return dep.depName === DepName;
+        //    });
+
+
+
+
+        //    ajaxCall("GET", GetDepStockApi + Dep.depId + "/start/" + startDate + "/end/" + endDate, "", GetFilterSCB, GetFilterECB);
+        //    return false;
+        //}
+
+        //function GetFilterSCB(data) {
+        //    console.log(data);
+        //    DataTableRender(data);
+        //}
+
+        //function GetFilterECB(err) {
+        //    console.log(err);
+        //    sweetalert("שגיאה בשרת", "", true, false, "");
+        //}
+
+
+        function GetReport() {
+            DepName = $("#input").val();
+
+            if (DepName != "") {
+                 Dep = deps.find(function (dep) {
+                      return dep.depName === DepName;
+                 });
+
+                var name = JSON.stringify(DepName);
+                sessionStorage.setItem('ReportDepName', name);
+
+                api = "https://proj.ruppin.ac.il/cgroup36/prod/api/MedRequest/Report/"+Dep.depId
+
+                ajaxCall("GET", api, "", GetReportSCB, GetReportECB);
+                return false;
+           }
+        }
+
+        function GetReportSCB(data) {
+            console.log(data);
+            var ReportData = JSON.stringify(data);// Convert the orderData object to a JSON string
+            sessionStorage.setItem('ReportData', ReportData);
+
+            window.location.href = 'Manager-DepRequestsReport.html';
+        }
+
+        function GetReportECB(err) {
             console.log(err);
             sweetalert("שגיאה בשרת", "", true, false, "");
         }
@@ -275,12 +381,12 @@
                         </div>
                     </div>
                 </div>
+
                 <form id="DepSearch">
                     <div class="row">
-                        <div class="col-md-10">
-                            <label class="col-form-label">בחר מחלקה</label>
+                        <div class="col">
+                            <label class="col-form-label">בחר מחלקה שביקשה</label>
                         </div>
-                        <div id="printer_ph"></div>
                     </div>
                     <div class="row mb-4">
                         <div class="col-md-4">
@@ -293,10 +399,9 @@
                             </div>
                         </div>
                         <div class="col-md-8">
-                            <button type="submit" class="btn btn-primary">הצג</button>
+                            <button type="submit" class="btn btn-primary">יצירת דוח שנתי</button>
                         </div>
                     </div>
-
                 </form>
 
                 <!-- Table with stripped rows table-striped-->

@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="he" dir="rtl">
 
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Stocker - Manager-NormRequest</title>
+    <title>Stocker - Report</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -29,182 +29,85 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/ourStyle.css" rel="stylesheet" />
 
-
     <!-- ajaxCalls and JQuery -->
     <script src="../assets/js/ajaxCalls.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
-    <script src="../assets/js/custom-dropdown-input.js"></script>
-    <script src="../assets/js/custom-dropdown-input-meds.js"></script>
     <script src="../assets/js/global-functions.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
-    <!-- datatables -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-
     <script>
 
-        let norm;
-        let medsInNorm = [];
-        let medsToUpdate = []; // Declare and initialize medsToUpdate array
-
         $(document).ready(function () {
-            apiGetDepNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/Norm/";
-            apiPutNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/NormRequest/reqId/";
-            apiPutStatusNorm = "https://proj.ruppin.ac.il/cgroup36/prod/api/NormRequest/UpdateComplete/reqId/";
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
-            normReq = JSON.parse(sessionStorage.getItem("NormRequest")); //get user from storage
-
-            GetDepNorm();
             renderUser(user);
-            headerRender();
-            reqDateRender();
-        })
 
-        function headerRender() {
-            let titleStr = `<h1>בקשה לשינוי תקן ${normReq.depName}</h1>`
-            titleStr += `<nav>`
-            titleStr += `<ol class="breadcrumb">`
-            titleStr += `<li class="breadcrumb-item">בקשה ${normReq.reqId}</li>`
-            titleStr += `<li class="breadcrumb-item active"><a href="Manager-NormRequests.html">בקשות לשינוי תקן</a></li>`
-            titleStr += `</ol>`
-            titleStr += `</nav>`
+            depName = JSON.parse(sessionStorage.getItem("ReportDepName"));
+            headerRender(depName);
+            reportData = JSON.parse(sessionStorage.getItem("ReportData")); //get user from storage
+            reanderTable(reportData);
+            markTable();
+        
+        });
+
+        function headerRender(depName) {
+            let titleStr = `<h1> דוח העברות שנתי - ${depName}</h1>`
             document.getElementById("title_ph").innerHTML = titleStr;
         }
 
-        function reqDateRender() {
-            let reqDateStr;
-            if (normReq.reqDate !== null) {
-                reqDateStr = `<p class="orderDate">${normReq.reqDate}</p>`
+        function reanderTable(data) {
+            let str = `<tbody>`;
+            str += `<table id="regularTable" class="table table-bordered"><thead><tr>`;
+            str += `<th scope="col">מק"ט מזור</th>`;
+            str += `<th scope="col">שם תרופה</th>`;
+            str += `<th scope="col">חודש</th>`;
+            str += `<th scope="col">סטטוס</th>`;
+            str += `<th scope="col">סה"כ כמות</th></tr></thead>`;
+
+            for (var i = 0; i < data.length; i++) {
+                str += `<tr> <td>${data[i].mazNum}</td>`;
+                str += `<td>${data[i].medName}</td>`;
+                str += `<td>${data[i].reqMonth}</td>`;
+                str += `<td>${data[i].reqStatus}</td>`;
+                str += `<td>${data[i].sumQty}</td> </tr>`;
             }
-            else {
-                reqDateStr = "";
-            }
-            document.getElementById("reqDate_ph").innerHTML = reqDateStr;
+
+            str += `</tbody></table>`;
+
+            document.getElementById("table_ph").innerHTML = str;
         }
 
-        function GetDepNorm() {
-            ajaxCall("GET", apiGetDepNorm + "depId/" + normReq.depId, "", GetNormSCB, GetNormECB);
-            return false;
-        }
 
-        function GetNormSCB(data) {
-            norm = data;
-            medsInNorm = data[0].medList;
-            console.log("DepNorm:", norm);
-            console.log("medsInNorm:", medsInNorm);
-            DataTableRender();
-        }
+        function markTable() {
 
-        function GetNormECB(err) {
-            console.log(err);
-            sweetalert("שגיאה בשרת", "", true, false, "");
-        }
+            var table = document.getElementById("regularTable");
+            var rows = table.getElementsByTagName("tr");
 
-        function DataTableRender() {
-            let medsReqArray = [];
-
-            for (var i = 0; i < normReq.medReqList.length; i++) {
-                medsReqArray.push(normReq.medReqList[i]);
-            }
-            //independent copy the medsReqArray to medsToUpdate array to display changes
-            medsToUpdate = JSON.parse(JSON.stringify(medsReqArray));
-
-            try {
-                tbl = $('#Table').DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
-                    },
-                    data: medsToUpdate,
-                    pageLength: 5,
-                    columns: [
-                        { data: "medId" },
-                        { data: "medName" },
-                        { data: "reqQty" },
-                        {
-                            data: "normQty",
-                            render: function (data, type, row, meta) {
-                                return '<input type="number" class="normQty-input form-control" min="0" value="' + data + '">';
-                            }
-                        },
-                        { data: "predQty" },
-                    ],
-                });
-
-                //Update the normQty value of the med in the medsToUpdate when the input value is changed
-                $('#Table').on('change', '.normQty-input', function () {
-                    var newValue = parseInt($(this).val(), 10);
-                    var rowIndex = tbl.row($(this).closest('tr')).index();
-                    var med = medsToUpdate[rowIndex];
-                    med.normQty = newValue;
-                    console.log("medsReqArray", medsReqArray);
-                    console.log("medsToUpdate", medsToUpdate);
-                    if (!areArraysIdentical(medsToUpdate, medsReqArray)) {
-                        renderUpdateButton(true);
-                    } else {
-                        renderUpdateButton(false);
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName("td");
+                for (var j = 0; j < cells.length; j++) {
+                    if (cells[j].textContent.includes("שנתי")) {
+                        rows[i].style.backgroundColor = "#EDF1FA";
+                        rows[i].classList.add("bold-row");
+                        break;
                     }
-                });
+                }
             }
-            catch (err) {
-                alert(err);
-            }
-        }
+       }
 
-        function renderUpdateButton(doRender) {
-            let str = "";
-            if (doRender) {
-                str += `<button type="button" class="btn btn-success" onclick="UpdateNorm()">עדכון</button>`;
-            } else {
-                str += `<button type="button" class="btn btn-success" onclick="UpdateStatusNorm()">מחיקת בקשה</button>`;
-            }
-            document.getElementById("button_ph").innerHTML = str;
-        }
+        function exportPFD() {
+            var table = document.getElementById("regularTable");
+            // Save the original number of rows per page
+            var originalRowsPerPage = 10; // Change this to match your original setting
 
-        function UpdateNorm() {
-            // Create a new array with object modifications and sent to PUT
-            const PutArray = medsToUpdate.map(med => {
-                return {
-                    medId: med.medId,
-                    medName: med.medName,
-                    normQty: med.normQty,
-                    predQty: med.predQty,
-                    mazNum: "",
-                };
-            });
+            // Change the number of rows per page to 1000
+            table.setAttribute("data-rows-per-page", "1000"); // Add this attribute to the table element
 
-            ajaxCall("PUT", apiPutNorm + normReq.reqId + "/normId/" + norm[0].normId, JSON.stringify(PutArray), PutNormSCB, PutNormECB);
-            return false;
-        }
+            // Print the table
+            window.print();
 
-        function PutNormSCB() {
-            sweetalert("העדכון בוצע בהצלחה", "", false, true, 'Manager-NormRequests.html');
-            renderUpdateButton(false);
-        }
-
-        function PutNormECB(err) {
-            console.log(err);
-            sweetalert("שגיאה בשרת", "", true, false, "");
-        }
-
-        function UpdateStatusNorm() {
-            ajaxCall("PUT", apiPutStatusNorm + normReq.reqId,'', PutStatusNormSCB, PutStatusNormECB);
-            return false;
-        }
-
-        function PutStatusNormSCB() {
-            sweetalert("מחיקה בוצעה בהצלחה", "", false, true, 'Manager-NormRequests.html');
-            renderUpdateButton(false);
-        }
-
-        function PutStatusNormECB(err) {
-            console.log(err);
-            sweetalert("שגיאה בשרת", "", true, false, "");
-        }
-
-        function MovePage() {
-            window.location.href = "Manager-NormRequests.html";
+            // Restore the original number of rows per page
+            table.setAttribute("data-rows-per-page", originalRowsPerPage); // Restore the original value
         }
 
     </script>
@@ -226,7 +129,7 @@
         <nav class="profil-nav header-nav ms-auto">
             <ul class="d-flex align-items-center">
                 <li class="nav-item dropdown">
-                    <a class="nav-link nav-icon" href="Manager-messages.html">
+                    <a class="nav-link nav-icon" href="Manager-Messages.html">
                         <i class="bi bi-bell"></i>
                     </a><!-- End Notification Icon -->
                 </li><!-- End Notification Nav -->
@@ -287,7 +190,7 @@
                 </a>
                 <ul id="departments-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="Manager-DepsInventory.html" class="active" onclick="reload()">
+                        <a href="Manager-DepsInventory.html" onclick="reload()">
                             <i class="bi bi-circle"></i><span>מחסן המחלקות</span>
                         </a>
                     </li>
@@ -305,17 +208,17 @@
             </li>
             <!-- End Deps Nav -->
             <li class="nav-item">
-                <a class="nav-link active" data-bs-target="#norms-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                <a class="nav-link collapsed" data-bs-target="#norms-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
                     <span>תקנים</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="norms-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+                <ul id="norms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="Manager-DepsNorms.html" onclick="reload()">
                             <i class="bi bi-circle"></i><span>תקן המחלקות</span>
                         </a>
                     </li>
                     <li>
-                        <a href="Manager-NormRequests.html" class="active" onclick="reload()">
+                        <a href="Manager-NormRequests.html" onclick="reload()">
                             <i class="bi bi-circle"></i><span>בקשות לעדכון תקן</span>
                         </a>
                     </li>
@@ -326,30 +229,21 @@
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
-        <div class="row">
-            <div id="title_ph" class="col-10 pagetitle"></div>
-            <div id="reqDate_ph" class="col-2"></div>
-        </div><!-- End Page Title -->
+        <div id="title_ph" class="pagetitle"></div><!-- End Page Title -->
         <div class="card">
             <div class="card-body">
-                <!-- Table with stripped rows table-striped-->
-                <div class="table-responsive">
-                    <table class="table hover table-striped-custom hide-table-header" id="Table" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>שם התרופה</th>
-                                <th>כמות רצויה</th>
-                                <th>כמות בפועל</th>
-                                <th>כמות מומלצת</th>
-                            </tr>
-                        </thead>
-                    </table>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="printerIcon">
+                            <i class="bi bi-printer" onclick="exportPFD()"></i>
+                        </div>
+                    </div>
                 </div>
-                <!-- End Table with stripped rows -->
-                <div id="button_ph" class="d-flex justify-content-center">
-                    <button type="button" class="btn btn-success" onclick="UpdateStatusNorm()">מחיקת הבקשה</button>
-                </div>
+                <!-- Table -->
+                <div id="table_ph"></div>
+                <!-- End Bordered Table -->
+
             </div>
         </div>
     </main><!-- End #main -->

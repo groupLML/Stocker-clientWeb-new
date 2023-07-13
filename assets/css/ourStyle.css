@@ -425,3 +425,14 @@ tspan {
 .ModalButtons > .btn {
     margin: 10px;
 }
+
+/*
+#regularTable > th {
+    border-color: inherit !important;
+    border-style: solid !important;
+    border-width: 0 1px !important;
+}*/
+
+.bold-row {
+    font-weight:bolder;
+}
