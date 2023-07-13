@@ -42,10 +42,6 @@
 
     <script>
 
-        //let months = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר']
-        //var date = new Date();
-        //var pickedMonth = date.getMonth() + 1;
-
         $(document).ready(function () {
 
             apiRequests = "https://proj.ruppin.ac.il/cgroup36/prod/api/MedRequest/RequestsManager";
@@ -84,76 +80,6 @@
             console.log(err);
             sweetalert("שגיאה בשרת", "", true, false, "");
         }
-
-
-        //function GetFiltered() {
-        //    DepName = $("#input").val();
-        //    Status = $("#status").val();
-        //    monthName = $("#monthInput").val();
-        //    for (var i = 0; i < months.length; i++) {
-        //        if (monthName == months[i])
-        //            month = i + 1;
-        //    }
-
-
-
-
-        //    if (depName == "" && monthName == "") { /*the first time the inputs are empty*/
-        //        var depFirstText = $("#deps-dropdown-options li:first").text();
-        //        $("#depInput").val(depFirstText);
-        //        dep = deps.find(function (dep) {
-        //            return dep.depName === depFirstText;
-        //        });
-
-        //        for (var i = 0; i < months.length; i++) {
-        //            if (pickedMonth - 1 == i) {
-        //                $("#monthInput").val(months[i]);
-        //                month = pickedMonth;
-        //            }
-        //        }
-        //    }
-        //    else {
-        //        pickedMonth = month;
-        //    }
-
-        //    var dateCheck = new Date();
-        //    var monthCheck = dateCheck.getMonth() + 1;
-        //    var yearCheck = date.getFullYear().toString();
-
-        //    if (year == yearCheck && month > monthCheck) { /*When the user entered a future date*/
-        //        sweetalert("", "לא ניתן לבחור תאריך עתידי", true, false, "");
-        //        month = monthCheck;
-        //        $("#monthInput").val(months[month - 1]);
-        //        pickedMonth = month;
-        //    }
-
-        //    ajaxCall("GET", api + "/dep/" + dep.depId + "/med/" + med.medId + "/month/" + month + "/year/" + year, "", successGetDataCBF, errorGetDataCBF);
-
-
-
-
-
-
-        //    Dep = deps.find(function (dep) {
-        //        return dep.depName === DepName;
-        //    });
-
-
-
-
-        //    ajaxCall("GET", GetDepStockApi + Dep.depId + "/start/" + startDate + "/end/" + endDate, "", GetFilterSCB, GetFilterECB);
-        //    return false;
-        //}
-
-        //function GetFilterSCB(data) {
-        //    console.log(data);
-        //    DataTableRender(data);
-        //}
-
-        //function GetFilterECB(err) {
-        //    console.log(err);
-        //    sweetalert("שגיאה בשרת", "", true, false, "");
-        //}
 
 
         function GetReport() {
