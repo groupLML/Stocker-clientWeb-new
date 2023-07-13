@@ -40,6 +40,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 
+
     <script>
 
         let dataTable;
@@ -60,7 +61,7 @@
             $("#DepSearch").submit(GetDepStock); //form validation
 
             depId = JSON.parse(sessionStorage.getItem("GOTO")); //get user from storage
-            if (depId != "") {
+            if (depId != null) {
 
                 Dep = deps.find(function (dep) {
                     return dep.depId === depId;
@@ -109,6 +110,7 @@
         function GetStockSCB(data) {
             console.log(data);
             DataTableRender(data);
+            markUnder();
         }
 
         function GetStockECB(err) {
@@ -164,6 +166,21 @@
             window.print();
 
             dataTable.page.len(pageLength).draw();
+        }
+
+
+        function markUnder() {
+            var table = $('#Table').DataTable();
+
+            table.rows().every(function () {
+                var rowData = this.data();
+                var quantityCell = this.cell({ row: this.index(), column: 2 }); // המספר 2 מייצג את מיקום העמודה "כמות במלאי"
+                var quantity = quantityCell.data();
+
+                if (parseInt(quantity) < 5) {
+                    $(quantityCell.node()).css('color', 'red');
+                }
+            });
         }
 
     </script>
