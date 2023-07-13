@@ -95,6 +95,7 @@
         function GetStockSCB(data) {
             console.log(data);
             DataTableRender(data);
+            markUnder()
         }
 
         function GetStockECB(err) {
@@ -149,6 +150,20 @@
             window.print();
 
             dataTable.page.len(pageLength).draw();
+        }
+
+        function markUnder() {
+            var table = $('#Table').DataTable();
+
+            table.rows().every(function () {
+                var rowData = this.data();
+                var quantityCell = this.cell({ row: this.index(), column: 2 }); // המספר 2 מייצג את מיקום העמודה "כמות במלאי"
+                var quantity = quantityCell.data();
+
+                if (parseInt(quantity) < 5) {
+                    $(quantityCell.node()).css('color', 'red');
+                }
+            });
         }
 
     </script>
