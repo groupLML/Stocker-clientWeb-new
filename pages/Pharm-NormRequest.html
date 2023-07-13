@@ -76,7 +76,6 @@
             if (norm.length !== 0) {
                 var time = norm.lastUpdate.slice(11, 16);
                 var date = norm.lastUpdate.slice(0, 10);
-
                 LastUpdateStr = `<p class="orderDate"> ${date} ${time}</p>`
             }
             else {
@@ -152,7 +151,8 @@
         function DataTableRender(normData) {
             let medsNormArray = [];
             if (normData.length === 0) {
-                norm = {};
+                norm = [];
+                medsToUpdate = JSON.parse(JSON.stringify(medsNormArray));
             }
             else {
                 norm = normData[0];
@@ -269,14 +269,23 @@
                                         // Create a new data object with the input values
                                         var newMedData = {
                                             medId: parseInt(chosenMedId),
+                                            normQty: 0,
                                             mazNum: '',
-                                            normQty: normQtyInputValue,
                                             medName: medInputValue,
+                                            predQty: 0,
                                             reqQty: normQtyInputValue
                                         };
 
                                         // Add the new data object to the medsToUpdate
                                         medsToUpdate.push(newMedData);
+                                        // Loop through all the other rows in the medsToUpdate array
+                                        for (var i = 0; i < medsToUpdate.length; i++) {
+                                            if (i !== rowIndex && medsToUpdate[i].reqQty === undefined) {
+                                                medsToUpdate[i].reqQty = medsToUpdate[i].normQty;
+                                            }
+                                        }
+                                        console.log("medsNormArray", medsNormArray);
+                                        console.log("medsToUpdate", medsToUpdate);
                                         //if updated render update button
                                         if (!areArraysIdentical(medsToUpdate, medsNormArray)) {
                                             renderUpdateButton(true);
@@ -407,7 +416,7 @@
             return false;
         }
 
-        function PostNormRequestSCB() {
+        function PostNormRequestSCB(data) {
             sweetalert("הבקשה נשלחה בהצלחה", "", false, false, '');
             renderUpdateButton(false);
         }
