@@ -314,11 +314,11 @@
                     }
                     else if (data[i].type == 2) {
                         str += `<i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i><div class="activity-content">`;
-                        str += `<a href="Manager-NormRequests.html" class="fw-bold text-dark">${data[i].title}</a><br />`;
+                        str += `<a href="Manager-NormRequests.html" class="fw-bold text-dark" onclick="goto(${data[i].id})">${data[i].title}</a><br />`;
                     }
                     else {
                         str += `<i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i><div class="activity-content">`;
-                        str += `<a href="Manager-DepsInventory.html" class="fw-bold text-dark">${data[i].title}</a><br />`;
+                        str += `<a href="Manager-DepsInventory.html" class="fw-bold text-dark" onclick="goto(${data[i].id})">${data[i].title}</a><br />`;
                     }
                     str += `<span>${data[i].text}</span></div></div>`;
                 }
@@ -453,6 +453,10 @@
                 clearInterval(h);
                 h = null;
             }
+        }
+
+        function goto(id) {
+                sessionStorage.setItem('GOTO', id);
         }
 
     </script>

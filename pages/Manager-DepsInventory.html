@@ -59,6 +59,19 @@
 
             $("#DepSearch").submit(GetDepStock); //form validation
 
+            depId = JSON.parse(sessionStorage.getItem("GOTO")); //get user from storage
+            if (depId != "") {
+
+                Dep = deps.find(function (dep) {
+                    return dep.depId === depId;
+                });
+
+                $("#input").val(Dep.depName);
+
+                var submitButton = document.getElementById('submitBTN'); // החלף 'mySubmitButton' עם מזהה הכפתור submit שלך
+                submitButton.click(GetDepStock);
+                sessionStorage.removeItem('GOTO');
+            }
         })
 
         function GetDepartments() {
@@ -302,7 +315,7 @@
                             </div>
                         </div>
                         <div class="col-md-8">
-                            <button type="submit" class="btn btn-primary">הצג</button>
+                            <button type="submit" id="submitBTN" class="btn btn-primary">הצג</button>
                         </div>
                     </div>
                 </form>

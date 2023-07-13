@@ -54,6 +54,46 @@
             NormReqs = [];
             GetNormReqs();
 
+            reqId = JSON.parse(sessionStorage.getItem("GOTO")); //get user from storage
+            if (reqId != "") {
+                var columnNames = ["reqId", "reqDate", "depName", "fullName", "position"];
+
+                var reqData = {};// Create an empty object to store the row data
+
+                var table = $('#Table').DataTable(); // החלף 'myTable' עם מזהה הטבלה שלך
+                var rows = table.rows().nodes();
+
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    var reqID = table.cell(row, 0).data(); // החלף 1 עם מיקום העמודה של 'reqID'
+
+                    if (reqID == reqId) {
+                        // פעולות שברצונך לבצע על השורה
+                        $(row).find('td').each(function (index, cell) {// Loop through each cell in the clicked row
+                            reqData[columnNames[index]] = $(cell).text();// Get the cell value and add it to the reqData object
+                        });
+
+                        // Find the req in the NormReqs array based on the reqId
+                        var req = NormReqs.find(function (req) {
+                            return req.reqId === reqId;// Convert the reqId to an integer
+                        });
+
+                        // Add the medReqList to the reqData object
+                        reqData.medReqList = req.medReqList;
+                        // Add the depId to the reqData object
+                        reqData.depId = req.depId;
+
+                        var reqDataJson = JSON.stringify(reqData);// Convert the reqData object to a JSON string
+
+                        sessionStorage.setItem('NormRequest', reqDataJson);// Add the rowDataJson to the session storage
+
+                        window.location.href = 'Manager-NormRequest.html';// Navigate to NormRequest page
+
+                        sessionStorage.removeItem('GOTO');
+                    }
+                }
+            }
+
 
             $('#Table').on('click', 'tbody tr', function () {// This function will be called when a row is clicked
                 // Create an array for the column names of the table
@@ -243,7 +283,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="Manager-NormRequests.html" class="active" " onclick="reload()">
+                        <a href="Manager-NormRequests.html" class="active" onclick="reload()">
                             <i class="bi bi-circle"></i><span>בקשות לעדכון תקן</span>
                         </a>
                     </li>
