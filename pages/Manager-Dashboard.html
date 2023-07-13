@@ -85,7 +85,7 @@
             $("#Filters").submit(getData);
 
             h = null;
-            /*goToServer();*/
+          /*  goToServer();*/
 
             window.onunload = function () {
                 stopThread();
@@ -713,11 +713,6 @@
     </aside><!-- End Sidebar-->
     <!-- ======= Main ======= -->
     <main id="main" class="main">
-        <!--<div class="pagetitle">
-            <h1>דף בית</h1>
-        </div>-->
-        <!-- End Page Title -->
-
         <section class="section dashboard">
             <div class="row">
                 <!-- Left side columns -->
@@ -939,121 +934,17 @@
                 <div class="col-lg-4">
                     <!-- Recent Activity -->
                     <div class="card">
-                        <div class="card-body" style="padding-bottom: 32px">
+                        <div class="card-body">
                             <h5 class="card-title">הודעות ועדכונים <span>| השבוע</span></h5>
 
-                            <div class="activity">
+                            <div id="activity" class="activity" style="padding-bottom: 32px; height: 600px; overflow: auto;">
                                 <div id="updates_error" hidden><span>משהו השתבש</span></div>
                                 <div id="updates"></div>
-                                <!--<div class="activity-item d-flex">
-                                    <div class="activite-label">2 min</div>
-                                    <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
-                                    <div class="activity-content">
-                                        <a href="#" class="fw-bold text-dark">בקשה חדשה לעדכון תקן</a>
-                                        <br />
-                                        <span>עבור מחלקה 4 מאת מיטב מקבריט</span>
-                                    </div>
-                                </div>-->
-                                <!--End activity item-->
-                                <!--<div class="activity-item d-flex">
-                                    <div class="activite-label">36 min</div>
-                                    <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
-                                    <div class="activity-content">
-                                        <a href="#" class="fw-bold text-dark">מלאי מחלקה התרוקן</a>
-                                        <br />
-                                        <span>מחלקה 3</span>
-                                    </div>
-                                </div>-->
-                                <!-- End activity item-->
-                                <!--<div class="activity-item d-flex">
-                                    <div class="activite-label">53 min</div>
-                                    <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
-                                    <div class="activity-content">
-                                        <a href="#" class="fw-bold text-dark">העברה בוצעה</a>
-                                        <br />
-                                        <span>מחלקה 4 העבירה Acamol 20mg למחלקה 3</span>
-                                    </div>
-                                </div>-->
-                                <!-- End activity item-->
-                                <!--<div class="activity-item d-flex">
-                                    <div class="activite-label">56 min</div>
-                                    <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
-                                    <div class="activity-content">
-                                        <a href="#" class="fw-bold text-dark">הודעה חדשה</a>
-                                        <br />
-                                        <span>מאת לין בן מאיר</span>
-                                    </div>
-                                </div>-->
-                                <!-- End activity item-->
-                                <!--<div class="activity-item d-flex">
-                                    <div class="activite-label">1 hr</div>
-                                    <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
-                                    <div class="activity-content">
-                                        <a href="#" class="fw-bold text-dark">בקשה חדשה לעדכון תקן</a>
-                                        <br />
-                                        <span>עבור מחלקה 3 מאת ליטל יהודה</span>
-                                    </div>
-                                </div>-->
-                                <!-- End activity item-->
-                                <!--<div class="activity-item d-flex">
-                                    <div class="activite-label">2 hrs</div>
-                                    <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
-                                    <div class="activity-content">
-                                        <a href="#" class="fw-bold text-dark">הודעה חדשה</a>
-                                        <br />
-                                        <span>מאת בן מכלוף</span>
-                                    </div>
-                                </div>-->
-                                <!-- End activity item-->
-                                <!--<div class="activity-item d-flex">
-                                    <div class="activite-label">2 hrs</div>
-                                    <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
-                                    <div class="activity-content">
-                                        <a href="#" class="fw-bold text-dark">מלאי מחלקה התרוקן</a>
-                                        <br />
-                                        <span>מחלקה 4</span>
-                                    </div>
-                                </div>-->
-                                <!-- End activity item-->
-                                <!--<div class="activity-item d-flex">
-                                    <div class="activite-label">4 hrs</div>
-                                    <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
-                                    <div class="activity-content">
-                                        <a href="#" class="fw-bold text-dark">העברה בוצעה</a>
-                                        <br />
-                                        <span>מחלקה 4 העבירה Acamol 20mg למחלקה 5</span>
-                                    </div>
-                                </div>-->
-                                <!-- End activity item-->
-                                <!--<div class="activity-item d-flex">
-                                    <div class="activite-label">1 week</div>
-                                    <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
-                                    <div class="activity-content">
-                                        <a href="#" class="fw-bold text-dark">העברה בוצעה</a>
-                                        <br />
-                                        <span>מחלקה 4 העבירה Acamol 100mg למחלקה 3</span>
-                                    </div>
-                                </div>-->
-                                <!-- End activity item-->
-
                             </div>
                         </div>
                     </div><!-- End Recent Activity -->
                     <!-- TOP 5 Usages Per Med -->
                     <div class="card">
-                        <!--<div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>-->
-
                         <div class="card-body pb-0">
                             <div id="titlePie"></div>
 
