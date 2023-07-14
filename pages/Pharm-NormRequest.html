@@ -197,6 +197,12 @@
                                         // Redraw the table
                                         dataTable.clear().rows.add(medsToUpdate).draw();
                                         console.log(medsToUpdate);
+                                        //Add reqQty
+                                        for (let i = 0; i < medsToUpdate.length; i++) {
+                                            if (medsToUpdate[i].reqQty === undefined) {
+                                                medsToUpdate[i].reqQty = medsToUpdate[i].normQty;
+                                            }
+                                        }
                                         //if updated render update button
                                         if (!areArraysIdentical(medsToUpdate, medsNormArray)) {
                                             renderUpdateButton(true);
@@ -410,6 +416,8 @@
                 position: "",
                 medReqList: slicedMedsToUpdate
             }
+
+      
 
             ajaxCall("POST", apiPostNormReq, JSON.stringify(NewNormReq), PostNormRequestSCB, PostNormRequestECB);
 
