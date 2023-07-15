@@ -188,7 +188,45 @@
                                         return '<i class="bi bi-trash delete-icon"></i>';
                                     }
                                 },
-                                createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {                                    $(cell).on('click', '.delete-icon', function () {                                        // Get the index of the medication to delete                                        var index = dataTable.row($(this).closest('tr')).index();                                        //Array for presentation to a dataTable                                        medsToUpdateTep = medsToUpdate.filter(function (med) {                                            return med.reqQty !== 0;                                        });                                        //"Remove" the medication from the array by giving reqQty a value of 0                                        for (let i = 0; i < medsToUpdate.length; i++) {                                            if (medsToUpdateTep[index].medId === medsToUpdate[i].medId) {                                                medsToUpdate[i].reqQty = 0;                                            }                                        }                                        //Updating the array for presentation to a dataTable                                        medsToUpdateTep = medsToUpdate.filter(function (med) {                                            return med.reqQty !== 0;                                        });                                        //console.log(medsToUpdate);                                        //console.log(medsToUpdateTep);                                        //Add reqQty                                        for (let i = 0; i < medsToUpdate.length; i++) {                                            if (medsToUpdate[i].reqQty === undefined) {                                                medsToUpdate[i].reqQty = medsToUpdate[i].normQty;                                            }                                        }                                        //if updated render update button                                        if (!areArraysIdentical(medsToUpdate, medsNormArray)) {                                            renderUpdateButton(true);                                        } else {                                            renderUpdateButton(false);                                        }                                        //Clear the existing data from the table                                        dataTable.clear().draw();                                        //Add the updated medsToUpdate data to the table                                        dataTable.rows.add(medsToUpdateTep).draw();                                        //Call checkTableRendered to check if the table is fully rendered                                        checkTableRendered();                                    });
+                                createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
+                                    $(cell).on('click', '.delete-icon', function () {
+                                        // Get the index of the medication to delete
+                                        var index = dataTable.row($(this).closest('tr')).index();
+                                        //Array for presentation to a dataTable
+                                        medsToUpdateTemp = medsToUpdate.filter(function (med) {
+                                            return med.reqQty !== 0;
+                                        });
+                                        //"Remove" the medication from the array by giving reqQty a value of 0
+                                        for (let i = 0; i < medsToUpdate.length; i++) {
+                                            if (medsToUpdateTemp[index].medId === medsToUpdate[i].medId) {
+                                                medsToUpdate[i].reqQty = 0;
+                                            }
+                                        }
+                                        //Updating the array for presentation to a dataTable
+                                        medsToUpdateTemp = medsToUpdate.filter(function (med) {
+                                            return med.reqQty !== 0;
+                                        });
+                                        //console.log(medsToUpdate);
+                                        //console.log(medsToUpdateTemp);
+                                        //Add reqQty
+                                        for (let i = 0; i < medsToUpdate.length; i++) {
+                                            if (medsToUpdate[i].reqQty === undefined) {
+                                                medsToUpdate[i].reqQty = medsToUpdate[i].normQty;
+                                            }
+                                        }
+                                        //if updated render update button
+                                        if (!areArraysIdentical(medsToUpdate, medsNormArray)) {
+                                            renderUpdateButton(true);
+                                        } else {
+                                            renderUpdateButton(false);
+                                        }
+                                        //Clear the existing data from the table
+                                        dataTable.clear().draw();
+                                        //Add the updated medsToUpdate data to the table
+                                        dataTable.rows.add(medsToUpdateTemp).draw();
+                                        //Call checkTableRendered to check if the table is fully rendered
+                                        checkTableRendered();
+                                    });
 
                                     $(cell).on('click', '#add-icon', function () {
                                         // Get the input values from the first row
@@ -197,12 +235,24 @@
                                         var chosenMedId = $("#meds-dropdown-options li[data-value='" + medInputValue + "']").attr("id");
 
                                         var doesNotIncludeMedName = true;
-                                        for (var i = 0; i < medsToUpdate.length; i++) {
-                                            if (medsToUpdate[i].medName === medInputValue) {
-                                                doesNotIncludeMedName = false;
-                                                break;
+                                        if (typeof medsToUpdateTemp !== "undefined") {
+                                            for (var i = 0; i < medsToUpdateTemp.length; i++) {
+                                                if (medsToUpdateTemp[i].medName === medInputValue) {
+                                                    doesNotIncludeMedName = false;
+                                                    break;
+                                                }
                                             }
                                         }
+                                        else {
+                                            for (var i = 0; i < medsToUpdate.length; i++) {
+                                                if (medsToUpdate[i].medName === medInputValue) {
+                                                    doesNotIncludeMedName = false;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+
 
                                         // Remove any previous invalid class from medInput
                                         $('#medInput').removeClass('is-invalid');
@@ -245,19 +295,43 @@
                                             return;
                                         }
 
-                                        // Create a new data object with the input values
-                                        var newMedData = {
-                                            medId: parseInt(chosenMedId),
-                                            normQty: 0,
-                                            mazNum: '',
-                                            medName: medInputValue,
-                                            predQty: 0,
-                                            reqQty: normQtyInputValue
-                                        };
+                                        var doesNotIncludeMedName = true;
+                                        for (var i = 0; i < medsToUpdate.length; i++) {
+                                            if (medsToUpdate[i].medName === medInputValue) {
+                                                doesNotIncludeMedName = false;
+                                                medsToUpdate[i].reqQty = normQtyInputValue;
+                                                // Deep copy the object to avoid modifying the original array
+                                                medsToUpdateTemp.push(JSON.parse(JSON.stringify(medsToUpdate[i])));
+                                                for (var j = 0; j < medsToUpdateTemp.length; j++) {
+                                                    if (medsToUpdateTemp[j].medName === medInputValue) {
+                                                        medsToUpdateTemp[j].normQty = normQtyInputValue;
+                                                    }
+                                                }
+                                                break;
+                                            }
+                                        }
 
-                                        // Add the new data object to the medsToUpdate
-                                        medsToUpdate.push(newMedData);
-                                        // Loop through all the other rows in the medsToUpdate array
+
+                                        if (doesNotIncludeMedName) {
+                                            // Create a new data object with the input values
+                                            var newMedData = {
+                                                medId: parseInt(chosenMedId),
+                                                normQty: normQtyInputValue,
+                                                mazNum: '',
+                                                medName: medInputValue,
+                                                predQty: 0,
+                                                reqQty: normQtyInputValue
+                                            };
+
+                                            //Add the new data object to the medsToUpdate
+                                            medsToUpdate.push(newMedData);
+
+                                            if (typeof medsToUpdateTemp !== "undefined") {
+                                                medsToUpdateTemp.push(newMedData);
+                                            }
+                                        }
+
+                                        //Loop through all the other rows in the medsToUpdate array
                                         for (var i = 0; i < medsToUpdate.length; i++) {
                                             if (i !== rowIndex && medsToUpdate[i].reqQty === undefined) {
                                                 medsToUpdate[i].reqQty = medsToUpdate[i].normQty;
@@ -265,6 +339,7 @@
                                         }
                                         console.log("medsNormArray", medsNormArray);
                                         console.log("medsToUpdate", medsToUpdate);
+                                        //console.log("medsToUpdateTemp", medsToUpdateTemp);
                                         //if updated render update button
                                         if (!areArraysIdentical(medsToUpdate, medsNormArray)) {
                                             renderUpdateButton(true);
@@ -274,7 +349,10 @@
                                         // Clear the existing data from the table
                                         dataTable.clear().draw();
                                         // Add the updated medsToUpdate data to the table
-                                        dataTable.rows.add(medsToUpdate).draw();
+                                        if (typeof medsToUpdateTemp !== "undefined") {
+                                            dataTable.rows.add(medsToUpdateTemp).draw();
+                                        }
+                                        else { dataTable.rows.add(medsToUpdate).draw(); }
                                         // Call checkTableRendered to check if the table is fully rendered
                                         checkTableRendered();
                                     });
@@ -311,14 +389,27 @@
                     //Show the table header
                     $('#Table thead').show();
 
-                    //Update the normQty value of the med in the medsToUpdate when the input value is changed
+                    //Update the normQty value of the med in the sToUpdate when the input value is changed
                     $('#Table').on('change', '.normQty-input', function () {
                         var newValue = parseInt($(this).val(), 10);
                         var rowIndex = dataTable.row($(this).closest('tr')).index();
-                        var med = medsToUpdate[rowIndex];
-                        med.reqQty = newValue;
+                        if (medsToUpdate[rowIndex].reqQty === undefined) {
+                            var med = medsToUpdate[rowIndex];
+                            med.reqQty = newValue;
+                        }
+                        else {
+                            var med = medsToUpdateTemp[rowIndex];
+                            med.reqQty = newValue;
+                            for (var i = 0; i < medsToUpdate.length; i++) {
+                                if (medsToUpdate[i].medId === med.medId) {
+                                    medsToUpdate[i].reqQty = newValue;
+                                    break;
+                                }
+                            }
 
-                         // Loop through all the other rows in the medsToUpdate array
+                        }
+
+                        // Loop through all the other rows in the medsToUpdate array
                         for (var i = 0; i < medsToUpdate.length; i++) {
                             if (i !== rowIndex && medsToUpdate[i].reqQty === undefined) {
                                 medsToUpdate[i].reqQty = medsToUpdate[i].normQty;
@@ -327,6 +418,7 @@
 
                         console.log("medsNormArray", medsNormArray);
                         console.log("medsToUpdate", medsToUpdate);
+                        console.log("medsToUpdateTemp", medsToUpdateTemp);
                         if (!areArraysIdentical(medsToUpdate, medsNormArray)) {
                             renderUpdateButton(true);
                         } else {
