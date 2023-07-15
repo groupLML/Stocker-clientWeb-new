@@ -188,34 +188,7 @@
                                         return '<i class="bi bi-trash delete-icon"></i>';
                                     }
                                 },
-                                createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {
-                                    $(cell).on('click', '.delete-icon', function () {
-                                        // Get the index of the medication to delete
-                                        var index = dataTable.row($(this).closest('tr')).index();
-                                        // Remove the medication from the array
-                                        medsToUpdate.splice(index, 1);
-                                        // Redraw the table
-                                        dataTable.clear().rows.add(medsToUpdate).draw();
-                                        console.log(medsToUpdate);
-                                        //Add reqQty
-                                        for (let i = 0; i < medsToUpdate.length; i++) {
-                                            if (medsToUpdate[i].reqQty === undefined) {
-                                                medsToUpdate[i].reqQty = medsToUpdate[i].normQty;
-                                            }
-                                        }
-                                        //if updated render update button
-                                        if (!areArraysIdentical(medsToUpdate, medsNormArray)) {
-                                            renderUpdateButton(true);
-                                        } else {
-                                            renderUpdateButton(false);
-                                        }
-                                        // Clear the existing data from the table
-                                        dataTable.clear().draw();
-                                        // Add the updated medsToUpdate data to the table
-                                        dataTable.rows.add(medsToUpdate).draw();
-                                        // Call checkTableRendered to check if the table is fully rendered
-                                        checkTableRendered();
-                                    });
+                                createdCell: function (cell, cellData, rowData, rowIndex, colIndex) {                                    $(cell).on('click', '.delete-icon', function () {                                        // Get the index of the medication to delete                                        var index = dataTable.row($(this).closest('tr')).index();                                        //Array for presentation to a dataTable                                        medsToUpdateTep = medsToUpdate.filter(function (med) {                                            return med.reqQty !== 0;                                        });                                        //"Remove" the medication from the array by giving reqQty a value of 0                                        for (let i = 0; i < medsToUpdate.length; i++) {                                            if (medsToUpdateTep[index].medId === medsToUpdate[i].medId) {                                                medsToUpdate[i].reqQty = 0;                                            }                                        }                                        //Updating the array for presentation to a dataTable                                        medsToUpdateTep = medsToUpdate.filter(function (med) {                                            return med.reqQty !== 0;                                        });                                        //console.log(medsToUpdate);                                        //console.log(medsToUpdateTep);                                        //Add reqQty                                        for (let i = 0; i < medsToUpdate.length; i++) {                                            if (medsToUpdate[i].reqQty === undefined) {                                                medsToUpdate[i].reqQty = medsToUpdate[i].normQty;                                            }                                        }                                        //if updated render update button                                        if (!areArraysIdentical(medsToUpdate, medsNormArray)) {                                            renderUpdateButton(true);                                        } else {                                            renderUpdateButton(false);                                        }                                        //Clear the existing data from the table                                        dataTable.clear().draw();                                        //Add the updated medsToUpdate data to the table                                        dataTable.rows.add(medsToUpdateTep).draw();                                        //Call checkTableRendered to check if the table is fully rendered                                        checkTableRendered();                                    });
 
                                     $(cell).on('click', '#add-icon', function () {
                                         // Get the input values from the first row
@@ -416,8 +389,6 @@
                 position: "",
                 medReqList: slicedMedsToUpdate
             }
-
-      
 
             ajaxCall("POST", apiPostNormReq, JSON.stringify(NewNormReq), PostNormRequestSCB, PostNormRequestECB);
 
