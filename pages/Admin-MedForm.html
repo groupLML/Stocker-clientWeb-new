@@ -82,10 +82,12 @@
             titleStr += `</nav>`;
             document.getElementById("title_ph").innerHTML = titleStr;
 
-            var time = med.lastUpdate.slice(11, 16);
-            var date = med.lastUpdate.slice(0, 10);
-            let headerStr = `<p id="date_header">עדכון אחרון: ${date} ${time}</p>`
-            document.getElementById("date_ph").innerHTML = headerStr;
+            if (medId != null) {
+                var time = med.lastUpdate.slice(11, 16);
+                var date = med.lastUpdate.slice(0, 10);
+                let headerStr = `<p id="date_header">עדכון אחרון: ${date} ${time}</p>`
+                document.getElementById("date_ph").innerHTML = headerStr;
+            }
         }
 
 
@@ -149,7 +151,7 @@
                     Unit: unit,
                     Method: method,
                     Given: given,
-                    Status: status,
+                    MedStatus: status,
                     LastUpdate: lastUpdate
                 };
 
@@ -201,7 +203,7 @@
                     Unit: unit,
                     Method: method,
                     Given: given,
-                    Status: status,
+                    MedStatus: status,
                     LastUpdate: lastUpdate
                 };
 
