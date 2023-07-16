@@ -43,45 +43,52 @@
 
         $(document).ready(function () {
 
-            api = "https://proj.ruppin.ac.il/cgroup36/prod/api/Department";
+            api = "https://proj.ruppin.ac.il/cgroup36/prod/GetMedsAdmin";
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
-            deps = [];
-            GetDepartments();
+            meds = [];
+            GetMeds();
 
             $('#Table').on('click', 'tbody tr', function () {// This function will be called when a row is clicked
-                var depStr = $(this).find('td:first').text();
-                var depId = parseInt(depStr);
-                sessionStorage.setItem('Id', depId);
-                window.location.href = 'Admin-DepForm.html';
+                var medStr = $(this).find('td:first').text();
+                var medId = parseInt(medStr);
+                sessionStorage.setItem('Id', medId);
+                window.location.href = 'Admin-MedForm.html';
             });
         })
 
-
-        function GetDepartments() {
-            ajaxCall("GET", api, "", successGetDepsCBF, errorGetDepsCBF);
+        function GetMeds() {
+            ajaxCall("GET", api, "", successGetMedsCBF, errorGetMedsCBF);
         }
 
-        function successGetDepsCBF(data) {
+        function successGetMedsCBF(data) {
             console.log(data);
 
             for (var i = 0; i < data.length; i++) {
-                if (data[i]['depId'] != 0)
-                    deps.push(data[i]);
+                if (data[i]['medId'] != 0)
+                    meds.push(data[i]);
             }
 
             try {
                 tbl = $('#Table').DataTable({
                     "language": { "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json" },
-                    data: deps,
+                    data: users,
                     pageLength: 5,
                     columns: [
-                        { data: "depId" },
-                        { data: "depName" },
-                        { data: "depPhone" },
-                        { data: "depType" }
+                        { data: "medId" },
+                        { data: "fullName" },
+                        { data: "mazNum" },
+                        {
+                            data: "status",
+                            render: function (data, type, row, meta) {
+                                if (data == true)
+                                    return '<input type="checkbox" checked disabled="disabled" />';
+                                else
+                                    return '<input type="checkbox" disabled="disabled"/>';
+                            }
+                        }
                     ]
                 });
             }
@@ -91,7 +98,7 @@
             }
         }
 
-        function errorGetDepsCBF(err) {
+        function errorGetMedsCBF(err) {
             console.log(err);
             sweetalert("שגיאה בשרת", "", true, false, "");
         }
@@ -137,18 +144,17 @@
             </ul>
         </nav><!-- End Icons Navigation -->
     </header><!-- End Header -->
-   
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
 
             <li class="nav-item">
-                <a class="nav-link active" data-bs-target="#departments-nav" data-bs-toggle="collapse" href="#">
+                <a class="nav-link collapsed" data-bs-target="#departments-nav" data-bs-toggle="collapse" href="#">
                     <span>מחלקות</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="departments-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+                <ul id="departments-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="Admin-Departments.html" class="active">
+                        <a href="Admin-Departments.html">
                             <i class="bi bi-circle"></i><span>צפייה במחלקות</span>
                         </a>
                     </li>
@@ -165,7 +171,7 @@
                     <span>משתמשים</span>
                     <i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="users-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <ul id="users-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="Admin-Users.html">
                             <i class="bi bi-circle"></i><span>צפייה במשתמשים</span>
@@ -180,13 +186,13 @@
             </li><!-- End Departments Nav -->
 
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#meds-nav" data-bs-toggle="collapse" href="#">
+                <a class="nav-link active" data-bs-target="#meds-nav" data-bs-toggle="collapse" href="#">
                     <span>תרופות</span>
                     <i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="meds-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                <ul id="meds-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="Admin-Medicines.html">
+                        <a href="Admin-Medicines.html" class="active">
                             <i class="bi bi-circle"></i><span>צפייה בתרופות</span>
                         </a>
                     </li>
@@ -196,15 +202,14 @@
                         </a>
                     </li>
                 </ul>
-            </li><!-- End Mediciens Nav -->
+            </li><!-- End mediciens Nav -->
 
         </ul><!-- End Nav -->
     </aside><!-- End Sidebar-->
-
     <!-- ======= Main ======= -->
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>מחלקות</h1>
+            <h1>תרופות</h1>
         </div><!-- End Page Title -->
 
         <section class="section">
@@ -215,16 +220,18 @@
                         <div class="card-body">
                             <br />
                             <!-- Table with stripped rows table-striped-->
-                            <table class="table hover table-striped-custom " id="Table" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>שם מחלקה</th>
-                                        <th>טלפון</th>
-                                        <th>סוג מחלקה</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                            <div class="table-container">
+                                <table class="table hover table-striped-custom " id="Table" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>שם התרופה</th>
+                                            <th>מקט מזור</th>
+                                            <th>תרופה פעילה</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
                             <!-- End Table with stripped rows -->
 
                         </div>
@@ -234,7 +241,6 @@
         </section>
 
     </main><!-- End #main -->
-  
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
         <div class="copyright">

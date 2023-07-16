@@ -137,11 +137,11 @@
 
             if (data == 1) {
                 sessionStorage.removeItem('Id');
-                sweetalert("העדכון בוצע בהצלחה", "", false, true, 'Admin-Departments.html');
+                sweetalert("המחלקה התווספה בהצלחה", "", false, true, 'Admin-Departments.html');
             }
             else {
                 if (data == -1) {
-                    sweetalert("שגיאה", "מחלקה זו כבר קיים במערכת, אנא בחר שם אחר", true, false, "");
+                    sweetalert("שגיאה", "מחלקה זו כבר קיימת במערכת, אנא בחר שם אחר", true, false, "");
                 }
                 else {
                     sweetalert("שגיאה בשרת", "", true, false, "");
@@ -181,7 +181,7 @@
 
             if (data == true) {
                 sessionStorage.removeItem('Id');
-                sweetalert("הבקשה נשלחה", "", false, true, 'Admin-Departments.html');
+                sweetalert("העדכון התבצע בהצלחה", "", false, true, 'Admin-Departments.html');
                 //window.location.href = 'Admin-Departments.html';
             }
             else {
@@ -275,6 +275,25 @@
                     </li>
                 </ul>
             </li><!-- End Departments Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#meds-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>תרופות</span>
+                    <i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="meds-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="Admin-Medicines.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>צפייה בתרופות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Admin-MedForm.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>טופס תרופה</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Mediciens Nav -->
+
 
         </ul><!-- End Nav -->
     </aside><!-- End Sidebar-->
