@@ -73,7 +73,7 @@
             let titleStr = `<h1>טופס תרופה</h1>`;
             titleStr += `<nav>`;
             titleStr += `<ol class="breadcrumb">`;
-            if (userId != null)
+            if (medId != null)
                 titleStr += `<li class="breadcrumb-item">תרופה מספר ${medId}</li>`;
             else
                 titleStr += `<li class="breadcrumb-item">יצירת תרופה חדשה</li>`;
@@ -84,8 +84,8 @@
 
             var time = med.lastUpdate.slice(11, 16);
             var date = med.lastUpdate.slice(0, 10);
-            let headerStr = `<p class="orderDate">עדכון אחרון: ${date} ${time}</p>`
-            document.getElementById("header").innerHTML = headerStr;
+            let headerStr = `<p id="date_header">עדכון אחרון: ${date} ${time}</p>`
+            document.getElementById("date_ph").innerHTML = headerStr;
         }
 
 
@@ -93,7 +93,7 @@
             ajaxCall("GET", api, "", successGetMedCBF, errorGetMedCBF);
         }
 
-        function successGetMedBF(data) {
+        function successGetMedCBF(data) {
             console.log(data);
             if (data != null) {
                 for (var i = 0; i < data.length; i++) {
@@ -305,7 +305,7 @@
                         </a>
                     </li>
                 </ul>
-            </li><!-- End Departments Nav -->
+            </li><!-- End Users Nav -->
 
             <li class="nav-item">
                 <a class="nav-link active" data-bs-target="#meds-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
@@ -326,18 +326,17 @@
                 </ul>
             </li><!-- End Mediciens Nav -->
 
-
         </ul><!-- End Nav -->
     </aside><!-- End Sidebar-->
     <!-- ======= Main ======= -->
     <main id="main" class="main">
-        <div id="title_ph" class="col-10 pagetitle"></div>
-        <div id="header" class="col-2"></div>
+        <div id="title_ph" class="pagetitle"></div>
         <!-- End Page Title -->
         <section class="section">
             <div class="row">
                 <div class="card">
                     <div class="card-body">
+                        <div id="date_ph"></div>
                         <br />
                         <!-- Form -->
                         <form id="MedForm" class="row g-3 needs-validation" novalidate>
@@ -383,13 +382,11 @@
                                 <div class="col input-group has-validation">
                                     <select id="givenTB" class="form-select form-control" autocomplete="off" required>
                                         <option value=""></option>
-                                        <option value="PO">PO</option>
-                                        <option value="IV">IV</option>
-                                        <option value="SC">SC</option>
-                                        <option value="SL">SL</option>
+                                        <option value="TAB">TAB</option>
+                                        <option value="CAP">CAP</option>
                                         <option value="INH">INH</option>
-                                        <option value="ENM">ENM</option>
-                                        <option value="TRD">TRD</option>
+                                        <option value="COL">COL</option>
+                                        <option value="INJ">INJ</option>
                                     </select>
                                     <div class="valid-feedback">אנא בחר את דרך מתן התרופה מתוך הרשימה</div>
                                 </div>
@@ -399,11 +396,13 @@
                                 <div class="col input-group has-validation">
                                     <select id="methodTB" class="form-select form-control" autocomplete="off" required>
                                         <option value=""></option>
-                                        <option value="TAB">TAB</option>
-                                        <option value="CAP">CAP</option>
+                                        <option value="PO">PO</option>
+                                        <option value="IV">IV</option>
+                                        <option value="SC">SC</option>
+                                        <option value="SL">SL</option>
                                         <option value="INH">INH</option>
-                                        <option value="COL">COL</option>
-                                        <option value="INJ">INJ</option>
+                                        <option value="ENM">ENM</option>
+                                        <option value="TRD">TRD</option>                   
                                     </select>
                                     <div class="valid-feedback">אנא בחר את צורת המינון מתוך הרשימה</div>
                                 </div>
