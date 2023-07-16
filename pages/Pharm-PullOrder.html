@@ -44,11 +44,14 @@
 
     <script>
 
-        $(document).ready(function () {
+        let tbl;
 
+        $(document).ready(function () {
+            
             apiPullOrderDetails = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetOrderDetails/orderId/";
             apiUpdateTaken = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/UpdatePharmTaken/"
             apiUpdateIssued = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/UpdatePharmIssued/"
+            apiPullOrder = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetPullOrderPharmById/orderId/"
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
@@ -143,6 +146,22 @@
         //    doc.save("file.pdf");
         //}
 
+        function GetPullOrder() {
+            ajaxCall("GET", apiPullOrder + order.orderId, "", getPullOrderSCB, getPullOrderECB);
+        }
+
+        function getPullOrderSCB(data) {
+            console.log(data);
+            var orderDataJson = JSON.stringify(data[0]);// Convert the orderData object to a JSON string
+            sessionStorage.setItem('Order', orderDataJson);// Add to the session storage
+            order = JSON.parse(sessionStorage.getItem("Order")); //get order from storage
+        }
+
+        function getPullOrderECB(err) {
+            console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
+        }
+
         function renderButtons() {
             let str = ``;
             if (order.status === "בהמתנה") {
@@ -201,8 +220,7 @@
         }
 
         function GetPullOrderDetails() {
-            const orderId = order.orderId;
-            ajaxCall("GET", apiPullOrderDetails + orderId, "", getOrderDetailsSCB, getOrderDetailsECB);
+            ajaxCall("GET", apiPullOrderDetails + order.orderId, "", getOrderDetailsSCB, getOrderDetailsECB);
         }
 
         function getOrderDetailsSCB(data) {
@@ -217,13 +235,18 @@
         }
 
         function DataTableRender(medsData) {
-
             let medsArray = [];
             for (var i = 0; i < medsData.length; i++) {
-
                 medsArray.push(medsData[i]);
             }
+
             try {
+                if (tbl) {
+                    // Destroy the existing DataTable instance and remove its added markup
+                    tbl.destroy(true);
+                    tbl = null;
+                    //location.reload();
+                }
                 if (order.status === "נופק") {
                     tbl = $('#Table').DataTable({
                         "language": {
@@ -238,8 +261,7 @@
                             { data: "supQty" }
                         ],
                     });
-                }
-                else if (order.status === "בטיפול" && order.pUser === user.userId) {
+                } else if (order.status === "בטיפול" && order.pUser === user.userId) {
                     tbl = $('#Table').DataTable({
                         "language": {
                             "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
@@ -258,8 +280,7 @@
                             }
                         ],
                     });
-                }
-                else {
+                } else {
                     tbl = $('#Table').DataTable({
                         "language": {
                             "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
@@ -273,8 +294,7 @@
                         ],
                     });
                 }
-            }
-            catch (err) {
+            } catch (err) {
                 console.log(err);
                 sweetalert("שגיאה בשרת", "", true, false, "");
             }
@@ -284,7 +304,7 @@
             if (order.status === "בהמתנה") {//Update order status from waiting to taken
                 ajaxCall("PUT", apiUpdateTaken + "pullId/" + order.orderId + "/pUser/" + user.userId, "", updateStatusSCB, updateStatusECB);
             }
-            else {//Update order status from taken to issued
+            else if (order.status === "בטיפול") {//Update order status from taken to issued
 
                 if (order.pUser == user.userId) {//only the user who has taken the order and manager can check that the order was issued!
                     var formattedMedsList = updateMedsListFromDataTable();
@@ -305,22 +325,8 @@
         function updateStatusSCB(data) {
             console.log(data);
             $('#verticalycentered').modal('hide'); // Hide the modal
-
-            // Update status in session storage
-            var order = JSON.parse(sessionStorage.getItem('Order'));
-            if (order.status === 'בהמתנה') {
-                order.status = 'בטיפול';
-            }
-            else if (order.status === 'בטיפול') {
-                order.status = 'נופק';
-            }
-            sessionStorage.setItem('Order', JSON.stringify(order));
-
-            location.reload(); // Reload the page
-            tbl.ajax.reload(); // Reload the table data
-
-            renderButtons();
-            orderDataRender();
+            GetPullOrder();
+            location.reload();
         }
 
         function updateStatusECB(err) {
