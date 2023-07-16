@@ -115,6 +115,7 @@
             $("#firstNameTB").val(user.firstName);
             $("#lastNameTB").val(user.lastName);
             $("#emailTB").val(user.email);
+            $("#emailPTB").val(user.emailP);
             $("#passwordTB").val(user.password);
             $("#phoneTB").val(user.phone);
             $("#positionTB").val(user.position);
@@ -151,6 +152,7 @@
             const firstName = $("#firstNameTB").val();
             const lastName = $("#lastNameTB").val();
             const email = $("#emailTB").val();
+            const emailP = $("#emailPTB").val();
             const password = $("#passwordTB").val();
             const phone = $("#phoneTB").val().replace(/[^\d]/g, '');
             const position = $("#positionTB").val();
@@ -159,7 +161,7 @@
             const isActive = $("#isActiveCB").is(":checked");
 
 
-            if (username == "" || firstName == "" || lastName == "" || username == "" || email == "" || password == "" || phone == "" || jobType == "" || depName == "")
+            if (username == "" || firstName == "" || lastName == "" || username == "" || email == "" || emailP == "" || password == "" || phone == "" || jobType == "" || depName == "")
                 return;
             else {
 
@@ -175,6 +177,7 @@
                     FirstName: firstName,
                     LastName: lastName,
                     Email: email,
+                    EmailP: emailP,
                     Password: password,
                     Phone: phone,
                     Position: position,
@@ -198,11 +201,11 @@
                 sessionStorage.removeItem('Id');
                 newUser = JSON.parse(sessionStorage.getItem("newUser"));
                 ajaxCall("POST", apiUser + '/Email', JSON.stringify(newUser), successPostECBF, errorPostECBF);
-                sweetalert("העדכון בוצע בהצלחה", "", false, true, 'Admin-Users.html');
+                sweetalert("המשתמש התווסף בהצלחה", "", false, true, 'Admin-Users.html');
             }
             else {
                 if (data == -1) {
-                    sweetalert("שגיאה", "משתמש זה כבר קיים במערכת, אנא בחר שם אחר", true, false, "");
+                    sweetalert("שגיאה", "משתמש זה כבר קיים במערכת, אנא בחר שם משתמש אחר", true, false, "");
                 }
                 else
                     sweetalert("שגיאה בשרת", "", true, false, "");
@@ -229,6 +232,7 @@
             const firstName = $("#firstNameTB").val();
             const lastName = $("#lastNameTB").val();
             const email = $("#emailTB").val();
+            const emailP = $("#emailPTB").val();
             const password = $("#passwordTB").val();
             const phone = $("#phoneTB").val().replace(/[^\d]/g, '');
             const position = $("#positionTB").val();
@@ -237,7 +241,7 @@
             const isActive = $("#isActiveCB").is(":checked");
 
 
-            if (username == "" || firstName == "" || lastName == "" || username == "" || email == "" || password == "" || phone == "" || jobType == "" || depName == "")
+            if (username == "" || firstName == "" || lastName == "" || username == "" || email == "" || emailP == "" || password == "" || phone == "" || jobType == "" || depName == "")
                 return;
             else {
 
@@ -253,6 +257,7 @@
                     FirstName: firstName,
                     LastName: lastName,
                     Email: email,
+                    EmailP: emailP,
                     Password: password,
                     Phone: phone,
                     Position: position,
@@ -363,6 +368,26 @@
                 </ul>
             </li><!-- End Departments Nav -->
 
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#meds-nav" data-bs-toggle="collapse" href="#" onclick="reload()">
+                    <span>תרופות</span>
+                    <i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="meds-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="Admin-Medicines.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>צפייה בתרופות</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Admin-MedForm.html" onclick="reload()">
+                            <i class="bi bi-circle"></i><span>טופס תרופה</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Mediciens Nav -->
+
+
         </ul><!-- End Nav -->
     </aside><!-- End Sidebar-->
     <!-- ======= Main ======= -->
@@ -401,8 +426,8 @@
                             <div class="col-md-5">
                                 <label for="passwordTB" class="form-label">סיסמה <i class="bi bi-asterisk"></i></label>
                                 <div class="col input-group has-validation">
-                                    <input type="text" class="form-control" id="passwordTB" length="3" required>
-                                    <div class="invalid-feedback">הכנס סיסמה בעלת 5 תווים</div>
+                                    <input type="text" class="form-control" id="passwordTB" length="6" required>
+                                    <div class="invalid-feedback">הכנס סיסמה בעלת 6 תווים</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -425,14 +450,14 @@
                                         <option value="P">רוקח/ת</option>
                                         <option value="M">מנהל/ת בית מרקחת</option>
                                     </select>
-                                    <div class="valid-feedback"> אנא בחר את סוג המשתמש מתוך הרשימה</div>
+                                    <div class="valid-feedback">אנא בחר את סוג המשתמש מתוך הרשימה</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label for="emailTB" class="form-label">דוא"ל <i class="bi bi-asterisk"></i></label>
                                 <div class="col input-group has-validation">
-                                    <input type="email" class="form-control" id="emailTB" style="direction: ltr" placeholder="@hymc.gov.il" required> <!--לבדוק ולשנות-->
-                                    <div class="invalid-feedback">הכנס דואר אלקטרוני בפורמט המתאים</div>
+                                    <input type="email" class="form-control" id="emailTB" style="direction: ltr" placeholder="@hymc.gov.il" maxlength="50" required>
+                                    <div class="invalid-feedback">הכנס דואר אלקטרוני בפורמט המתאים עד 50 תווים</div>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -442,7 +467,14 @@
                                     <div class="invalid-feedback">מספר נייד צריך להיות בעל 10 ספרות</div>
                                 </div>
                             </div>
-                            <div class="col-md-10">
+                            <div class="col-md-6">
+                                <label for="emailPTB" class="form-label">דוא"ל פרטי <i class="bi bi-asterisk"></i></label>
+                                <div class="col input-group has-validation">
+                                    <input type="email" class="form-control" id="emailPTB" style="direction: ltr" placeholder="@gmail.com" maxlength="50" required> 
+                                    <div class="invalid-feedback">הכנס דואר אלקטרוני בפורמט המתאים עד 50 תווים</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <label for="positionTB" class="form-label">תפקיד</label>
                                 <div class="col input-group">
                                     <input type="text" class="form-control" id="positionTB">
