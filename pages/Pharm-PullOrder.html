@@ -47,7 +47,7 @@
         let tbl;
 
         $(document).ready(function () {
-            
+
             apiPullOrderDetails = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetOrderDetails/orderId/";
             apiUpdateTaken = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/UpdatePharmTaken/"
             apiUpdateIssued = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/UpdatePharmIssued/"
@@ -63,37 +63,34 @@
             GetPullOrderDetails();
             MedsList = [];
 
-            renderTableCol();
             renderButtons();
             renderModal();
-
-            const statusSpan = document.querySelector(".badge");
-            if (order.status === "בהמתנה") {
-                statusSpan.classList.add("bg-danger");
-
-            }
-            else if (order.status === "בטיפול") {
-                statusSpan.classList.add("bg-warning");
-            }
-            else {
-                statusSpan.classList.add("bg-success");
-            }
         })
+
+        function setBadgeClass(status) {
+            if (status === "בהמתנה") {
+                return "bg-danger";
+            } else if (status === "בטיפול") {
+                return "bg-warning";
+            } else {
+                return "bg-success";
+            }
+        }
 
         function headerRender() {
             var time = order.lastUpdate.slice(11, 16);
             var date = order.lastUpdate.slice(0, 10);
-            let titleStr = `<h1>הזמנה מספר ${order.orderId}</h1>`
-            titleStr += `<nav>`
-            titleStr += `<ol class="breadcrumb">`
-            titleStr += `<li class="breadcrumb-item">הזמנה מספר ${order.orderId}</li>`
-            titleStr += `<li class="breadcrumb-item active"><a href="Pharm-PullOrders.html">הזמנות משיכה</a></li>`
-            titleStr += `</ol>`
-            titleStr += `</nav>`
+            let titleStr = `<h1>הזמנה מספר ${order.orderId}</h1>`;
+            titleStr += `<nav>`;
+            titleStr += `<ol class="breadcrumb">`;
+            titleStr += `<li class="breadcrumb-item">הזמנה מספר ${order.orderId}</li>`;
+            titleStr += `<li class="breadcrumb-item active"><a href="Pharm-PullOrders.html">הזמנות משיכה</a></li>`;
+            titleStr += `</ol>`;
+            titleStr += `</nav>`;
             document.getElementById("title_ph").innerHTML = titleStr;
 
-            let orderHeaderStr = `<p class="orderDate"> ${date} ${time}</p>`
-            orderHeaderStr += `<span class="badge orderStatus">סטטוס: ${order.status}</span>`
+            let orderHeaderStr = `<p class="orderDate"> ${date} ${time}</p>`;
+            orderHeaderStr += `<span class="badge orderStatus ${setBadgeClass(order.status)}">סטטוס: ${order.status}</span>`;
             document.getElementById("orderHeader").innerHTML = orderHeaderStr;
         }
 
@@ -203,22 +200,6 @@
             document.getElementById("modal_ph").innerHTML = str;
         }
 
-        function renderTableCol() {
-            let str = ``;
-            if (order.status === "בהמתנה" || (order.status === "בטיפול" && order.pUser !== user.userId)) {
-                str += `<tr><th>#</th>`;
-                str += `<th>שם תרופה</th>`;
-                str += `<th>כמות נדרשת</th></tr>`;
-            }
-            else {
-                str += `<tr><th>#</th>`;
-                str += `<th>שם תרופה</th>`;
-                str += `<th>כמות נדרשת</th>`;
-                str += `<th>כמות שהונפקה</th></tr>`;
-            }
-            document.getElementById("TableColNames_ph").innerHTML = str;
-        }
-
         function GetPullOrderDetails() {
             ajaxCall("GET", apiPullOrderDetails + order.orderId, "", getOrderDetailsSCB, getOrderDetailsECB);
         }
@@ -242,58 +223,42 @@
 
             try {
                 if (tbl) {
-                    // Destroy the existing DataTable instance and remove its added markup
-                    tbl.destroy(true);
-                    tbl = null;
-                    //location.reload();
+                    // Check if the DataTable instance exists
+                    if ($.fn.DataTable.isDataTable('#Table')) {
+                        // Destroy the existing DataTable instance and remove its added markup
+                        $('#Table').DataTable().destroy();
+                        $('#Table').empty();
+                    }
                 }
+
+                // Add table headers based on the order status and user
+                let tableHeaders = [
+                    { title: "#", data: "medId" },
+                    { title: "שם תרופה", data: "medName" },
+                    { title: "כמות נדרשת", data: "poQty" }
+                ];
+
                 if (order.status === "נופק") {
-                    tbl = $('#Table').DataTable({
-                        "language": {
-                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
-                        },
-                        data: medsArray,
-                        pageLength: 5,
-                        columns: [
-                            { data: "medId" },
-                            { data: "medName" },
-                            { data: "poQty" },
-                            { data: "supQty" }
-                        ],
-                    });
+                    tableHeaders.push({ title: "כמות שהונפקה", data: "supQty" });
                 } else if (order.status === "בטיפול" && order.pUser === user.userId) {
-                    tbl = $('#Table').DataTable({
-                        "language": {
-                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
-                        },
-                        data: medsArray,
-                        pageLength: 5,
-                        columns: [
-                            { data: "medId" },
-                            { data: "medName" },
-                            { data: "poQty" },
-                            {
-                                data: "supQty",
-                                render: function (data, type, row, meta) {
-                                    return '<input type="number" class="form-control" min="0" value="0">';
-                                }
-                            }
-                        ],
-                    });
-                } else {
-                    tbl = $('#Table').DataTable({
-                        "language": {
-                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
-                        },
-                        data: medsArray,
-                        pageLength: 5,
-                        columns: [
-                            { data: "medId" },
-                            { data: "medName" },
-                            { data: "poQty" }
-                        ],
+                    tableHeaders.push({
+                        title: "כמות שהונפקה",
+                        data: "supQty",
+                        render: function (data, type, row, meta) {
+                            return '<input type="number" class="form-control" min="0" value="' + data + '">';
+                        }
                     });
                 }
+
+                tbl = $('#Table').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
+                    },
+                    data: medsArray,
+                    pageLength: 5,
+                    columns: tableHeaders,
+                });
+
             } catch (err) {
                 console.log(err);
                 sweetalert("שגיאה בשרת", "", true, false, "");
@@ -326,7 +291,10 @@
             console.log(data);
             $('#verticalycentered').modal('hide'); // Hide the modal
             GetPullOrder();
-            location.reload();
+            headerRender();
+            orderDataRender();
+            GetPullOrderDetails();
+            renderButtons();
         }
 
         function updateStatusECB(err) {
