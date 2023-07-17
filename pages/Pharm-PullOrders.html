@@ -68,6 +68,10 @@
                     return order.orderId === parseInt(orderData.orderId);// Convert the orderId to an integer
                 });
 
+                //var orderDataJson = JSON.stringify(orderData);// Convert the orderData object to a JSON string
+
+                //sessionStorage.setItem('Order', orderDataJson);// Add the rowDataJson to the session storage
+
                 // Add the last update to the orderData object
                 orderData.lastUpdate = order.lastUpdate;
                 // Add the pUser to the orderData object

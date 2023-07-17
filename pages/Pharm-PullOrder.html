@@ -56,7 +56,10 @@
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
-            order = JSON.parse(sessionStorage.getItem("Order")); //get order from storage
+
+            order = JSON.parse(sessionStorage.getItem("Order")); //get orderId from storage
+            GetPullOrder();
+            
             headerRender();
             orderDataRender();
 
