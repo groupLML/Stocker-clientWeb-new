@@ -121,7 +121,6 @@
 
         function GetPullOrder() {
             ajaxCall("GET", apiPullOrder + order.orderId, "", getPullOrderSCB, getPullOrderECB);
-            return false;
         }
 
         function getPullOrderSCB(data) {
@@ -180,7 +179,6 @@
         function GetPullOrderDetails() {
             const orderId = order.orderId;
             ajaxCall("GET", apiPullOrderDetails + orderId, "", getOrderDetailsSCB, getOrderDetailsECB);
-            return false;
         }
 
         function getOrderDetailsSCB(data) {
