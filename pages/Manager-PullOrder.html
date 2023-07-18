@@ -41,38 +41,41 @@
 
     <script>
 
+        let tbl;
+
         $(document).ready(function () {
 
             apiPullOrderDetails = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetOrderDetails/orderId/";
             apiUpdateTaken = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/UpdatePharmTaken/"
             apiUpdateIssued = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/UpdatePharmIssued/"
+            apiPullOrder = "https://proj.ruppin.ac.il/cgroup36/prod/api/PullOrder/GetPullOrderPharmById/orderId/"
 
             user = JSON.parse(sessionStorage.getItem("LoginUser")); //get user from storage
             renderUser(user);
 
-            order = JSON.parse(sessionStorage.getItem("Order")); //get order from storage
+
+            order = JSON.parse(sessionStorage.getItem("Order")); //get orderId from storage
+            GetPullOrder();
+
             headerRender();
             orderDataRender();
 
             GetPullOrderDetails();
             MedsList = [];
 
-            renderTableCol();
             renderButtons();
             renderModal();
-
-            const statusSpan = document.querySelector(".badge");
-            if (order.status === "בהמתנה") {
-                statusSpan.classList.add("bg-danger");
-
-            }
-            else if (order.status === "בטיפול") {
-                statusSpan.classList.add("bg-warning");
-            }
-            else {
-                statusSpan.classList.add("bg-success");
-            }
         })
+
+        function setBadgeClass(status) {
+            if (status === "בהמתנה") {
+                return "bg-danger";
+            } else if (status === "בטיפול") {
+                return "bg-warning";
+            } else {
+                return "bg-success";
+            }
+        }
 
         function headerRender() {
             var time = order.lastUpdate.slice(11, 16);
@@ -87,7 +90,7 @@
             document.getElementById("title_ph").innerHTML = titleStr;
 
             let orderHeaderStr = `<p class="orderDate"> ${date} ${time}</p>`
-            orderHeaderStr += `<span class="badge orderStatus">סטטוס: ${order.status}</span>`
+            orderHeaderStr += `<span class="badge orderStatus ${setBadgeClass(order.status)}">סטטוס: ${order.status}</span>`;
             document.getElementById("orderHeader").innerHTML = orderHeaderStr;
         }
 
@@ -114,6 +117,22 @@
             window.print();
 
             dataTable.page.len(pageLength).draw();
+        }
+
+        function GetPullOrder() {
+            ajaxCall("GET", apiPullOrder + order.orderId, "", getPullOrderSCB, getPullOrderECB);
+        }
+
+        function getPullOrderSCB(data) {
+            console.log(data);
+            var orderDataJson = JSON.stringify(data[0]);// Convert the orderData object to a JSON string
+            sessionStorage.setItem('Order', orderDataJson);// Add to the session storage
+            order = JSON.parse(sessionStorage.getItem("Order")); //get order from storage
+        }
+
+        function getPullOrderECB(err) {
+            console.log(err);
+            sweetalert("שגיאה בשרת", "", true, false, "");
         }
 
         function renderButtons() {
@@ -157,22 +176,6 @@
             document.getElementById("modal_ph").innerHTML = str;
         }
 
-        function renderTableCol() {
-            let str = ``;
-            if (order.status === "בהמתנה") {
-                str += `<tr><th>#</th>`;
-                str += `<th>שם תרופה</th>`;
-                str += `<th>כמות נדרשת</th></tr>`;
-            }
-            else {
-                str += `<tr><th>#</th>`;
-                str += `<th>שם תרופה</th>`;
-                str += `<th>כמות נדרשת</th>`;
-                str += `<th>כמות שהונפקה</th></tr>`;
-            }
-            document.getElementById("TableColNames_ph").innerHTML = str;
-        }
-
         function GetPullOrderDetails() {
             const orderId = order.orderId;
             ajaxCall("GET", apiPullOrderDetails + orderId, "", getOrderDetailsSCB, getOrderDetailsECB);
@@ -190,64 +193,50 @@
         }
 
         function DataTableRender(medsData) {
-
             let medsArray = [];
             for (var i = 0; i < medsData.length; i++) {
-
                 medsArray.push(medsData[i]);
             }
+
             try {
+                if (tbl) {
+                    // Check if the DataTable instance exists
+                    if ($.fn.DataTable.isDataTable('#Table')) {
+                        // Destroy the existing DataTable instance and remove its added markup
+                        $('#Table').DataTable().destroy();
+                        $('#Table').empty();
+                    }
+                }
+
+                // Add table headers based on the order status and user
+                let tableHeaders = [
+                    { title: "#", data: "medId" },
+                    { title: "שם תרופה", data: "medName" },
+                    { title: "כמות נדרשת", data: "poQty" }
+                ];
+
                 if (order.status === "נופק") {
-                    tbl = $('#Table').DataTable({
-                        "language": {
-                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
-                        },
-                        data: medsArray,
-                        pageLength: 5,
-                        columns: [
-                            { data: "medId" },
-                            { data: "medName" },
-                            { data: "poQty" },
-                            { data: "supQty" }
-                        ],
+                    tableHeaders.push({ title: "כמות שהונפקה", data: "supQty" });
+                } else if (order.status === "בטיפול" && order.pUser === user.userId) {
+                    tableHeaders.push({
+                        title: "כמות שהונפקה",
+                        data: "supQty",
+                        render: function (data, type, row, meta) {
+                            return '<input type="number" class="form-control" min="0" value="' + data + '">';
+                        }
                     });
                 }
-                else if (order.status === "בטיפול") {
-                    tbl = $('#Table').DataTable({
-                        "language": {
-                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
-                        },
-                        data: medsArray,
-                        pageLength: 5,
-                        columns: [
-                            { data: "medId" },
-                            { data: "medName" },
-                            { data: "poQty" },
-                            {
-                                data: "supQty",
-                                render: function (data, type, row, meta) {
-                                    return '<input type="number" class="form-control" min="0" value="0">';
-                                }
-                            }
-                        ],
-                    });
-                }
-                else {
-                    tbl = $('#Table').DataTable({
-                        "language": {
-                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
-                        },
-                        data: medsArray,
-                        pageLength: 5,
-                        columns: [
-                            { data: "medId" },
-                            { data: "medName" },
-                            { data: "poQty" }
-                        ],
-                    });
-                }
-            }
-            catch (err) {
+
+                tbl = $('#Table').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hebrew.json"
+                    },
+                    data: medsArray,
+                    pageLength: 5,
+                    columns: tableHeaders,
+                });
+
+            } catch (err) {
                 console.log(err);
                 sweetalert("שגיאה בשרת", "", true, false, "");
             }
@@ -273,27 +262,52 @@
         function updateStatusSCB(data) {
             console.log(data);
             $('#verticalycentered').modal('hide'); // Hide the modal
-
-            // Update status in session storage
-            var order = JSON.parse(sessionStorage.getItem('Order'));
-            if (order.status === 'בהמתנה') {
-                order.status = 'בטיפול';
-            }
-            else if (order.status === 'בטיפול') {
-                order.status = 'נופק';
-            }
-            sessionStorage.setItem('Order', JSON.stringify(order));
-
-            location.reload(); // Reload the page
-            tbl.ajax.reload(); // Reload the table data
+            GetPullOrder();
+            headerRender();
+            orderDataRender();
+            GetPullOrderDetails();
+            renderButtons();
+            renderModal();
         }
 
         function updateStatusECB(err) {
             console.log(err);
             sweetalert("שגיאה בשרת", "", true, false, "");
         }
-     
 
+        function updateMedsListFromDataTable() {// Update medsList with new supQty values from tbl inputs
+            var tableData = tbl.rows().data().toArray();
+
+            for (var i = 0; i < MedsList.length; i++) {
+                var med = MedsList[i];
+                var medId = med.medId;
+
+                for (var j = 0; j < tableData.length; j++) {
+                    var rowData = tableData[j];
+
+                    if (rowData.medId === medId) {
+                        var supQtyInput = $('input', tbl.row(j).node()).val();
+                        med.supQty = parseInt(supQtyInput);
+                        break;
+                    }
+                }
+            }
+
+            console.log(MedsList); // Updated medsList with new supQty values
+
+            var formattedArray = MedsList.map(function (med) {
+                return {
+                    "medId": med.medId,
+                    "poQty": med.poQty,
+                    "supQty": med.supQty,
+                    "mazNum": ""
+                };
+            });
+
+            console.log(formattedArray);
+            return formattedArray;
+        }
+     
     </script>
 
 </head>
