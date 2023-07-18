@@ -96,15 +96,6 @@ F
 
             let ordersArray = [];
             for (var i = 0; i < ordersData.length; i++) {
-                //******format dd/mm/yyyy --> need to fix the sort
-                //var date = new Date(ordersData[i].orderDate);
-                //var formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-                //ordersData[i].orderDate = formattedDate;
-
-                //******format dd.mm.yyyy --> need to fix the sort
-                //var date = new Date(ordersData[i].orderDate);
-                //ordersData[i].orderDate = date.toLocaleDateString();
-
                 var date = new Date(ordersData[i].orderDate); // המרה לתאריך
                 ordersData[i].orderDate = date.toISOString().slice(0, 10); //yyyy-mm-dd פורמט מבוקש
 
@@ -296,7 +287,6 @@ F
     <script src="../assets/vendor/chart.js/chart.umd.js"></script>
     <script src="../assets/vendor/echarts/echarts.min.js"></script>
     <script src="../assets/vendor/quill/quill.min.js"></script>
-    <!--<script src="../assets/vendor/simple-datatables/simple-datatables.js"></script>-->
     <script src="../assets/vendor/tinymce/tinymce.min.js"></script>
     <script src="../assets/vendor/php-email-form/validate.js"></script>
 

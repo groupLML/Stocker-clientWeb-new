@@ -68,10 +68,7 @@
                     return order.orderId === parseInt(orderData.orderId);// Convert the orderId to an integer
                 });
 
-                //var orderDataJson = JSON.stringify(orderData);// Convert the orderData object to a JSON string
-
-                //sessionStorage.setItem('Order', orderDataJson);// Add the rowDataJson to the session storage
-
+              
                 // Add the last update to the orderData object
                 orderData.lastUpdate = order.lastUpdate;
                 // Add the pUser to the orderData object
@@ -108,14 +105,6 @@
 
             let ordersArray = [];
             for (var i = 0; i < ordersData.length; i++) {
-                //******format dd/mm/yyyy --> need to fix the sort
-                //var date = new Date(ordersData[i].orderDate);
-                //var formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-                //ordersData[i].orderDate = formattedDate;
-
-                //******format dd.mm.yyyy --> need to fix the sort
-                //var date = new Date(ordersData[i].orderDate);
-                //ordersData[i].orderDate = date.toLocaleDateString();
 
                 var date = new Date(ordersData[i].orderDate); // המרה לתאריך
                 ordersData[i].orderDate = date.toISOString().slice(0, 10); //yyyy-mm-dd פורמט מבוקש

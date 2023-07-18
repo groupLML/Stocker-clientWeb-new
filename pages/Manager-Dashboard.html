@@ -85,7 +85,7 @@
             $("#Filters").submit(getData);
 
             h = null;
-          /*  goToServer();*/
+            goToServer();
 
             window.onunload = function () {
                 stopThread();
@@ -394,9 +394,6 @@
                 xaxis: {
                     labels: {
                         align: 'left',
-                        //formatter: function (value) {
-                        //    return value +  "תרופות";
-                        //}
                     },
                     categories: ['הזמנות משיכה שסופקו', 'הזמנות משיכה שלא סופקו', 'הזמנות דחיפה שסופקו', 'הזמנות דחיפה שלא סופקו',
                         'העברות שבוצעו', 'שימוש בפועל']
@@ -460,144 +457,6 @@
         }
 
     </script>
-
-    <!--line chart-->
-    <!--<script>
-        document.addEventListener("DOMContentLoaded", () => {
-            new ApexCharts(document.querySelector("#reportsChart"), {
-                series: [{
-                    name: 'צריכה בפועל',
-                    data: [31, 40, 28, 51, 42, 82, 56],
-                }, {
-                    name: 'הנפקה',
-                    data: [23, 30, 31, 32, 28, 15, 35]
-                }],
-                chart: {
-                    height: 350,
-                    type: 'area',
-                    toolbar: {
-                        show: false
-                    },
-                },
-                markers: {
-                    size: 4
-                },
-                colors: ['#4154f1', '#2eca6a'],
-                fill: {
-                    type: "gradient",
-                    gradient: {
-                        shadeIntensity: 1,
-                        opacityFrom: 0.3,
-                        opacityTo: 0.4,
-                        stops: [0, 90, 100]
-                    }
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                stroke: {
-                    curve: 'smooth',
-                    width: 2
-                },
-                xaxis: {
-                    type: 'string',
-                    categories: months
-                    //type: 'datetime',
-                    //categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-                },
-                //tooltip: {
-                //    x: {
-                //        format: 'dd/MM/yy HH:mm'
-                //    },
-                //}
-            }).render();
-        });
-    </script>-->
-    <!--bar chart-->
-    <!--<script>
-        document.addEventListener("DOMContentLoaded", () => {
-            new ApexCharts(document.querySelector("#barChart"), {
-                series: [{
-                    data: [5, 20, 25, 30, 16, 27, 6]
-                }],
-                chart: {
-                    type: 'bar',
-                    height: 350
-                },
-                plotOptions: {
-                    bar: {
-                        borderRadius: 4,
-                        horizontal: true,
-                    }
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                xaxis: {
-                    labels: {
-                        align: 'left',
-                    },
-                    categories: ['הזמנות משיכה שסופקו', 'הזמנות משיכה שלא סופקו', 'הזמנות דחיפה שסופקו', 'הזמנות דחיפה שסופקו', 'שימוש בפועל',
-                        'העברות שבוצעו', 'בקשות שלא מומשו']
-                }
-            }).render();
-        });
-    </script>-->
-    <!--pie chart-->
-    <!--<script>
-        document.addEventListener("DOMContentLoaded", () => {
-            echarts.init(document.querySelector("#pieChart")).setOption({
-                tooltip: {
-                    trigger: 'item'
-                },
-                legend: {
-                    top: '5%',
-                    left: 'center'
-                },
-                series: [{
-                    name: 'Access From',
-                    type: 'pie',
-                    radius: ['40%', '70%'],
-                    avoidLabelOverlap: false,
-                    label: {
-                        show: false,
-                        position: 'center'
-                    },
-                    emphasis: {
-                        label: {
-                            show: true,
-                            fontSize: '18',
-                            fontWeight: 'bold'
-                        }
-                    },
-                    labelLine: {
-                        show: false
-                    },
-                    data: [{
-                        value: 1048,
-                        name: 'Search Engine'
-                    },
-                    {
-                        value: 735,
-                        name: 'Direct'
-                    },
-                    {
-                        value: 580,
-                        name: 'Email'
-                    },
-                    {
-                        value: 484,
-                        name: 'Union Ads'
-                    },
-                    {
-                        value: 300,
-                        name: 'Video Ads'
-                    }
-                    ]
-                }]
-            });
-        });
-    </script>-->
 
 </head>
 
@@ -725,43 +584,7 @@
                         <!-- Filter Card -->
                         <div class="col-12">
                             <div class="card" style="margin-bottom: 22px">
-                                <div class="card-body" style="padding: 15px">
-                                    <!--<div class="d-flex align-items-center">-->
-                                    <!--<form id="Filters">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="input-group has-validation">
-                                                    <input type="text" id="depInput" class="form-control" autocomplete="off" placeholder="שם מחלקה" required style="width: 120px;">
-                                                    <ul class="dropdown-options" id="deps-dropdown-options"></ul>
-                                                    <div class="invalid-feedback">אנא בחר את מחלקה מתוך הרשימה</div>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="input-group has-validation">
-                                                    <input type="text" id="medInput" class="form-control" autocomplete="off" placeholder="שם תרופה" required style="width: 280px;">
-                                                    <ul class="dropdown-options" id="meds-dropdown-options"></ul>
-                                                    <div class="invalid-feedback">אנא בחר את תרופה מתוך הרשימה</div>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="input-group has-validation">
-                                                    <input type="text" id="monthInput" class="form-control" autocomplete="off" placeholder="חודש" required>
-                                                    <ul class="dropdown-options" id="months-dropdown-options"></ul>
-                                                    <div class="invalid-feedback">אנא בחר חודש רצוי</div>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="input-group has-validation">
-                                                    <input type="text" id="yearInput" class="form-control" autocomplete="off" placeholder="שנה" required>
-                                                    <ul class="dropdown-options" id="years-dropdown-options"></ul>
-                                                    <div class="invalid-feedback">אנא בחר שנה רצויה</div>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <button type="submit" class="btn btn-primary">הצג</button>
-                                            </div>
-                                        </div>
-                                    </form>-->
+                                <div class="card-body" style="padding: 15px"> 
                                     <form id="Filters">
                                         <div class="row">
                                             <div class="col">
@@ -812,19 +635,6 @@
                         <div class="col-xxl-4 col-md-4">
                             <div class="card info-card sales-card" style="margin-bottom: 22px">
 
-                                <!--<div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>סינון</h6>
-                                        </li>
-
-                                        <li><a class="dropdown-item" href="#">שבוע</a></li>
-                                        <li><a class="dropdown-item" href="#">חודש</a></li>
-                                        <li><a class="dropdown-item" href="#">שנה</a></li>
-                                    </ul>
-                                </div>-->
-
                                 <div class="card-body" style="padding: 10px">
                                     <div id="titlePO"></div>
 
@@ -844,19 +654,6 @@
                         <!-- Tranport Card -->
                         <div class="col-xxl-4 col-md-4">
                             <div class="card info-card revenue-card" style="margin-bottom: 22px">
-
-                                <!--<div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>סינון</h6>
-                                        </li>
-
-                                        <li><a class="dropdown-item" href="#">שבוע</a></li>
-                                        <li><a class="dropdown-item" href="#">חודש</a></li>
-                                        <li><a class="dropdown-item" href="#">שנה</a></li>
-                                    </ul>
-                                </div>-->
 
                                 <div class="card-body" style="padding: 10px">
                                     <div id="titleMR"></div>
@@ -879,20 +676,6 @@
                         <div class="col-xxl-4 col-md-4">
 
                             <div class="card info-card customers-card" style="margin-bottom: 22px">
-
-                                <!--<div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>סינון</h6>
-                                        </li>
-
-                                        <li><a class="dropdown-item" href="#">שבוע</a></li>
-                                        <li><a class="dropdown-item" href="#">חודש</a></li>
-                                        <li><a class="dropdown-item" href="#">שנה</a></li>
-                                    </ul>
-                                </div>-->
-
                                 <div class="card-body" style="padding: 10px">
                                     <div id="titleMRD"></div>
 
