@@ -245,6 +245,7 @@
         function StatusUpdate() {
             if (order.status === "בהמתנה") {//Update order status from waiting to taken
                 ajaxCall("PUT", apiUpdateTaken + "pullId/" + order.orderId + "/pUser/" + user.userId, "", updateStatusSCB, updateStatusECB);
+                return false;
             }
             else {//Update order status from taken to issued
 
@@ -256,6 +257,7 @@
                 };
 
                 ajaxCall("PUT", apiUpdateIssued + "pullId/" + order.orderId, JSON.stringify(DataToSend), updateStatusSCB, updateStatusECB);
+                return false;
             }
         }
 
